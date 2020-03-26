@@ -6,6 +6,12 @@ import * as _ from "lodash";
 export interface CollectedData {
     timestamp: string,
     url: string,
+    mouse: {
+        position: {
+            x: number,
+            y: number
+        }
+    },
 }
 
 /**
@@ -24,16 +30,41 @@ export interface CollectionOptions {
 /**
  * The main collector.
  *
- * This class collects the required data.
+ * This singleton class collects the required data.
  */
 export class Collector {
+    private static instance: Collector;
+
+    private static mousePosition: { x: number, y: number } = {x: 0, y: 0};
+
+    /**
+     * The Collector constructor. It registers some messaging events.
+     */
+    private constructor() {
+        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+            if (request.event == "mousemove") {
+                Collector.mousePosition = request.mouse.position;
+            }
+        });
+    }
+
+    /**
+     * Get the instance of the Collector.
+     */
+    public static getInstance(): Collector {
+        if (!Collector.instance) {
+            Collector.instance = new Collector();
+        }
+        return Collector.instance;
+    }
+
     /**
      * Get the URL currently visited by the user.
      *
      * @param options The url collection options.
      * @return Promise A promise with the collected data.
      */
-    static async getURL({url}: CollectionOptions): Promise<string> {
+    async getURL({url}: CollectionOptions): Promise<string> {
         return await new Promise<string>((resolve, reject) => {
             chrome.tabs.query({active: true, lastFocusedWindow: true}, function (tabs) {
                 const {groups} = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
@@ -47,6 +78,15 @@ export class Collector {
                 resolve(outUrl);
             });
         });
+    }
+
+    /**
+     * Get all the information about the mouse.
+     *
+     * @return Object The mouse data.
+     */
+    getMouseData(): { position: { x: number, y: number } } {
+        return {position: Collector.mousePosition};
     }
 }
 
@@ -69,8 +109,11 @@ export default async function collect(options?: CollectionOptions): Promise<Coll
     };
     options = _.merge(defaultCollectionOptions, options ?? {});
 
-    const timestamp = new Date().toISOString();
-    const url = await Collector.getURL(options);
+    const collector = Collector.getInstance();
 
-    return {timestamp, url};
+    const timestamp = new Date().toISOString();
+    const url = await collector.getURL(options);
+    const mouse = collector.getMouseData();
+
+    return {timestamp, url, mouse};
 }

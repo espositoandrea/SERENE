@@ -1,8 +1,8 @@
-import collect from "./collector";
-
+import collect, {Collector} from "../collector";
 
 setInterval(function () {
-    collect().then(data => {
-        console.log(data)
-    });
+    collect()
+        .then(data => {
+            console.log(data);
+        });
 }, 1000);
