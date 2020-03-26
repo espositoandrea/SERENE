@@ -21,7 +21,8 @@ export interface CollectedData {
         absolute: { x: number, y: number },
         relative: { x: number, y: number }
     },
-    keyboard: string[]
+    keyboard: string[],
+    emotions: any
 }
 
 /**
@@ -61,7 +62,7 @@ export class Collector {
      */
     private constructor() {
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-            let mouseButtonFromInteger = (btn: number) => ['left', 'middle', 'right'][btn];
+            let mouseButtonFromInteger = (btn: number) => btn < 3 ? ['left', 'middle', 'right'][btn] : 'button' + (btn + 1);
 
             switch (request.event) {
                 case "mousemove":
@@ -157,7 +158,8 @@ export class Collector {
      */
     async getData(options: CollectionOptions): Promise<CollectedData> {
         const data = await this.getDataNoEmotions(options);
-        return {...data};
+        data.emotions = {};
+        return data;
     }
 
     /**
@@ -170,7 +172,8 @@ export class Collector {
             url: await this.getURL(options),
             mouse: this.getMouseData(),
             scroll: await this.getScrollData(),
-            keyboard: this.getKeyboardData()
+            keyboard: this.getKeyboardData(),
+            emotions: null
         };
     }
 }
