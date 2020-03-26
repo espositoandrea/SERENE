@@ -1,0 +1,1 @@
+import './contentscript.scss';
