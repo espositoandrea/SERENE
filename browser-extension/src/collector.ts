@@ -10,7 +10,16 @@ export interface CollectedData {
         position: {
             x: number,
             y: number
+        },
+        buttons: {
+            leftPressed: boolean,
+            middlePressed: boolean,
+            rightPressed: boolean
         }
+    },
+    scroll: {
+        absolute: { x: number, y: number },
+        relative: { x: number, y: number }
     },
 }
 
@@ -38,15 +47,32 @@ export interface CollectionOptions {
 export class Collector {
     private static instance: Collector;
 
-    private static mousePosition: { x: number, y: number } = {x: 0, y: 0};
+    private static mousePosition: CollectedData['mouse']['position'] = {x: 0, y: 0};
+    private static mouseButtons: CollectedData['mouse']['buttons'] = {
+        leftPressed: false,
+        middlePressed: false,
+        rightPressed: false
+    };
+    private static scrollLocation = {
+        absolute: {x: 0, y: 0},
+        relative: {x: 0, y: 0},
+    }
 
     /**
      * The Collector constructor. It registers some messaging events.
      */
     private constructor() {
         chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+            let mouseButtonFromInteger = (btn: number) => ['left', 'middle', 'right'][request.mouse.button];
+
             if (request.event == "mousemove") {
                 Collector.mousePosition = request.mouse.position;
+            } else if (request.event == "mousedown") {
+                Collector.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = true;
+            } else if (request.event == "mouseup") {
+                Collector.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = false;
+            } else if (request.event == "scroll") {
+                console.log(request.mouse);
             }
         });
     }
@@ -68,7 +94,7 @@ export class Collector {
      * @return Promise A promise with the collected data.
      */
     async getURL({url}: CollectionOptions): Promise<string> {
-        return await new Promise<string>((resolve, reject) => {
+        return await new Promise<string>(resolve => {
             chrome.tabs.query({active: true, lastFocusedWindow: true}, function (tabs) {
                 const {groups} = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
 
@@ -88,8 +114,26 @@ export class Collector {
      *
      * @return Object The mouse data.
      */
-    getMouseData(): { position: { x: number, y: number } } {
-        return {position: Collector.mousePosition};
+    getMouseData(): CollectedData['mouse'] {
+        return {
+            position: Collector.mousePosition,
+            buttons: Collector.mouseButtons,
+        };
+    }
+
+    /**
+     * Get the data about the scroll position.
+     *
+     * @note The relative position is based on the lowest point of the screen.
+     */
+    async getScrollData(): Promise<CollectedData['scroll']> {
+        return await new Promise<CollectedData['scroll']>(resolve => {
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+                chrome.tabs.sendMessage(tabs[0].id, {event: 'getscrolllocation'}, function (response) {
+                    resolve(response);
+                });
+            });
+        });
     }
 
     /**
@@ -106,13 +150,12 @@ export class Collector {
      * @param options Various collection options
      */
     async getDataNoEmotions(options: CollectionOptions): Promise<CollectedData> {
-        const collector = Collector.getInstance();
-
-        const timestamp = new Date().toISOString();
-        const url = await this.getURL(options);
-        const mouse = collector.getMouseData();
-
-        return {timestamp, url, mouse};
+        return {
+            timestamp: new Date().toISOString(),
+            url: await this.getURL(options),
+            mouse: this.getMouseData(),
+            scroll: await this.getScrollData(),
+        };
     }
 }
 
