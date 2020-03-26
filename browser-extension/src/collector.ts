@@ -48,8 +48,8 @@ export interface CollectionOptions {
 export class Collector {
     private static instance: Collector;
 
-    private static mousePosition: CollectedData['mouse']['position'] = {x: 0, y: 0};
-    private static mouseButtons: CollectedData['mouse']['buttons'] = {
+    private mousePosition: CollectedData['mouse']['position'] = {x: 0, y: 0};
+    private mouseButtons: CollectedData['mouse']['buttons'] = {
         leftPressed: false,
         middlePressed: false,
         rightPressed: false
@@ -61,18 +61,24 @@ export class Collector {
      */
     private constructor() {
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-            let mouseButtonFromInteger = (btn: number) => ['left', 'middle', 'right'][request.mouse.button];
+            let mouseButtonFromInteger = (btn: number) => ['left', 'middle', 'right'][btn];
 
-            if (request.event == "mousemove") {
-                Collector.mousePosition = request.mouse.position;
-            } else if (request.event == "mousedown") {
-                Collector.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = true;
-            } else if (request.event == "mouseup") {
-                Collector.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = false;
-            } else if (request.event == "keydown") {
-                this.pressedKeys.add(request.keyboard.key);
-            } else if (request.event == "keyup") {
-                this.pressedKeys.delete(request.keyboard.key);
+            switch (request.event) {
+                case "mousemove":
+                    this.mousePosition = request.mouse.position;
+                    break;
+                case "mousedown":
+                    this.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = true;
+                    break;
+                case "mouseup":
+                    this.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = false;
+                    break;
+                case "keydown":
+                    this.pressedKeys.add(request.keyboard.key);
+                    break;
+                case "keyup":
+                    this.pressedKeys.delete(request.keyboard.key);
+                    break;
             }
         });
     }
@@ -116,8 +122,8 @@ export class Collector {
      */
     getMouseData(): CollectedData['mouse'] {
         return {
-            position: Collector.mousePosition,
-            buttons: Collector.mouseButtons,
+            position: this.mousePosition,
+            buttons: this.mouseButtons,
         };
     }
 
