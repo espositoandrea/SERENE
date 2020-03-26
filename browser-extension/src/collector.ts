@@ -21,6 +21,7 @@ export interface CollectedData {
         absolute: { x: number, y: number },
         relative: { x: number, y: number }
     },
+    keyboard: string[]
 }
 
 /**
@@ -53,16 +54,13 @@ export class Collector {
         middlePressed: false,
         rightPressed: false
     };
-    private static scrollLocation = {
-        absolute: {x: 0, y: 0},
-        relative: {x: 0, y: 0},
-    }
+    private pressedKeys: Set<string> = new Set<string>();
 
     /**
      * The Collector constructor. It registers some messaging events.
      */
     private constructor() {
-        chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             let mouseButtonFromInteger = (btn: number) => ['left', 'middle', 'right'][request.mouse.button];
 
             if (request.event == "mousemove") {
@@ -71,8 +69,10 @@ export class Collector {
                 Collector.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = true;
             } else if (request.event == "mouseup") {
                 Collector.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = false;
-            } else if (request.event == "scroll") {
-                console.log(request.mouse);
+            } else if (request.event == "keydown") {
+                this.pressedKeys.add(request.keyboard.key);
+            } else if (request.event == "keyup") {
+                this.pressedKeys.delete(request.keyboard.key);
             }
         });
     }
@@ -122,6 +122,15 @@ export class Collector {
     }
 
     /**
+     * Get all the information about the keyboard.
+     *
+     * @return Object The keyboard data.
+     */
+    getKeyboardData(): CollectedData['keyboard'] {
+        return Array.from(this.pressedKeys);
+    }
+
+    /**
      * Get the data about the scroll position.
      *
      * @note The relative position is based on the lowest point of the screen.
@@ -155,6 +164,7 @@ export class Collector {
             url: await this.getURL(options),
             mouse: this.getMouseData(),
             scroll: await this.getScrollData(),
+            keyboard: this.getKeyboardData()
         };
     }
 }

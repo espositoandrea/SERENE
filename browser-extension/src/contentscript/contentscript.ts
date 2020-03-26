@@ -14,6 +14,13 @@ document.addEventListener('mouseup', function (e) {
     chrome.runtime.sendMessage({event: 'mouseup', mouse: {button: e.button}});
 });
 
+document.addEventListener('keydown', function (e) {
+    chrome.runtime.sendMessage({event: 'keydown', keyboard: {key: e.key}});
+});
+document.addEventListener('keyup', function (e) {
+    chrome.runtime.sendMessage({event: 'keyup', keyboard: {key: e.key}});
+});
+
 function getScroll() {
     const height = document.body.offsetHeight;
     const width = document.body.offsetWidth;
