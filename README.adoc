@@ -1,0 +1,35 @@
+:toc:
+:toc-placement!:
+
+++++
+<h1 align="center"><em>THESIS TITLE</em></h1>
+<h4 align="center">Bachelor's Degree in Computer Science</h4>
+
+<p align="center">
+    Andrea Esposito (677021)<br>
+    <small>Author</small><br>
+    <a href="mailto:a.esposito39@studenti.uniba.it">a.esposito39@studenti.uniba.it</a>
+</p>
+<p align="center">
+    Prof. Giuseppe Desolda<br>
+    Supervisor<br>
+    <a href="mailto:giuseppe.desolda@uniba.it">giuseppe.desolda@uniba.it</a>
+</p>
+++++
+
+toc::[]
+
+* * *
+        
+== The Structure of the Repository
+
+`browser-extension/`:: This folder contains the source code for the browser
+extension.
+
+`thesis/`:: This folder contains the thesis itself.
+
+`thesis/src/`::: This folder contains the source code (LaTeX) of the document.
+
+`thesis/out/`::: This folder contains the final PDF builded by running the
+command `make dist`
+

@@ -1,0 +1,62 @@
+\documentclass[fancyheader]{esposito-thesis}
+
+\usepackage[english]{babel}
+
+\usepackage[style=numeric, sorting=nty, backend=biber, citestyle=numeric, block=ragged]{biblatex}
+\usepackage{wrapfig}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{lipsum}
+\usepackage{lgreek}
+\usepackage{tikz}
+\usepackage{tikz-uml}
+
+\graphicspath{{images/}}
+
+\input{includes/acronyms.tex}
+
+\title{TITLE}
+\degreetype{Bachelor's Degree}
+\author{Andrea Esposito}
+\course{Computer Science and Digital Communication}
+\date{\today}
+\department{Department of Computer Science}
+\university{University of Bari}
+\supervisor{Prof. Giuseppe Desolda}
+
+% PDF Metadata
+\makeatletter
+\hypersetup{pdfinfo={
+		Title={\@title},
+		Author={\@author, Supervisor: \@supervisor},
+		Subject={\@degreetype Thesis in \@course},
+		Keywords={\@university, Thesis, Computer Science, Esposito, Andrea}
+	}
+}
+\makeatother
+
+\addbibresource{bibliography.bib}
+
+\begin{document}
+\frontmatter
+\maketitle
+\input{frontmatter/abstract.tex}
+\cleardoublepage
+\tableofcontents
+\cleardoublepage
+% \listoffigures
+% \cleardoublepage
+% \listoftables
+% \cleardoublepage
+\printacronyms[heading=chapter*]
+\cleardoublepage
+
+\mainmatter
+\pagestyle{fancy}
+\input{chapters/chapter1/chapter1.tex}
+
+\backmatter
+\printbibliography[heading=bibintoc]
+\appendix
+\end{document}
