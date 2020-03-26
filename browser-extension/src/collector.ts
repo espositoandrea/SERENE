@@ -18,6 +18,9 @@ export interface CollectedData {
  * The available options for the data collection.
  */
 export interface CollectionOptions {
+    mainInterval?: number, // defaults to 100 ms
+    emotionsInterval?: number, // defaults to 1000 ms
+    sendInterval?: number, // defaults to 5000 ms
     url?: {
         getProtocol?: boolean,
         getDomain?: boolean,
@@ -88,6 +91,29 @@ export class Collector {
     getMouseData(): { position: { x: number, y: number } } {
         return {position: Collector.mousePosition};
     }
+
+    /**
+     * Get all the required data.
+     * @param options Various collection options
+     */
+    async getData(options: CollectionOptions): Promise<CollectedData> {
+        const data = await this.getDataNoEmotions(options);
+        return {...data};
+    }
+
+    /**
+     * Get all the required data except for the emotions.
+     * @param options Various collection options
+     */
+    async getDataNoEmotions(options: CollectionOptions): Promise<CollectedData> {
+        const collector = Collector.getInstance();
+
+        const timestamp = new Date().toISOString();
+        const url = await this.getURL(options);
+        const mouse = collector.getMouseData();
+
+        return {timestamp, url, mouse};
+    }
 }
 
 
@@ -97,8 +123,11 @@ export class Collector {
  * @param options Various options for the collection
  * @return Promise A promise with the collected data.
  */
-export default async function collect(options?: CollectionOptions): Promise<CollectedData> {
+export default function collect(options?: CollectionOptions): void {
     const defaultCollectionOptions: CollectionOptions = {
+        mainInterval: 100,
+        emotionsInterval: 1000,
+        sendInterval: 5000,
         url: {
             getProtocol: true,
             getDomain: true,
@@ -111,9 +140,34 @@ export default async function collect(options?: CollectionOptions): Promise<Coll
 
     const collector = Collector.getInstance();
 
-    const timestamp = new Date().toISOString();
-    const url = await collector.getURL(options);
-    const mouse = collector.getMouseData();
+    // To simplify the management of the intervals, the interval of the
+    // analysis that include the emotions (EA - Emotion Analysis) is used to
+    // get the number of analysis without emotions between one EA and another.
+    let numberOfCycles = 0;
+    let cyclesForEmotion = Math.floor(options.emotionsInterval / options.mainInterval);
 
-    return {timestamp, url, mouse};
+    let resultChunk: CollectedData[] = [];
+
+    let collectorInterval: any = undefined;
+
+    let collectionLoop = () => {
+        if (collectorInterval !== undefined) {
+            clearInterval(collectorInterval);
+            // TODO: Send resultChunk to server
+            console.log(resultChunk);
+            resultChunk = [];
+        }
+
+        collectorInterval = setInterval(async function () {
+            if (numberOfCycles % cyclesForEmotion == 0) {
+                resultChunk.push(await collector.getData(options));
+            } else {
+                resultChunk.push(await collector.getDataNoEmotions(options));
+            }
+            numberOfCycles++;
+        }, options.mainInterval);
+    };
+
+    collectionLoop();
+    setInterval(collectionLoop, options.sendInterval);
 }
