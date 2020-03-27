@@ -33,3 +33,32 @@ extension.
 `thesis/out/`::: This folder contains the final PDF builded by running the
 command `make dist`
 
+== The Browser Extension
+
+A simple browser extension was created to collect data for the Thesis' research.
+The plugin is available for both Google Chrome and Mozilla Firefox.
+
+The extension has the single goal of collecting the data that will be analyzed
+in the Thesis. A detailed list of what is collected can be found in
+<<data-collection-data-list>>.
+
+[#data-collection-data-list]
+.What data is collected?
+********************************************************************************
+
+* Date/time data
+** Date and time of the interaction
+* Keyboard data
+** Pressed/released keys
+* Mouse data
+** Mouse position in pixels (assumed to start from (0,0))
+** Pressed/released mouse buttons
+* Navigation data
+** Current URL (protocol and domain only)
+** Current scroll position
+*** Absolute position in pixels
+*** Relative position (measured from the lowest point of the screen)
+* User's emotions
+** Data got from https://affectiva.com/[Affectiva], an Emotion Analysis engine, by analyzing a snapshot taken with the webcam
+
+********************************************************************************
