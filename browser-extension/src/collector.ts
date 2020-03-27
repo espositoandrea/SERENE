@@ -243,8 +243,10 @@ export default function collect(options?: CollectionOptions): void {
 
         collectorInterval = setInterval(async function () {
             if (numberOfCycles % cyclesForEmotion == 0) {
-                collector.getEmotions()
-                    .then((val) => resultChunk[resultChunk.length - 1].emotions = val)
+                // TODO: Insert emotion collection
+                // collector.getEmotions()
+                //     .then((val) => resultChunk[resultChunk.length - 1].emotions = val)
+                resultChunk.push(await collector.getDataNoEmotions(options));
             } else {
                 resultChunk.push(await collector.getDataNoEmotions(options));
             }
