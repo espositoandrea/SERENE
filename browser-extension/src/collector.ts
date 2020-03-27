@@ -103,15 +103,19 @@ export class Collector {
     async getURL({url}: CollectionOptions): Promise<string> {
         return await new Promise<string>(resolve => {
             chrome.tabs.query({active: true, lastFocusedWindow: true}, function (tabs) {
-                const {groups} = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
+                if (tabs === undefined || tabs[0] === undefined || tabs[0].url === undefined) {
+                    resolve(null);
+                } else {
+                    const {groups} = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
 
-                let outUrl = '';
-                url.getProtocol && (outUrl += groups.protocol + '://');
-                url.getDomain && (outUrl += groups.domain + '/');
-                url.getPath && (outUrl += groups.path);
-                url.getQuery && (outUrl += '?' + groups.query);
-                url.getAnchor && (outUrl += '#' + groups.anchor);
-                resolve(outUrl);
+                    let outUrl = '';
+                    url.getProtocol && (outUrl += groups.protocol + '://');
+                    url.getDomain && (outUrl += groups.domain + '/');
+                    url.getPath && (outUrl += groups.path);
+                    url.getQuery && (outUrl += '?' + groups.query);
+                    url.getAnchor && (outUrl += '#' + groups.anchor);
+                    resolve(outUrl);
+                }
             });
         });
     }
@@ -145,9 +149,13 @@ export class Collector {
     async getScrollData(): Promise<CollectedData['scroll']> {
         return await new Promise<CollectedData['scroll']>(resolve => {
             chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-                chrome.tabs.sendMessage(tabs[0].id, {event: 'getscrolllocation'}, function (response) {
-                    resolve(response);
-                });
+                if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
+                    resolve(null);
+                } else {
+                    chrome.tabs.sendMessage(tabs[0].id, {event: 'getscrolllocation'}, function (response) {
+                        resolve(response);
+                    });
+                }
             });
         });
     }
