@@ -3,7 +3,7 @@
   "name": "Andrea Esposito's Bachelor's Thesis",
   "description": "The extension for the Bachelor's Degree thesis of Andrea Esposito",
   "version": "0.0.0",
-  "permissions": ["tabs", "activeTab", "storage"],
+  "permissions": ["tabs", "activeTab", "storage", "videoCapture"],
   "content_scripts": [
     {
       "js": ["contentscript.js"],
@@ -16,5 +16,5 @@
     "persistent": false
   },
   "web_accessible_resources": ["assets/*"],
-  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-eval' https://download.affectiva.com/js/3.2/; object-src 'self'"
 }

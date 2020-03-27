@@ -1,4 +1,6 @@
 import * as _ from "lodash";
+import tabId = chrome.devtools.inspectedWindow.tabId;
+import EmotionAnalysis from "./emotion-analysis/emotion-analysis";
 
 /**
  * The structure of the collected data.
@@ -160,13 +162,25 @@ export class Collector {
         });
     }
 
+    async getEmotions(): Promise<CollectedData['emotions']> {
+        let emotions;
+        try {
+            emotions = await EmotionAnalysis.getInstance().analyzeWebcamPhoto();
+        } catch (e) {
+            emotions = null;
+            console.error(e.message);
+        }
+        return emotions;
+    }
+
     /**
      * Get all the required data.
      * @param options Various collection options
      */
     async getData(options: CollectionOptions): Promise<CollectedData> {
         const data = await this.getDataNoEmotions(options);
-        data.emotions = {};
+        data.emotions = await this.getEmotions();
+        console.warn(data.emotions);
         return data;
     }
 
