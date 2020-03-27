@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionario | Andrea Esposito's Bachelor's Thesis</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</head>
+
+<body class="bg-primary">
+    <main class="container bg-light my-5 p-3 rounded">
+        <section id="introduction">
+            <header class="text-center mb-4">
+                <img src="https://www.unidformazione.com/wp-content/uploads/2017/05/logo-uniba.JPG-2.png"
+                    alt="Logo Università degli Studi di Bari" class="img-responsive w-50 mb-3" />
+                <h1 class="mb-2">Thesis title</h1>
+                <h2 class="mb-4">Laurea Triennale in ICD</h1>
+                    <div class="authors row px-0 mx-0 px-md-5 mx-md-5" itemprop="author">
+                        <div class="col author" itemscope="" itemtype="https://schema.org/Person">
+                            <div>
+                                <span itemprop="givenName">Andrea</span> <span itemprop="familyName">Esposito</span>
+                                (<span itemprop="identifier">677021</span>)
+                            </div>
+                            <div>Autore</div>
+                            <div><a href="mailto:a.esposito39@studenti.uniba.it"
+                                    itemprop="email">a.esposito39@studenti.uniba.it</a></div>
+                        </div>
+                        <div class="col author" itemscope="" itemtype="https://schema.org/Person">
+                            <div>
+                                <span itemprop="honorificPrefix">Prof.</span>
+                                <span itemprop="givenName">Giuseppe</span> <span itemprop="familyName">Desolda</span>
+                            </div>
+                            <div>Relatore</div>
+                            <div><a href="mailto:giuseppe.desolda@uniba.it"
+                                    itemprop="email">giuseppe.desolda@uniba.it</a></div>
+                        </div>
+                    </div>
+                    <hr>
+            </header>
+
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Explicabo porro beatae dolorem magni a quaerat quia cum deleniti
+                doloremque reiciendis ut in recusandae itaque repellat, quos harum
+                incidunt qui! Facere.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Excepturi neque voluptas, alias deleniti pariatur facilis reiciendis
+                asperiores eum? Atque, ratione laboriosam. Repellat, saepe!
+                Inventore ab, dolore vitae recusandae natus amet!</p>
+        </section>
+        <hr class="my-4">
+        <div class="buttons-container d-flex">
+            <button id="prev-section-btn" disabled class="btn btn-outline-primary d-none">Indietro</button>
+            <button id="next-section-btn" class="btn btn-primary d-block ml-auto">Avanti</button>
+        </div>
+    </main>
+
+    <script>
+        let currentSection = 0;
+        const MAX_SECTIONS = 3; // TODO: Change
+        const nextButton = document.getElementById('next-section-btn');
+        const prevButton = document.getElementById('prev-section-btn');
+
+        function enableButton(button) {
+            button.toggleAttribute('disabled', false);
+            button.classList.remove('d-none');
+            button.classList.add('d-block');
+        }
+        function disableButton(button) {
+            button.toggleAttribute('disabled', true);
+            button.classList.remove('d-block');
+            button.classList.add('d-none');
+        }
+
+        nextButton.addEventListener('click', () => {
+            currentSection++;
+            if (currentSection >= MAX_SECTIONS - 1) {
+                currentSection = MAX_SECTIONS - 1;
+                disableButton(nextButton);
+            }
+            enableButton(prevButton);
+        });
+
+        prevButton.addEventListener('click', () => {
+            currentSection--;
+            if (currentSection <= 0) {
+                currentSection = 0;
+                disableButton(prevButton);
+            }
+            enableButton(nextButton);
+        });
+    </script>
+</body>
+
+</html>
