@@ -3,7 +3,7 @@
   "name": "Andrea Esposito's Bachelor's Thesis",
   "description": "The extension for the Bachelor's Degree thesis of Andrea Esposito",
   "version": "0.0.0",
-  "permissions": ["tabs", "activeTab", "storage", "videoCapture"],
+  "permissions": ["tabs", "activeTab", "storage"],
   "content_scripts": [
     {
       "js": ["contentscript.js"],

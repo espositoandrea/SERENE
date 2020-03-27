@@ -180,7 +180,6 @@ export class Collector {
     async getData(options: CollectionOptions): Promise<CollectedData> {
         const data = await this.getDataNoEmotions(options);
         data.emotions = await this.getEmotions();
-        console.warn(data.emotions);
         return data;
     }
 
@@ -244,7 +243,8 @@ export default function collect(options?: CollectionOptions): void {
 
         collectorInterval = setInterval(async function () {
             if (numberOfCycles % cyclesForEmotion == 0) {
-                resultChunk.push(await collector.getData(options));
+                collector.getEmotions()
+                    .then((val) => resultChunk[resultChunk.length - 1].emotions = val)
             } else {
                 resultChunk.push(await collector.getDataNoEmotions(options));
             }

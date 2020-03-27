@@ -50,7 +50,28 @@ export interface AnalysisConfiguration {
 }
 
 export default class EmotionAnalysis {
-    private constructor() {
+    private detector;
+
+    private constructor(options?: AnalysisConfiguration) {
+        options = _.merge(EmotionAnalysis.getDefaultConfiguration(), options ?? {});
+
+        // Decide whether your video has large or small face
+        const faceMode = options.faceMode;
+
+        // Decide which detector to use photo or stream
+        this.detector = new affdex.PhotoDetector(faceMode);
+        // const detector = new affdex.FrameDetector(faceMode);
+
+        // Initialize Emotion and Expression detectors
+        if (options.detect.emotions) this.detector.detectAllEmotions();
+        if (options.detect.expressions) this.detector.detectAllExpressions();
+        if (options.detect.emojis) this.detector.detectAllEmojis();
+        if (options.detect.appearance) this.detector.detectAllAppearance();
+
+        // Initialize detector
+        console.log("#logs", "Initializing detector...");
+        this.detector.start();
+
         let webcamHolder = document.createElement('div');
         webcamHolder.id = '__AESPOSITO_EXTENSION__webcam-holder';
         document.body.appendChild(webcamHolder);
@@ -91,7 +112,7 @@ export default class EmotionAnalysis {
     static getDefaultConfiguration(): AnalysisConfiguration {
         return {
             start: 0,
-            sec_step: 0.1,
+            sec_step: 1,
             stop: undefined,
             faceMode: FaceMode.LARGE_FACES,
             detect: {
@@ -103,9 +124,73 @@ export default class EmotionAnalysis {
         };
     }
 
-    async analyzePhoto(photo: any, options?: AnalysisConfiguration) {
-        options = _.assign({}, EmotionAnalysis.getDefaultConfiguration(), options ?? {});
-        console.log(photo);
+    async analyzePhoto(photo: any, photoTimestamp: Date) {
+        return new Promise<any>(resolve => {
+
+            let options = EmotionAnalysis.getDefaultConfiguration();
+
+            // Decide whether your video has large or small face
+            const faceMode = options.faceMode;
+
+            // Decide which detector to use photo or stream
+            this.detector = new affdex.PhotoDetector(faceMode);
+            // const detector = new affdex.FrameDetector(faceMode);
+
+            // Initialize Emotion and Expression detectors
+            if (options.detect.emotions) this.detector.detectAllEmotions();
+            if (options.detect.expressions) this.detector.detectAllExpressions();
+            if (options.detect.emojis) this.detector.detectAllEmojis();
+            if (options.detect.appearance) this.detector.detectAllAppearance();
+
+            let detection_results = []; // for logging all detection results.
+
+            //Add a callback to notify when the detector is initialized and ready for running.
+            this.detector.addEventListener("onInitializeSuccess", function () {
+                console.log("#logs", "The detector reports initialized");
+                console.log("#logs", "Please upload file(s) to process");
+                getNextImage()
+            });
+
+            // Load next image.
+            function getNextImage() {
+                const img = new Image();
+                img.onload = imageLoaded;
+                img.src = photo;
+            }
+
+            let emotionAnalysis = this;
+
+            //Once the image is loaded, pass it down for processing
+            function imageLoaded(event) {
+                const contxt = document.createElement('canvas').getContext('2d');
+                contxt.canvas.width = this.width;
+                contxt.canvas.height = this.height;
+                contxt.drawImage(this, 0, 0, this.width, this.height);
+                // Pass the image to the detector to track emotions
+                if (emotionAnalysis.detector && emotionAnalysis.detector.isRunning) {
+                    emotionAnalysis.detector.process(contxt.getImageData(0, 0, this.width, this.height), 0);
+                }
+            }
+
+            this.detector.addEventListener("onImageResultsSuccess", function (faces, image, timestamp) {
+                // drawImage(image);
+                console.log('#results', "Timestamp: " + timestamp.toFixed(2));
+                console.log('#results', "Number of faces found: " + faces.length);
+                if (faces.length > 0) {
+                    faces[0].emotions.timestamp = photoTimestamp;
+                    // Append filename
+                    // console.log(file_val)
+                    detection_results.push(Object.assign({}, faces[0].emotions, faces[0].expressions));
+                } else {
+                    detection_results.push({timestamp: photoTimestamp, empty: true})
+                    // If face is not detected skip entry.
+                    console.log('Cannot find face, skipping entry');
+                }
+                console.log("EndofDuration");
+                resolve(detection_results);
+                console.log("#emotions", "All images processed, results will be automatically downloaded.");
+            });
+        });
     }
 
     private static isWebcamEnabled: boolean = false;
@@ -114,11 +199,11 @@ export default class EmotionAnalysis {
         EmotionAnalysis.isWebcamEnabled = true;
     }
 
-    async analyzeWebcamPhoto(options?: AnalysisConfiguration) {
+    async analyzeWebcamPhoto() {
         return new Promise<any>((resolve, reject) => {
             if (EmotionAnalysis.isWebcamEnabled) {
-                Webcam.snap(data_uri => {
-                    resolve(this.analyzePhoto(data_uri, options));
+                Webcam.snap(async data_uri => {
+                    resolve(await this.analyzePhoto(data_uri, new Date()));
                 });
             }
         });
