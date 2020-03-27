@@ -1,14 +1,22 @@
 import collect from "../collector";
 
-const updateTabsContent = async () => {
+const showStartingSurvey = async () => {
     new Promise<void>(resolve => {
         chrome.runtime.onInstalled.addListener(() => {
-            // chrome.tabs.query({}, (tabs) => {
-            //     chrome.tabs.reload(tabs[0].id, null, () => resolve());
-            // });
+            // TODO: Show survey
+            console.log("Survey");
+        });
+    })
+};
+const showStartingGuide = async () => {
+    new Promise<void>(resolve => {
+        chrome.runtime.onInstalled.addListener(() => {
+            // TODO: Show guide
+            console.log("Guide");
         });
     })
 };
 
-updateTabsContent()
+showStartingSurvey()
+    .then(showStartingGuide)
     .then(() => collect());
