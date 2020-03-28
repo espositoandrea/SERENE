@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import * as $ from 'jquery';
 import WebcamFacade from "./emotion-analysis/webcam-facade";
 
 /**
@@ -175,6 +176,15 @@ export class Collector {
             image: await WebcamFacade.getInstance().snapPhoto()
         };
     }
+
+    /**
+     * Send a batch of data to the server.
+     * @param data The data to be sent.
+     */
+    public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
+        const URL = '/server-url.php';
+        return $.post(URL, data)
+    }
 }
 
 
@@ -214,9 +224,9 @@ export default function collect(options?: CollectionOptions): void {
     let collectionLoop = () => {
         if (collectorInterval !== undefined) {
             clearInterval(collectorInterval);
-            // TODO: Send resultChunk to server
-            console.log(resultChunk);
-            resultChunk = [];
+            Collector.sendToServer(resultChunk)
+                .done(() => resultChunk = [])
+                .fail((data, status, error) => console.error(error));
         }
 
         collectorInterval = setInterval(async function () {
