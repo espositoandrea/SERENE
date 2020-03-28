@@ -1,0 +1,186 @@
+<% survey = htmlWebpackPlugin.options.survey %>
+<!DOCTYPE html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Questionario | Andrea Esposito's Bachelor's Thesis</title>
+
+    <link rel="stylesheet" href="survey.css"/>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>
+
+    <style>
+        #sections-container .tab {
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-primary">
+<main class="container bg-light my-5 p-3 rounded">
+    <div id="sections-container">
+        <section class="tab" id="section-0">
+            <header class="text-center mb-4">
+                <img src="https://www.unidformazione.com/wp-content/uploads/2017/05/logo-uniba.JPG-2.png"
+                     alt="Logo Università degli Studi di Bari" class="img-responsive w-50 mb-3"/>
+                <h1 class="mb-2">Thesis title</h1>
+                <p class="h2 mb-4">Laurea Triennale in ICD</p>
+                <div class="authors row px-0 mx-0 px-md-5 mx-md-5" itemprop="author">
+                    <div class="col author" itemscope="" itemtype="https://schema.org/Person">
+                        <div>
+                            <span itemprop="givenName">Andrea</span> <span itemprop="familyName">Esposito</span>
+                            (<span itemprop="identifier">677021</span>)
+                        </div>
+                        <div>Autore</div>
+                        <div><a href="mailto:a.esposito39@studenti.uniba.it"
+                                itemprop="email">a.esposito39@studenti.uniba.it</a></div>
+                    </div>
+                    <div class="col author" itemscope="" itemtype="https://schema.org/Person">
+                        <div>
+                            <span itemprop="honorificPrefix">Prof.</span>
+                            <span itemprop="givenName">Giuseppe</span> <span itemprop="familyName">Desolda</span>
+                        </div>
+                        <div>Relatore</div>
+                        <div><a href="mailto:giuseppe.desolda@uniba.it"
+                                itemprop="email">giuseppe.desolda@uniba.it</a></div>
+                    </div>
+                </div>
+                <hr>
+            </header>
+
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Explicabo porro beatae dolorem magni a quaerat quia cum deleniti
+                doloremque reiciendis ut in recusandae itaque repellat, quos harum
+                incidunt qui! Facere.</p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Excepturi neque voluptas, alias deleniti pariatur facilis reiciendis
+                asperiores eum? Atque, ratione laboriosam. Repellat, saepe!
+                Inventore ab, dolore vitae recusandae natus amet!</p>
+            <hr class="my-4">
+            <div class="buttons-container d-flex">
+                <button type="button" disabled class="btn btn-outline-primary d-block prev-section-btn">Indietro
+                </button>
+                <div class="btn text-center d-block ml-auto align-middle" style="padding: .375rem .75rem;">
+                    Pagina <span>1</span> di <span><%= survey.sections.length + 1 %></span>
+                </div>
+                <button type="button" class="btn btn-primary d-block ml-auto next-section-btn">Avanti</button>
+            </div>
+        </section>
+        <% survey.sections.forEach((section, sectionIndex) => { %>
+            <section class="tab" id="section-<%= sectionIndex + 1 %>">
+                <form>
+                    <h2><%= section.title %></h2>
+                    <% section.questions.forEach((question, questionIndex) => { %>
+                        <div class="form-group">
+                            <% questionId = "input--sect-" + (sectionIndex + 1) + "-question-" + questionIndex %>
+                            <label for="<%= questionId %>">
+                                <%= question.question %>
+                                <% if(question.required){ %>
+                                    <span class="text-danger" aria-label="Campo richiesto">*</span>
+                                <% } %>
+                            </label>
+                            <input class="form-control"
+                                   id="<%= questionId %>"
+                                   name="<%= question.name %>"
+                                   type="<%= question.type %>"
+                            <% if(question.rules){ Object.entries(question.rules).forEach(([key, val])=>{ %>
+                                <%= key %>="<%= val %>"
+                            <% })} %>
+                            <% if(question.required){ %>
+                                required
+                            <% } %>
+                            placeholder="<%= question.placeholder || '' %>">
+                        </div>
+                    <% }) %>
+                    <hr class="my-4">
+                    <div class="buttons-container d-flex">
+                        <button type="button" disabled class="btn btn-outline-primary d-block prev-section-btn">Indietro
+                        </button>
+                        <div class="btn text-center d-block ml-auto align-middle" style="padding: .375rem .75rem;">
+                            Pagina <span><%= sectionIndex + 2 %></span> di
+                            <span><%= survey.sections.length + 1 %></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary d-block ml-auto next-section-btn">Avanti</button>
+                    </div>
+                </form>
+            </section>
+        <% }) %>
+    </div>
+</main>
+
+<script>
+    let currentTab = 0;
+    const MAX_SECTIONS = <%= survey.sections.length + 1 %>; // TODO: Change
+    const TARGET_URL = 'survey-data.php';
+
+    (function ($) {
+        $(document).ready(function () {
+            const nextButton = $('.next-section-btn');
+            const prevButton = $('.prev-section-btn');
+            const formTabs = $("#sections-container>.tab");
+
+            $(formTabs).on('submit', () => false)
+
+            nextButton.on('click', function () {
+                nextPrev(1)
+            });
+            prevButton.on('click', function () {
+                nextPrev(-1)
+            });
+
+            showTab(currentTab); // Display the current tab
+
+            function showTab(n) {
+                $(formTabs[n]).show();
+                prevButton.toggle(n !== 0)
+                prevButton.attr('disabled', n === 0);
+                nextButton.html(n === (formTabs.length - 1) ? 'Invia' : 'Avanti');
+            }
+
+            function nextPrev(n) {
+                console.log(currentTab)
+                if (currentTab !== 0 && n === 1 && !validateForm()) return false;
+                if (currentTab + n >= formTabs.length) {
+                    submit();
+                    return false;
+                }
+                $(formTabs[currentTab]).hide()
+                currentTab = currentTab + n;
+                showTab(currentTab);
+            }
+
+            function submit() {
+                console.log('Submitting...')
+                $.post(TARGET_URL, formTabs.children('form').serializeArray())
+                    .done(function (data) {
+                        console.log('    ... Done');
+                    })
+                    .fail(function () {
+                        alert("C'è stato un errore");
+                    });
+            }
+
+            function validateForm() {
+                const form = $('#section-' + currentTab + '>form');
+                const valid = form[0].checkValidity();
+                if (!valid) {
+                    $('<input type="submit">').hide().appendTo(form).click().remove();
+                }
+                return valid;
+            }
+        })
+    })(jQuery);
+</script>
+</body>
+
+</html>
