@@ -1,6 +1,5 @@
 import * as _ from "lodash";
-import tabId = chrome.devtools.inspectedWindow.tabId;
-import EmotionAnalysis from "./emotion-analysis/emotion-analysis";
+import WebcamFacade from "./emotion-analysis/webcam-facade";
 
 /**
  * The structure of the collected data.
@@ -24,7 +23,7 @@ export interface CollectedData {
         relative: { x: number, y: number }
     },
     keyboard: string[],
-    emotions: any
+    image: string
 }
 
 /**
@@ -162,39 +161,18 @@ export class Collector {
         });
     }
 
-    async getEmotions(): Promise<CollectedData['emotions']> {
-        let emotions;
-        try {
-            emotions = await EmotionAnalysis.getInstance().analyzeWebcamPhoto();
-        } catch (e) {
-            emotions = null;
-            console.error(e.message);
-        }
-        return emotions;
-    }
-
     /**
      * Get all the required data.
      * @param options Various collection options
      */
     async getData(options: CollectionOptions): Promise<CollectedData> {
-        const data = await this.getDataNoEmotions(options);
-        data.emotions = await this.getEmotions();
-        return data;
-    }
-
-    /**
-     * Get all the required data except for the emotions.
-     * @param options Various collection options
-     */
-    async getDataNoEmotions(options: CollectionOptions): Promise<CollectedData> {
         return {
             timestamp: new Date().toISOString(),
             url: await this.getURL(options),
             mouse: this.getMouseData(),
             scroll: await this.getScrollData(),
             keyboard: this.getKeyboardData(),
-            emotions: null
+            image: await WebcamFacade.getInstance().snapPhoto()
         };
     }
 }
@@ -242,14 +220,7 @@ export default function collect(options?: CollectionOptions): void {
         }
 
         collectorInterval = setInterval(async function () {
-            if (numberOfCycles % cyclesForEmotion == 0) {
-                // TODO: Insert emotion collection
-                // collector.getEmotions()
-                //     .then((val) => resultChunk[resultChunk.length - 1].emotions = val)
-                resultChunk.push(await collector.getDataNoEmotions(options));
-            } else {
-                resultChunk.push(await collector.getDataNoEmotions(options));
-            }
+            resultChunk.push(await collector.getData(options));
             numberOfCycles++;
         }, options.mainInterval);
     };

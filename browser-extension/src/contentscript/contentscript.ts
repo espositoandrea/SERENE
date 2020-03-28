@@ -1,6 +1,4 @@
 import './contentscript.scss';
-import * as Webcam from 'webcamjs';
-import EmotionAnalysis from "../emotion-analysis/emotion-analysis";
 
 
 // Listen for mouse movements
@@ -44,16 +42,5 @@ function getScroll() {
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.event == 'getscrolllocation') {
         sendResponse(getScroll());
-    } else if (request.event == 'getemotions') {
-        // sendResponse(EmotionAnalysis.analyzeWebcamPhoto());
     }
 });
-
-// Webcam.set({
-//     width: 320,
-//     height: 240,
-//     image_format: 'jpeg',
-//     jpeg_quality: 90
-// });
-// Webcam.attach('body');
-// Webcam.on('load', () => alert('now'))//EmotionAnalysis.analyzeWebcamPhoto());

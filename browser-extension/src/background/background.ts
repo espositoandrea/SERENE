@@ -1,6 +1,4 @@
 import collect from "../collector";
-import EmotionAnalysis from "../emotion-analysis/emotion-analysis";
-import * as Webcam from "webcamjs";
 
 
 const showStartingSurvey = async () => {
@@ -25,5 +23,3 @@ const showStartingGuide = async () => {
 showStartingSurvey()
     .then(showStartingGuide)
     .then(() => collect());
-
-//EmotionAnalysis.analyzeWebcamPhoto()
