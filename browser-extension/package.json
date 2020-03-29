@@ -6,7 +6,7 @@
   "scripts": {
     "build:contentscript-background": "NODE_ENV=production webpack --config webpack.config.js",
     "build": "npm run build:contentscript-background",
-    "clean": "rm -rf dist && cpy manifest.json dist && cpy src/assets/* dist/assets",
+    "clean": "rm -rf dist && cpy manifest.json dist && cpy src/extension/assets/* dist/assets",
     "prebuild": "npm run clean",
     "prewatch": "npm run clean",
     "watch:contentscript-background": "NODE_ENV=development webpack --config webpack.config.js -w",

@@ -65,8 +65,8 @@ const surveyConfig = Object.assign({}, commonConfig, {
 
 const extensionConfig = Object.assign({}, commonConfig, {
     entry: {
-        contentscript: join(__dirname, 'src/contentscript/contentscript.ts'),
-        background: join(__dirname, 'src/background/background.ts')
+        contentscript: join(__dirname, 'src/extension/contentscript.ts'),
+        background: join(__dirname, 'src/extension/background.ts')
     },
     output: {
         path: join(__dirname, 'dist'),

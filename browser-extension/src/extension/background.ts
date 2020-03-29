@@ -1,4 +1,4 @@
-import collect from "../collector";
+import collect from "./collector";
 
 
 const showStartingSurvey = async () => {

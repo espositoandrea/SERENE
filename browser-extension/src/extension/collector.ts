@@ -1,6 +1,6 @@
 import * as _ from "lodash";
 import * as $ from 'jquery';
-import WebcamFacade from "./emotion-analysis/webcam-facade";
+import WebcamFacade from "./webcam-facade";
 
 /**
  * The structure of the collected data.

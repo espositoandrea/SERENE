@@ -38,7 +38,7 @@ function getScroll() {
     };
 }
 
-// Add listener for messages from the background process
+// Add listener for messages from the extension process
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.event == 'getscrolllocation') {
         sendResponse(getScroll());
