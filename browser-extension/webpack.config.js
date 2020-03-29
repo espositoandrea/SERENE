@@ -1,6 +1,7 @@
 const {CheckerPlugin} = require('awesome-typescript-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const nodeExternals = require('webpack-node-externals');
 const {optimize} = require('webpack');
 const {join} = require('path');
 
@@ -90,4 +91,36 @@ const extensionConfig = Object.assign({}, commonConfig, {
     },
 });
 
-module.exports = [extensionConfig, surveyConfig];
+const serverConfig = Object.assign({}, commonConfig, {
+    entry: {
+        index: join(__dirname, 'src/server/index.ts'),
+    },
+    output: {
+        path: join(__dirname, 'dist/server/'),
+        filename: '[name].js',
+    },
+    target: 'node',
+    node: {
+        __dirname: false,
+        __filename: false,
+    },
+    externals: [nodeExternals()],
+    module: {
+        rules: [
+            {
+                exclude: /node_modules/,
+                test: /\.ts?$/,
+                use: 'awesome-typescript-loader?{configFileName: "tsconfig.json"}',
+            },
+            {
+                test: /\.s[ac]ss$/,
+                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+            }
+        ],
+    },
+    resolve: {
+        extensions: ['.ts', '.js'],
+    },
+});
+
+module.exports = [extensionConfig, surveyConfig, serverConfig];

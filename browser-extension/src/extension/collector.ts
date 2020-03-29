@@ -24,7 +24,7 @@ export interface CollectedData {
         relative: { x: number, y: number }
     },
     keyboard: string[],
-    image: string
+    image: string,
 }
 
 /**
@@ -182,8 +182,8 @@ export class Collector {
      * @param data The data to be sent.
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
-        const URL = '/server-url.php';
-        return $.post(URL, data)
+        const URL = 'http://192.168.1.173:3000/data/store';
+        return $.post(URL, {data: JSON.stringify(data)})
     }
 }
 
