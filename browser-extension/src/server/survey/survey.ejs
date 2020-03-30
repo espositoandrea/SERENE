@@ -34,7 +34,7 @@
                 <img src="https://www.unidformazione.com/wp-content/uploads/2017/05/logo-uniba.JPG-2.png"
                      alt="Logo Università degli Studi di Bari" class="img-responsive w-50 mb-3"/>
                 <h1 class="mb-2">Thesis title</h1>
-                <p class="h2 mb-4">Laurea Triennale in ICD</p>
+                <p class="h4 mb-4">Laurea triennale in &ldquo;Informatica e Comunicazione Digitale&rdquo;</p>
                 <div class="authors row px-0 mx-0 px-md-5 mx-md-5" itemprop="author">
                     <div class="col author" itemscope="" itemtype="https://schema.org/Person">
                         <div>
@@ -58,22 +58,17 @@
                 <hr>
             </header>
 
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Explicabo porro beatae dolorem magni a quaerat quia cum deleniti
-                doloremque reiciendis ut in recusandae itaque repellat, quos harum
-                incidunt qui! Facere.</p>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Excepturi neque voluptas, alias deleniti pariatur facilis reiciendis
-                asperiores eum? Atque, ratione laboriosam. Repellat, saepe!
-                Inventore ab, dolore vitae recusandae natus amet!</p>
+            <div id="introduction">
+                <%= survey.introdution %>
+            </div>
             <hr class="my-4">
             <div class="buttons-container d-flex">
-                <button type="button" disabled class="btn btn-outline-primary d-block prev-section-btn">Indietro
+                <button type="button" disabled class="btn btn-outline-primary d-inline-block prev-section-btn">Indietro
                 </button>
-                <div class="btn text-center d-block ml-auto align-middle" style="padding: .375rem .75rem;">
+                <div class="text-center d-inline-block ml-auto align-middle" style="padding: .375rem .75rem;">
                     Pagina <span>1</span> di <span><%= survey.sections.length + 1 %></span>
                 </div>
-                <button type="button" class="btn btn-primary d-block ml-auto next-section-btn">Avanti</button>
+                <button type="button" class="btn btn-primary d-inline-block ml-auto next-section-btn">Avanti</button>
             </div>
         </section>
         <% survey.sections.forEach((section, sectionIndex) => { %>
@@ -104,13 +99,15 @@
                     <% }) %>
                     <hr class="my-4">
                     <div class="buttons-container d-flex">
-                        <button type="button" disabled class="btn btn-outline-primary d-block prev-section-btn">Indietro
+                        <button type="button" disabled class="btn btn-outline-primary d-inline-block prev-section-btn">
+                            Indietro
                         </button>
-                        <div class="btn text-center d-block ml-auto align-middle" style="padding: .375rem .75rem;">
+                        <div class="text-center d-inline-block ml-auto align-middle" style="padding: .375rem .75rem;">
                             Pagina <span><%= sectionIndex + 2 %></span> di
                             <span><%= survey.sections.length + 1 %></span>
                         </div>
-                        <button type="submit" class="btn btn-primary d-block ml-auto next-section-btn">Avanti</button>
+                        <button type="submit" class="btn btn-primary d-inline-block ml-auto next-section-btn">Avanti
+                        </button>
                     </div>
                 </form>
             </section>
@@ -121,7 +118,7 @@
 <script>
     let currentTab = 0;
     const MAX_SECTIONS = <%= survey.sections.length + 1 %>; // TODO: Change
-    const TARGET_URL = 'survey-data.php';
+    const TARGET_URL = 'http://localhost:3000/survey/store';
 
     (function ($) {
         $(document).ready(function () {
@@ -163,7 +160,9 @@
                 console.log('Submitting...')
                 $.post(TARGET_URL, formTabs.children('form').serializeArray())
                     .done(function (data) {
-                        console.log('    ... Done');
+                        // TODO: Store the user ID in the chrome extension?
+                        console.log('    ... Done', data);
+                        // window.location.href = ''
                     })
                     .fail(function () {
                         alert("C'è stato un errore");

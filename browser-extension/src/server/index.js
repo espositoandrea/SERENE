@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require('path');
 
 const app = express();
 const port = 3000;
@@ -7,6 +8,8 @@ const requestSizeLimit = '50mb';
 
 app.use(bodyParser.json({limit: requestSizeLimit}));
 app.use(bodyParser.urlencoded({limit: requestSizeLimit, extended: false}));
+
+app.use('/survey/', express.static(path.join(__dirname, 'survey')));
 
 app.post("/data/store", async (request, response) => {
     const data = JSON.parse(request.body.data);
@@ -34,6 +37,16 @@ app.post("/data/store", async (request, response) => {
     data.forEach((el, index) => el.emotions = results[index]);
 
     // TODO: Store 'data'
+});
+
+app.post("/survey/store", (request, response) => {
+    let userData = request.query;
+
+    // TODO: Save userData to server
+    console.log(userData);
+
+    // TODO: Should it return the user ID? This way, the survey can be associated to the interaction data.
+    response.json({done: true, errors: []});
 });
 
 app.listen(port, () => {

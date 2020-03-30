@@ -13,6 +13,8 @@ if (process.env.NODE_ENV === 'production') {
     );
 }
 
+const survey = require("./survey/survey-data");
+
 const commonConfig = {
     mode: process.env.NODE_ENV,
     devtool: 'inline-source-map',
@@ -26,21 +28,19 @@ const commonConfig = {
     ],
 };
 
-const extensionConfig = Object.assign({}, commonConfig, {
+const surveyConfig = Object.assign({}, commonConfig, {
     entry: {
-        contentscript: join(__dirname, 'src/extension/contentscript.ts'),
-        background: join(__dirname, 'src/extension/background.ts')
+        survey: join(__dirname, 'survey/survey.js'),
     },
     output: {
-        path: join(__dirname, 'dist/extension/'),
+        path: join(__dirname, '../../dist/server/survey/'),
         filename: '[name].js',
     },
     module: {
         rules: [
             {
-                exclude: /node_modules/,
-                test: /\.ts?$/,
-                use: 'awesome-typescript-loader?{configFileName: "tsconfig.json"}',
+                test: /\.ejs$/,
+                use: ['html-loader', 'ejs-loader']
             },
             {
                 test: /\.s[ac]ss$/,
@@ -48,9 +48,20 @@ const extensionConfig = Object.assign({}, commonConfig, {
             }
         ],
     },
-    resolve: {
-        extensions: ['.ts', '.js'],
-    },
+    plugins: [
+        new HtmlWebpackPlugin({
+            filename: 'index.html',
+            template: '!!ejs-loader!survey/survey.ejs',
+            survey: survey,
+            inject: false,
+        }),
+        new CheckerPlugin(),
+        ...prodPlugins,
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+            chunkFilename: '[id].css',
+        }),
+    ]
 });
 
-module.exports = [extensionConfig];
+module.exports = surveyConfig;
