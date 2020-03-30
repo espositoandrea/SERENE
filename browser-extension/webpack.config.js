@@ -70,7 +70,7 @@ const extensionConfig = Object.assign({}, commonConfig, {
         background: join(__dirname, 'src/extension/background.ts')
     },
     output: {
-        path: join(__dirname, 'dist'),
+        path: join(__dirname, 'dist/extension/'),
         filename: '[name].js',
     },
     module: {
@@ -91,36 +91,4 @@ const extensionConfig = Object.assign({}, commonConfig, {
     },
 });
 
-const serverConfig = Object.assign({}, commonConfig, {
-    entry: {
-        index: join(__dirname, 'src/server/index.ts'),
-    },
-    output: {
-        path: join(__dirname, 'dist/server/'),
-        filename: '[name].js',
-    },
-    target: 'node',
-    node: {
-        __dirname: false,
-        __filename: false,
-    },
-    externals: [nodeExternals()],
-    module: {
-        rules: [
-            {
-                exclude: /node_modules/,
-                test: /\.ts?$/,
-                use: 'awesome-typescript-loader?{configFileName: "tsconfig.json"}',
-            },
-            {
-                test: /\.s[ac]ss$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
-            }
-        ],
-    },
-    resolve: {
-        extensions: ['.ts', '.js'],
-    },
-});
-
-module.exports = [extensionConfig, surveyConfig, serverConfig];
+module.exports = [extensionConfig, surveyConfig];
