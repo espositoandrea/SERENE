@@ -4,10 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run dist && node ../../dist/server/index.js",
+    "start": "npm run build && node ../../dist/server/index.js",
     "clean": "rm -rf ../../dist/server/",
-    "predist": "npm run clean && cpy --parents './' '!./node_modules/' '!survey' '../../dist/server/'",
-    "dist": "NODE_ENV=production webpack --config webpack.config.js",
+    "copy": "cpy --parents './' '!./node_modules/' '!survey' '../../dist/server/'",
+    "prebuild": "npm run clean && npm run copy",
+    "build": "NODE_ENV=production webpack --config webpack.config.js",
+    "prewatch": "npm run clean && npm run copy",
+    "watch": "NODE_ENV=development webpack --config webpack.config.js -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

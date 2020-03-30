@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "cd dist/server && node index.js",
     "build:extension": "NODE_ENV=production webpack --config webpack.config.js",
-    "build:server": "cd src/server && NODE_ENV=development npm run dist",
+    "build:server": "cd src/server && npm run build",
     "build": "npm-run-all --parallel build:*",
     "clean": "rm -rf dist && cpy manifest.json dist/extension && cpy src/extension/assets/* dist/assets",
     "prebuild": "npm run clean",
     "prewatch": "npm run clean",
     "watch:extension": "NODE_ENV=development webpack --config webpack.config.js -w",
-    "watch:server": "cd src/server && NODE_ENV=development npm run dist",
+    "watch:server": "cd src/server && npm run watch",
     "watch": "npm-run-all --parallel watch:*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
