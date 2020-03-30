@@ -3,23 +3,16 @@ import collect from "./collector";
 
 const showStartingSurvey = async () => {
     new Promise<void>(resolve => {
-        chrome.runtime.onInstalled.addListener(() => {
-            // TODO: Show survey
-            console.log("Survey");
-            resolve()
-        });
-    })
-};
-const showStartingGuide = async () => {
-    new Promise<void>(resolve => {
-        chrome.runtime.onInstalled.addListener(() => {
-            // TODO: Show guide
-            console.log("Guide");
-            resolve()
+        chrome.runtime.onInstalled.addListener((object) => {
+            if (object.reason === 'install') {
+                chrome.tabs.create({url: "http://localhost:3000/survey/"}, function (tab) {
+                    console.log('Opened survey');
+                    resolve()
+                });
+            }
         });
     })
 };
 
 showStartingSurvey()
-    .then(showStartingGuide)
     .then(() => collect());

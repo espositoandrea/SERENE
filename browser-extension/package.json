@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "cd src/server && npm start",
+    "dist": "npm run build && bestzip dist/extension.zip dist/extension/**",
     "build:extension": "NODE_ENV=production webpack --config webpack.config.js",
     "build:server": "cd src/server && npm run build",
     "build": "npm-run-all --parallel build:*",
@@ -25,6 +26,7 @@
     "@types/jquery": "^3.3.34",
     "@types/node": "^12.12.31",
     "awesome-typescript-loader": "^5.2.1",
+    "bestzip": "^2.1.5",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.4.1",
     "cpy-cli": "^3.1.0",
