@@ -29,12 +29,14 @@ app.post("/data/store", async (request, response) => {
 
         const res = await page.evaluate((image) => {
             return window.EmotionAnalysis.analyzePhoto(image);
-        }, data.map(e => e.image));
+        }, data.map(e => e.image).filter(e => e));
         await browser.close();
         return res;
     })();
     // Save the results in data
-    data.forEach((el, index) => el.emotions = results[index]);
+    data.forEach((el, index) => {
+        if (el.images) el.emotions = results[index];
+    });
 
     // TODO: Store 'data'
 });
