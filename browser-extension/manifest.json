@@ -16,5 +16,5 @@
     "persistent": false
   },
   "web_accessible_resources": ["assets/*"],
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://download.affectiva.com/js/3.2/; object-src 'self'"
+  "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://download.affectiva.com/js/3.2/; object-src 'self'"
 }

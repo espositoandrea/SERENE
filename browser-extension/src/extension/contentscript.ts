@@ -44,3 +44,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         sendResponse(getScroll());
     }
 });
+
+let iframe = document.createElement('iframe');
+iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
+document.body.appendChild(iframe);
+chrome.runtime.sendMessage({event: 'webcampermission'});

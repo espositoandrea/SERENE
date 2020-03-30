@@ -4,10 +4,13 @@ import * as Webcam from 'webcamjs';
  * A facade singleton object to use the webcam.
  */
 export default class WebcamFacade {
-    private static instance: WebcamFacade;
     private static isWebcamEnabled: boolean = false;
 
-    private constructor() {
+    public static get isEnabled(): boolean {
+        return WebcamFacade.isWebcamEnabled;
+    }
+
+    public static enableWebcam() {
         let webcamHolder = document.createElement('div');
         webcamHolder.id = '__AESPOSITO_EXTENSION__webcam-holder';
         document.body.appendChild(webcamHolder);
@@ -19,19 +22,7 @@ export default class WebcamFacade {
         });
         Webcam.attach(webcamHolder.id);
         Webcam.on('load', WebcamFacade.enableWebcam);
-    }
 
-    /**
-     * Get the instance of the WebcamFacade.
-     */
-    public static getInstance() {
-        if (!WebcamFacade.instance) {
-            WebcamFacade.instance = new WebcamFacade();
-        }
-        return WebcamFacade.instance;
-    }
-
-    private static enableWebcam() {
         WebcamFacade.isWebcamEnabled = true;
     }
 
@@ -39,7 +30,7 @@ export default class WebcamFacade {
      * Get a photo taken with the webcam.
      * @return Promise a promise containing the data string of the taken photo.
      */
-    async snapPhoto(): Promise<string> {
+    public static async snapPhoto(): Promise<string> {
         return new Promise<string>(resolve => {
             if (WebcamFacade.isWebcamEnabled) {
                 Webcam.snap(async data_uri => {
