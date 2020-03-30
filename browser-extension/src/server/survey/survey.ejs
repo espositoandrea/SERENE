@@ -112,19 +112,26 @@
                 </form>
             </section>
         <% }) %>
+
+        <section class="tab text-center py-5" id="ending">
+            <img class="w-25 m-5" src="undraw_super_thank_you_obwk.svg" alt="Grazie mille! (immagine da undraw.co)"/>
+            <h1>Grazie!</h1>
+            <p>Ricorda di assicurarti che la tua webcam inquadri bene il tuo volto!</p>
+            <p>Ora puoi chiudere questa pagina.</p>
+        </section>
     </div>
 </main>
 
 <script>
     let currentTab = 0;
     const MAX_SECTIONS = <%= survey.sections.length + 1 %>; // TODO: Change
-    const TARGET_URL = 'http://localhost:3000/survey/store';
+    const DATA_DESTINATION_URL = 'http://localhost:3000/survey/store';
 
     (function ($) {
         $(document).ready(function () {
             const nextButton = $('.next-section-btn');
             const prevButton = $('.prev-section-btn');
-            const formTabs = $("#sections-container>.tab");
+            const formTabs = $("#sections-container>.tab:not(#ending)");
 
             $(formTabs).on('submit', () => false)
 
@@ -138,31 +145,35 @@
             showTab(currentTab); // Display the current tab
 
             function showTab(n) {
-                $(formTabs[n]).show();
-                prevButton.toggle(n !== 0)
-                prevButton.attr('disabled', n === 0);
-                nextButton.html(n === (formTabs.length - 1) ? 'Invia' : 'Avanti');
+                if (n < MAX_SECTIONS) {
+                    $(formTabs[n]).show();
+                    prevButton.toggle(n !== 0)
+                    prevButton.attr('disabled', n === 0);
+                    nextButton.html(n === (formTabs.length - 1) ? 'Invia' : 'Avanti');
+                } else {
+                    $('#ending').show();
+                }
             }
 
             function nextPrev(n) {
                 console.log(currentTab)
                 if (currentTab !== 0 && n === 1 && !validateForm()) return false;
+                $(formTabs[currentTab]).hide()
                 if (currentTab + n >= formTabs.length) {
                     submit();
                     return false;
                 }
-                $(formTabs[currentTab]).hide()
                 currentTab = currentTab + n;
                 showTab(currentTab);
             }
 
             function submit() {
                 console.log('Submitting...')
-                $.post(TARGET_URL, formTabs.children('form').serializeArray())
+                $.post(DATA_DESTINATION_URL, formTabs.children('form').serializeArray())
                     .done(function (data) {
                         // TODO: Store the user ID in the chrome extension?
                         console.log('    ... Done', data);
-                        // window.location.href = ''
+                        showTab(MAX_SECTIONS + 1);
                     })
                     .fail(function () {
                         alert("C'è stato un errore");

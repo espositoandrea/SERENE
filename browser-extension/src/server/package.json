@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && node ../../dist/server/index.js",
     "clean": "rm -rf ../../dist/server/",
-    "copy": "cpy --parents './' '!./node_modules/' '!survey' '../../dist/server/'",
+    "copy": "cpy --parents './' '!./node_modules/' '!survey' '../../dist/server/' && cpy --parents './**/*.svg' '!./node_modules/' '../../dist/server/'",
     "prebuild": "npm run clean && npm run copy",
     "build": "NODE_ENV=production webpack --config webpack.config.js",
     "prewatch": "npm run clean && npm run copy",
