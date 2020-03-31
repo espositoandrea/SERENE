@@ -51,7 +51,7 @@ export interface CollectionOptions {
 export class Collector {
     private static instance: Collector;
 
-    private mousePosition: CollectedData['mouse']['position'] = { x: 0, y: 0 };
+    private mousePosition: CollectedData['mouse']['position'] = {x: 0, y: 0};
     private mouseButtons: CollectedData['mouse']['buttons'] = {
         leftPressed: false,
         middlePressed: false,
@@ -105,13 +105,13 @@ export class Collector {
      * @param options The url collection options.
      * @return Promise A promise with the collected data.
      */
-    async getURL({ url }: CollectionOptions): Promise<string> {
+    async getURL({url}: CollectionOptions): Promise<string> {
         return await new Promise<string>(resolve => {
-            chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
+            chrome.tabs.query({active: true, lastFocusedWindow: true}, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].url === undefined) {
                     resolve(null);
                 } else {
-                    const { groups } = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
+                    const {groups} = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
 
                     let outUrl = '';
                     url.getProtocol && (outUrl += groups.protocol + '://');
@@ -153,11 +153,11 @@ export class Collector {
      */
     async getScrollData(): Promise<CollectedData['scroll']> {
         return await new Promise<CollectedData['scroll']>(resolve => {
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
                     resolve(null);
                 } else {
-                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getscrolllocation' }, function (response) {
+                    chrome.tabs.sendMessage(tabs[0].id, {event: 'getscrolllocation'}, function (response) {
                         resolve(response);
                     });
                 }
@@ -176,7 +176,7 @@ export class Collector {
             mouse: this.getMouseData(),
             scroll: await this.getScrollData(),
             keyboard: this.getKeyboardData(),
-            image: await WebcamFacade.snapPhoto()
+            image: WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null
         };
     }
 
@@ -186,7 +186,7 @@ export class Collector {
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
         const URL = 'http://192.168.1.173:3000/data/store';
-        return $.post(URL, { data: JSON.stringify(data) })
+        return $.post(URL, {data: JSON.stringify(data)})
     }
 }
 
@@ -225,19 +225,17 @@ export default function collect(options?: CollectionOptions): void {
     let collectorInterval: any = undefined;
 
     let collectionLoop = () => {
-        if (WebcamFacade.isEnabled) {
-            if (collectorInterval !== undefined) {
-                clearInterval(collectorInterval);
-                Collector.sendToServer(resultChunk)
-                    .done(() => resultChunk = [])
-                    .fail((data, status, error) => console.error(error));
-            }
-
-            collectorInterval = setInterval(async function () {
-                resultChunk.push(await collector.getData(options));
-                numberOfCycles++;
-            }, options.mainInterval);
+        if (collectorInterval !== undefined) {
+            clearInterval(collectorInterval);
+            Collector.sendToServer(resultChunk)
+                .done(() => resultChunk = [])
+                .fail((data, status, error) => console.error(error));
         }
+
+        collectorInterval = setInterval(async function () {
+            resultChunk.push(await collector.getData(options));
+            numberOfCycles++;
+        }, options.mainInterval);
     };
 
     collectionLoop();
