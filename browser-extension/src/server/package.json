@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node ../../dist/server/index.js",
+    "start": "npm run build && cd ../../dist/server && node index.js",
     "clean": "rm -rf ../../dist/server/",
     "prebuild": "npm run clean",
     "build": "cpy --parents . ../../dist/server/",
@@ -16,7 +16,6 @@
     "awesome-typescript-loader": "^5.2.1",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.4.1",
-    "cpy-cli": "^3.1.0",
     "css-loader": "^3.4.2",
     "ejs": "^3.0.2",
     "ejs-loader": "^0.3.5",

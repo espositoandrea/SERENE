@@ -39,6 +39,26 @@ module.exports = {
                     type: 'email',
                     required: true,
                     placeholder: 'youremail@email.com'
+                },
+                {
+                    name: 'sex',
+                    question: 'Sesso',
+                    type: 'choice',
+                    required: true,
+                    choices: [
+                        'Maschio', 'Femmina', 'Altro'
+                    ]
+                }
+            ]
+        },
+        {
+            title: "Informazioni varie",
+            questions: [
+                {
+                    name: 'internet',
+                    question: 'Navigo su internet molto spesso',
+                    type: 'likert',
+                    required: true,
                 }
             ]
         },

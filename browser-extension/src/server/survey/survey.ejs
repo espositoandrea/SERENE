@@ -32,15 +32,15 @@
             <header class="text-center mb-4">
                 <img src="https://www.unidformazione.com/wp-content/uploads/2017/05/logo-uniba.JPG-2.png"
                      alt="Logo Università degli Studi di Bari" class="img-responsive w-50 mb-3"/>
-                <h1 class="mb-2">Thesis title</h1>
-                <p class="h4 mb-4">Laurea triennale in &ldquo;Informatica e Comunicazione Digitale&rdquo;</p>
+                <h1 class="border-bottom p-2 mb-3">Automatic Detection of Usability Smells Through the Analysis of Interaction Logs</h1>
+                <p class="h5 mb-4">Bachelor&rsquo;s Degree in &ldquo;Computer Science and Digital Communication&rdquo;</p>
                 <div class="authors row px-0 mx-0 px-md-5 mx-md-5" itemprop="author">
                     <div class="col author" itemscope="" itemtype="https://schema.org/Person">
                         <div>
                             <span itemprop="givenName">Andrea</span> <span itemprop="familyName">Esposito</span>
                             (<span itemprop="identifier">677021</span>)
                         </div>
-                        <div>Autore</div>
+                        <small>Autore</small>
                         <div><a href="mailto:a.esposito39@studenti.uniba.it"
                                 itemprop="email">a.esposito39@studenti.uniba.it</a></div>
                     </div>
@@ -49,7 +49,7 @@
                             <span itemprop="honorificPrefix">Prof.</span>
                             <span itemprop="givenName">Giuseppe</span> <span itemprop="familyName">Desolda</span>
                         </div>
-                        <div>Relatore</div>
+                        <small>Relatore</small>
                         <div><a href="mailto:giuseppe.desolda@uniba.it"
                                 itemprop="email">giuseppe.desolda@uniba.it</a></div>
                     </div>
@@ -58,7 +58,7 @@
             </header>
 
             <div id="introduction">
-                <%= survey.introdution %>
+                <%- survey.introdution %>
             </div>
             <hr class="my-4">
             <div class="buttons-container d-flex">
@@ -83,17 +83,50 @@
                                     <span class="text-danger" aria-label="Campo richiesto">*</span>
                                 <% } %>
                             </label>
-                            <input class="form-control"
-                                   id="<%= questionId %>"
-                                   name="<%= question.name %>"
-                                   type="<%= question.type %>"
-                            <% if(question.rules){ Object.entries(question.rules).forEach(([key, val])=>{ %>
-                                <%= key %>="<%= val %>"
-                            <% })} %>
-                            <% if(question.required){ %>
-                                required
+
+                            <%if(question.type === 'choice'){ %>
+                                <select class="form-control" id="<%= questionId %>" name="<%= question.name %>">
+                                    <% question.choices.forEach(opt => { %>
+                                        <option><%= opt %></option>
+                                    <% }) %>
+                                </select>
+                            <% } else if(question.type === 'likert'){ %>
+                                <table class="table table-responsive text-center">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Molto<br>in disaccordo</th>
+                                            <th scope="col">Disaccordo</th>
+                                            <th scope="col">Indeciso</th>
+                                            <th scope="col">D&rsquo;accordo</th>
+                                            <th scope="col">Molto<br>d&rsquo;accordo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <% for(let i = 1; i <= 5; i++) { %> 
+                                                <td>
+                                                    <div class="custom-control custom-radio custom-control-inline">
+                                                        <input <% if(question.required){ %> required <% } %> value="<%= i %>" type="radio" id="<%= questionId %>---<%= i %>" name="<%= question.name %>" class="custom-control-input">
+                                                        <label class="custom-control-label" for="<%= questionId %>---<%= i %>"><%= i %></label>
+                                                    </div>
+                                                </td>
+                                            <% } %>
+                                        </tr>
+                                    </tbody>
+                                </table> 
+                            <% } else { %>
+                                <input class="form-control"
+                                    id="<%= questionId %>"
+                                    name="<%= question.name %>"
+                                    type="<%= question.type %>"
+                                <% if(question.rules){ Object.entries(question.rules).forEach(([key, val])=>{ %>
+                                    <%= key %>="<%= val %>"
+                                <% })} %>
+                                <% if(question.required){ %>
+                                    required
+                                <% } %>
+                                placeholder="<%= question.placeholder || '' %>">
                             <% } %>
-                            placeholder="<%= question.placeholder || '' %>">
                         </div>
                     <% }) %>
                     <hr class="my-4">
