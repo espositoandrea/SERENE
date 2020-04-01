@@ -185,7 +185,7 @@ export class Collector {
      * @param data The data to be sent.
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
-        const URL = 'http://192.168.1.173:3000/data/store';
+        const URL = 'http://localhost:3000/data/store';
         return $.post(URL, {data: JSON.stringify(data)})
     }
 }

@@ -4,34 +4,34 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node ../../dist/server/index.js",
+    "start": "node ../../dist/server/index.js",
     "clean": "rm -rf ../../dist/server/",
-    "copy": "cpy --parents './' '!./node_modules/' '!survey' '../../dist/server/' && cpy --parents './**/*.svg' '!./node_modules/' '../../dist/server/'",
-    "prebuild": "npm run clean && npm run copy",
-    "build": "NODE_ENV=production webpack --config webpack.config.js",
-    "prewatch": "npm run clean && npm run copy",
-    "watch": "NODE_ENV=development webpack --config webpack.config.js -w",
+    "prebuild": "npm run clean",
+    "build": "cpy --parents . ../../dist/server/",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "express": "^4.17.1",
-    "jquery": "^3.4.1",
-    "lodash": "^4.17.15",
-    "puppeteer": "^2.1.1",
     "awesome-typescript-loader": "^5.2.1",
+    "body-parser": "^1.19.0",
     "bootstrap": "^4.4.1",
     "cpy-cli": "^3.1.0",
     "css-loader": "^3.4.2",
+    "ejs": "^3.0.2",
     "ejs-loader": "^0.3.5",
+    "express": "^4.17.1",
     "file-loader": "^6.0.0",
     "html-loader": "^1.0.0",
     "html-webpack-plugin": "^4.0.2",
+    "jquery": "^3.4.1",
+    "lodash": "^4.17.15",
     "mini-css-extract-plugin": "^0.9.0",
+    "mongodb": "^3.5.5",
     "node-sass": "^4.13.1",
+    "node-sass-middleware": "^0.11.0",
     "npm-run-all": "^4.1.5",
+    "puppeteer": "^2.1.1",
     "sass-loader": "^8.0.2",
     "ts-node": "^8.8.1",
     "tslint": "^6.1.0",
@@ -42,6 +42,7 @@
     "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
-    "cpy-cli": "^3.1.0"
+    "cpy-cli": "^3.1.0",
+    "nodemon": "^2.0.2"
   }
 }
