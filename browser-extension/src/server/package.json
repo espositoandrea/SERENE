@@ -6,7 +6,7 @@
   "scripts": {
     "start": "npm run build && cd ../../dist/server && node index.js",
     "watch": "nodemon index.js",
-    "postwatch":"rm survey/*.css",
+    "postwatch": "rm survey/*.css",
     "clean": "rm -rf ../../dist/server/",
     "prebuild": "npm run clean",
     "build": "cpy --parents . ../../dist/server/",
