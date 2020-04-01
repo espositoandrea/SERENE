@@ -1,10 +1,7 @@
-# Drive files
-*.ini
-# Draft files
-# draft/
-
 # ignore preview pdf
 src/Thesis.pdf
+# ignore output
+out/
 
 # ignore articles
 papers/**
