@@ -21,9 +21,9 @@ export default class WebcamFacade {
             jpeg_quality: 90
         });
         Webcam.attach(webcamHolder.id);
-        Webcam.on('load', WebcamFacade.enableWebcam);
-
-        WebcamFacade.isWebcamEnabled = true;
+        Webcam.on('load', () => {
+            WebcamFacade.isWebcamEnabled = true;
+        });
     }
 
     /**

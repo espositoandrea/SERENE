@@ -13,7 +13,6 @@
     "prebuild": "npm run clean",
     "prewatch": "npm run clean",
     "watch:extension": "NODE_ENV=development webpack --config webpack.config.js -w",
-    "watch:server": "cd src/server && npm run watch",
     "watch": "npm-run-all --parallel watch:*",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

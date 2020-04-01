@@ -47,5 +47,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 let iframe = document.createElement('iframe');
 iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
+iframe.style.display = 'none';
 document.body.appendChild(iframe);
 chrome.runtime.sendMessage({event: 'webcampermission'});

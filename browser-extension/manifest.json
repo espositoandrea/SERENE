@@ -16,5 +16,8 @@
     "persistent": false
   },
   "web_accessible_resources": ["assets/*"],
-  "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://download.affectiva.com/js/3.2/; object-src 'self'"
+  "externally_connectable": {
+    "matches": ["*://localhost:*/*"]
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://download.affectiva.com/js/3.2/ 'sha256-mj/HBOWOzHc91TZbYpLDeopfseDiLM0MywQG+kdCTss='; object-src 'self'"
 }

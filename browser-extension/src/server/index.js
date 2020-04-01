@@ -18,8 +18,8 @@ MongoClient.connect(databaseConfiguration.url, (err, client) => {
 
     app.use(
         sassMiddleware({
-            src: __dirname + '/survey',
-            dest: __dirname + '/survey',
+            src: __dirname + '/',
+            dest: __dirname + '/',
             debug: true,
         })
     );
@@ -29,9 +29,8 @@ MongoClient.connect(databaseConfiguration.url, (err, client) => {
     app.set('views', __dirname);
 
     const survey = require("./survey/survey-data");
-    app.get('/', (req, res) => res.render('survey/survey', { survey }));
-
     app.use('/survey/', express.static(path.join(__dirname, 'survey')));
+    app.get('/survey', (req, res) => res.render('survey/survey', { survey }));
 
     app.post("/data/store", async (request, response) => {
         const data = JSON.parse(request.body.data);
@@ -60,7 +59,6 @@ MongoClient.connect(databaseConfiguration.url, (err, client) => {
             if (el.image) el.emotions = results[index];
         });
 
-        // TODO: Store 'data'
         db.collection('interactions').insertMany(data, (err, result) => {
             if (err) {
                 // TODO: There was an error in writing to the DB: handle this error
@@ -71,7 +69,7 @@ MongoClient.connect(databaseConfiguration.url, (err, client) => {
         });
     });
 
-    app.get("/survey/store", (request, response) => {
+    app.post("/survey/store", (request, response) => {
         let userData = request.query;
 
         db.collection('users').insertOne(userData, (err, result) => {

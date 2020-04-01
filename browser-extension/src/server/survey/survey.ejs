@@ -156,8 +156,12 @@
 
 <script>
     let currentTab = 0;
-    const MAX_SECTIONS = <%= survey.sections.length + 1 %>; // TODO: Change
+    const MAX_SECTIONS = <%= survey.sections.length + 1 %>;
     const DATA_DESTINATION_URL = 'http://localhost:3000/survey/store';
+
+    function confirmClose(e){
+        return "L'estensione non funzionerà se non completi il questionario. Sicuro di voler uscire?";
+    };
 
     (function ($) {
         $(document).ready(function () {
@@ -178,17 +182,18 @@
 
             function showTab(n) {
                 if (n < MAX_SECTIONS) {
+                    window.onbeforeunload = confirmClose;
                     $(formTabs[n]).show();
                     prevButton.toggle(n !== 0)
                     prevButton.attr('disabled', n === 0);
                     nextButton.html(n === (formTabs.length - 1) ? 'Invia' : 'Avanti');
                 } else {
+                    window.onbeforeunload = null;
                     $('#ending').show();
                 }
             }
 
             function nextPrev(n) {
-                console.log(currentTab)
                 if (currentTab !== 0 && n === 1 && !validateForm()) return false;
                 $(formTabs[currentTab]).hide()
                 if (currentTab + n >= formTabs.length) {
@@ -200,15 +205,15 @@
             }
 
             function submit() {
-                console.log('Submitting...')
                 $.post(DATA_DESTINATION_URL, formTabs.children('form').serializeArray())
                     .done(function (data) {
-                        // TODO: Store the user ID in the chrome extension?
-                        console.log('    ... Done', data);
+                        const chromeExtensionId = 'hidcobgbfeogenahipmfeogmfjjojgnj';
+                        chrome.runtime.sendMessage(chromeExtensionId, {event:'surveycompleted', userId: data.userId});
                         showTab(MAX_SECTIONS + 1);
                     })
-                    .fail(function () {
+                    .fail(function (e) {
                         alert("C'è stato un errore");
+                        console.error(e);
                     });
             }
 

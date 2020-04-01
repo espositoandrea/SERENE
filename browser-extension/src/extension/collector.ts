@@ -6,6 +6,7 @@ import WebcamFacade from "./webcam-facade";
  * The structure of the collected data.
  */
 export interface CollectedData {
+    users_id: string,
     timestamp: string,
     url: string,
     mouse: {
@@ -46,23 +47,23 @@ export interface CollectionOptions {
 /**
  * The main collector.
  *
- * This singleton class collects the required data.
+ * This class collects the required data.
  */
 export class Collector {
-    private static instance: Collector;
-
-    private mousePosition: CollectedData['mouse']['position'] = {x: 0, y: 0};
+    private mousePosition: CollectedData['mouse']['position'] = { x: 0, y: 0 };
     private mouseButtons: CollectedData['mouse']['buttons'] = {
         leftPressed: false,
         middlePressed: false,
         rightPressed: false
     };
     private pressedKeys: Set<string> = new Set<string>();
+    private userId: string;
 
-    /**
-     * The Collector constructor. It registers some messaging events.
-     */
-    private constructor() {
+    private _areListenersRegistered: boolean = false;
+
+    private registerListeners() {
+        if (this._areListenersRegistered) return;
+
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             let mouseButtonFromInteger = (btn: number) => btn < 3 ? ['left', 'middle', 'right'][btn] : 'button' + (btn + 1);
 
@@ -87,16 +88,15 @@ export class Collector {
                     break;
             }
         });
+        this._areListenersRegistered = true;
     }
 
     /**
-     * Get the instance of the Collector.
+     * The Collector constructor. It registers some messaging events.
      */
-    public static getInstance(): Collector {
-        if (!Collector.instance) {
-            Collector.instance = new Collector();
-        }
-        return Collector.instance;
+    public constructor(userId: string) {
+        this.registerListeners();
+        userId = userId;
     }
 
     /**
@@ -105,13 +105,13 @@ export class Collector {
      * @param options The url collection options.
      * @return Promise A promise with the collected data.
      */
-    async getURL({url}: CollectionOptions): Promise<string> {
+    async getURL({ url }: CollectionOptions): Promise<string> {
         return await new Promise<string>(resolve => {
-            chrome.tabs.query({active: true, lastFocusedWindow: true}, function (tabs) {
+            chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].url === undefined) {
                     resolve(null);
                 } else {
-                    const {groups} = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
+                    const { groups } = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
 
                     let outUrl = '';
                     url.getProtocol && (outUrl += groups.protocol + '://');
@@ -153,12 +153,18 @@ export class Collector {
      */
     async getScrollData(): Promise<CollectedData['scroll']> {
         return await new Promise<CollectedData['scroll']>(resolve => {
-            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
                     resolve(null);
                 } else {
-                    chrome.tabs.sendMessage(tabs[0].id, {event: 'getscrolllocation'}, function (response) {
-                        resolve(response);
+                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getscrolllocation' }, function (response) {
+                        if (chrome.runtime.lastError) {
+                            // The target page has disabled the execution of
+                            // content scripts
+                            resolve(null);
+                        } else {
+                            resolve(response);
+                        }
                     });
                 }
             });
@@ -171,6 +177,7 @@ export class Collector {
      */
     async getData(options: CollectionOptions): Promise<CollectedData> {
         return {
+            users_id: this.userId,
             timestamp: new Date().toISOString(),
             url: await this.getURL(options),
             mouse: this.getMouseData(),
@@ -186,7 +193,7 @@ export class Collector {
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
         const URL = 'http://localhost:3000/data/store';
-        return $.post(URL, {data: JSON.stringify(data)})
+        return $.post(URL, { data: JSON.stringify(data) })
     }
 }
 
@@ -197,7 +204,9 @@ export class Collector {
  * @param options Various options for the collection
  * @return Promise A promise with the collected data.
  */
-export default function collect(options?: CollectionOptions): void {
+export default function collect(userId, options?: CollectionOptions): void {
+    if (!userId) return;
+
     const defaultCollectionOptions: CollectionOptions = {
         mainInterval: 100,
         emotionsInterval: 1000,
@@ -212,7 +221,7 @@ export default function collect(options?: CollectionOptions): void {
     };
     options = _.merge(defaultCollectionOptions, options ?? {});
 
-    const collector = Collector.getInstance();
+    const collector = new Collector(userId);
 
     // To simplify the management of the intervals, the interval of the
     // analysis that include the emotions (EA - Emotion Analysis) is used to
