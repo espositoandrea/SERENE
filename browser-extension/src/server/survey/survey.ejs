@@ -22,6 +22,20 @@
         #sections-container .tab {
             display: none;
         }
+
+        .webcam-highlight-center {
+            position: relative;
+        }
+        div#webcam-video-container::after {
+            content: "";
+            background: url('video-mask.svg');
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.6;
+        }
     </style>
 </head>
 
@@ -146,9 +160,14 @@
         <% }) %>
 
         <section class="tab text-center py-5" id="ending">
-            <img class="w-25 m-5" src="undraw_super_thank_you_obwk.svg" alt="Grazie mille! (immagine da undraw.co)"/>
+            <!-- <img class="w-25 m-5" src="undraw_super_thank_you_obwk.svg" alt="Grazie mille! (immagine da undraw.co)"/> -->
+            <div id="webcam-video-container" style="width: 320px; height: 240px;" class="mx-auto webcam-highlight-center">
+                <video style="width: 320px; height: 240px;" id="webcam-video"></video>
+            </div>
             <h1>Grazie!</h1>
-            <p>Ricorda di assicurarti che la tua webcam inquadri bene il tuo volto!</p>
+            <p>Ricorda di assicurarti che la tua webcam inquadri bene il tuo
+            volto! Puoi verificarlo controllando che il tuo volto sia
+            all'interno del cerchio chiaro qui sopra.</p>
             <p>Ora puoi chiudere questa pagina.</p>
         </section>
     </div>
@@ -189,7 +208,18 @@
                     nextButton.html(n === (formTabs.length - 1) ? 'Invia' : 'Avanti');
                 } else {
                     window.onbeforeunload = null;
-                    $('#ending').show();
+                    showLastPage()
+                }
+            }
+
+            function showLastPage(){
+                $('#ending').show();
+                var videoTag = document.getElementById('webcam-video');
+                if(navigator.getUserMedia){
+                    navigator.getUserMedia({video: true}, stream=>{
+                        videoTag.srcObject = stream;
+                        videoTag.play();
+                    }, error=>{console.error(error);})
                 }
             }
 
