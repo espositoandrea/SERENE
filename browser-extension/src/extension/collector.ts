@@ -108,18 +108,22 @@ export class Collector {
     async getURL({ url }: CollectionOptions): Promise<string> {
         return await new Promise<string>(resolve => {
             chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
-                if (tabs === undefined || tabs[0] === undefined || tabs[0].url === undefined) {
+                if (!tabs || !tabs[0] || !tabs[0].url) {
                     resolve(null);
                 } else {
-                    const { groups } = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
+                    const regexResult = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
 
-                    let outUrl = '';
-                    url.getProtocol && (outUrl += groups.protocol + '://');
-                    url.getDomain && (outUrl += groups.domain + '/');
-                    url.getPath && (outUrl += groups.path);
-                    url.getQuery && (outUrl += '?' + groups.query);
-                    url.getAnchor && (outUrl += '#' + groups.anchor);
-                    resolve(outUrl);
+                    if (!regexResult) {
+                        resolve(null);
+                    } else {
+                        let outUrl = '';
+                        url.getProtocol && (outUrl += regexResult.groups.protocol + '://');
+                        url.getDomain && (outUrl += regexResult.groups.domain + '/');
+                        url.getPath && (outUrl += regexResult.groups.path);
+                        url.getQuery && regexResult.groups.query && (outUrl += '?' + regexResult.groups.query);
+                        url.getAnchor && regexResult.groups.anchor && (outUrl += '#' + regexResult.groups.anchor);
+                        resolve(outUrl);
+                    }
                 }
             });
         });
