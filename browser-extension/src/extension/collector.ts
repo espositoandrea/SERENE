@@ -24,6 +24,10 @@ export interface CollectedData {
         absolute: { x: number, y: number },
         relative: { x: number, y: number }
     },
+    window: {
+        width: number,
+        height: number
+    },
     keyboard: string[],
     image: string,
 }
@@ -176,6 +180,31 @@ export class Collector {
     }
 
     /**
+     * Get the data about the scroll position.
+     *
+     * @note The relative position is based on the lowest point of the screen.
+     */
+    async getWindowData(): Promise<CollectedData['window']> {
+        return await new Promise<CollectedData['window']>(resolve => {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
+                    resolve(null);
+                } else {
+                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getwindowsize' }, function (response) {
+                        if (chrome.runtime.lastError) {
+                            // The target page has disabled the execution of
+                            // content scripts
+                            resolve(null);
+                        } else {
+                            resolve(response);
+                        }
+                    });
+                }
+            });
+        });
+    }
+
+    /**
      * Get all the required data.
      * @param options Various collection options
      */
@@ -186,6 +215,7 @@ export class Collector {
             url: await this.getURL(options),
             mouse: this.getMouseData(),
             scroll: await this.getScrollData(),
+            window: await this.getWindowData(),
             keyboard: this.getKeyboardData(),
             image: WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null
         };
