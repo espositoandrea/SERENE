@@ -37,31 +37,8 @@ MongoClient.connect(databaseConfiguration.url, (err, client) => {
         // Data received: notify the sender
         response.send({ done: true, errors: null });
 
-        // try {
-        //     // Analyze the images in a browser (needed by Affdex)
-        //     const puppeteer = require('puppeteer');
-        //     const results = await (async () => {
-        //         const browser = await puppeteer.launch();
-        //         const page = await browser.newPage();
-        //         await page.addScriptTag({ path: require.resolve('jquery') });
-        //         await page.addScriptTag({ path: require.resolve('lodash') });
-        //         await page.addScriptTag({ path: './emotion-analysis/affdex/affdex.js' });
-        //         await page.addScriptTag({ path: './emotion-analysis/emotion-analysis.js' });
-        //         page.on('console', msg => console.log('PAGE LOG:', msg.text()));
-
-        //         const res = await page.evaluate((image) => {
-        //             return window.EmotionAnalysis.analyzePhoto(image);
-        //         }, data.map(e => e.image).filter(e => e));
-        //         await browser.close();
-        //         return res;
-        //     })();
-        //     // Save the results in data
-        //     data.forEach((el, index) => {
-        //         if (el.image) el.emotions = results[index];
-        //     });
-        // } catch (e) {
-        //     console.error(e);
-        // }
+        const DataProcessor = require('./data-processor');
+        DataProcessor.process(data);
 
         db.collection('interactions').insertMany(data, (err, result) => {
             if (err) {
