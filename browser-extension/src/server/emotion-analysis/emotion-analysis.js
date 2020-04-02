@@ -188,6 +188,7 @@ class EmotionAnalysis {
                     log("#logs", "Number of faces found: " + faces.length);
                     log("#logs", "Image processed: " + file.name);
                 }
+                let results = {};
                 if (faces.length > 0) {
                     clicks += 1;
                     // Append timestamp
@@ -196,12 +197,15 @@ class EmotionAnalysis {
                     // console.log(file_val)
                     faces[0].emotions[file_key] = file_val;
                     // Save both emotions and expressions
-                    detection_results.push(Object.assign({}, faces[0].emotions, faces[0].expressions));
+                    if (options.detect.emotions) results.emotions = faces[0].emotions;
+                    if (options.detect.expressions) results.expressions = faces[0].expressions;
+                    if (options.detect.emojis) results.emojis = faces[0].emojis;
+                    if (options.detect.appearance) results.appearance = faces[0].appearance;
                 } else {
                     // If face is not detected skip entry.
-                    detection_results.push({});
                     log('#errors', 'Cannot find face, skipping entry');
                 }
+                detection_results.push(results);
                 if (duration - 1 > secs) {
                     secs = secs + sec_step;
                     getNextImage(secs);
