@@ -161,7 +161,7 @@
 
         <section class="tab text-center py-5" id="ending">
             <!-- <img class="w-25 m-5" src="undraw_super_thank_you_obwk.svg" alt="Grazie mille! (immagine da undraw.co)"/> -->
-            <div id="webcam-video-container" style="width: 320px; height: 240px;" class="mx-auto webcam-highlight-center">
+            <div id="webcam-video-container" style="width: 320px; height: 240px;" class="mb-3 mx-auto webcam-highlight-center">
                 <video style="width: 320px; height: 240px;" id="webcam-video"></video>
             </div>
             <h1>Grazie!</h1>
@@ -176,7 +176,7 @@
 <script>
     let currentTab = 0;
     const MAX_SECTIONS = <%= survey.sections.length + 1 %>;
-    const DATA_DESTINATION_URL = 'http://localhost:3000/survey/store';
+    const DATA_DESTINATION_URL = '/survey/store';
 
     function confirmClose(e){
         return "L'estensione non funzionerà se non completi il questionario. Sicuro di voler uscire?";
@@ -216,10 +216,10 @@
                 $('#ending').show();
                 var videoTag = document.getElementById('webcam-video');
                 if(navigator.getUserMedia){
-                    navigator.getUserMedia({video: true}, stream=>{
+                    navigator.getUserMedia({video: true}, stream => {
                         videoTag.srcObject = stream;
                         videoTag.play();
-                    }, error=>{console.error(error);})
+                    }, console.error)
                 }
             }
 
