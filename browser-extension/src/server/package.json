@@ -9,8 +9,8 @@
     "postwatch": "rm survey/*.css",
     "clean": "rm -rf ../../dist/server/",
     "prebuild": "npm run clean",
-    "build": "cpy --parents . !node_modules ../../dist/server/",
-    "dist": "npm run build && bestzip dist/server.zip dist/server/**",
+    "build": "cpy --parents . .env.example !node_modules !**/*.css !.env ../../dist/server/",
+    "dist": "npm run build && cd ../../dist/server && bestzip ../server.zip .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
