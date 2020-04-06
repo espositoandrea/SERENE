@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require("express");
 const bodyParser = require("body-parser");
 const sassMiddleware = require('node-sass-middleware');
@@ -7,14 +8,10 @@ const { MongoClient } = require('mongodb');
 const app = express();
 const port = 1880;
 const requestSizeLimit = '50mb';
-const databaseConfiguration = {
-    name: 'esposito-thesis',
-    url: `mongodb+srv://testingUser:ThisIsNotASecurePassword@testingcluster-st6tg.mongodb.net/test?retryWrites=true&w=majority`
-};
 
-MongoClient.connect(databaseConfiguration.url, (err, client) => {
+MongoClient.connect(process.env.DB_HOST, (err, client) => {
     if (err) return console.log(err);
-    const db = client.db(databaseConfiguration.name);
+    const db = client.db(process.env.DB_NAME);
 
     app.use(
         sassMiddleware({
