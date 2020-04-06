@@ -1,6 +1,7 @@
 require('dotenv').config()
-const express = require("express");
-const bodyParser = require("body-parser");
+const express = require('express');
+const expressLayouts = require('express-ejs-layouts')
+const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
 const path = require('path');
 const { MongoClient } = require('mongodb');
@@ -22,12 +23,18 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
     );
     app.use(bodyParser.json({ limit: requestSizeLimit }));
     app.use(bodyParser.urlencoded({ limit: requestSizeLimit, extended: false }));
-    app.set('view engine', 'ejs');
     app.set('views', path.join(__dirname, 'views'));
+    app.set('view engine', 'ejs');
+    app.set('layout extractScripts', true)
+    app.use(expressLayouts);
 
-    const survey = require("./survey/survey-data");
-    app.use('/survey/', express.static(path.join(__dirname, 'survey')));
-    app.get('/survey', (req, res) => res.render('survey', { survey }));
+    app.use('/assets', express.static(path.join(__dirname, 'assets')));
+    
+    // ROUTES
+    
+    app.get('/', (req, res) => res.render('home'));
+
+    app.get('/survey', (req, res) => res.render('survey', { survey: require("./survey/survey-data") }));
 
     app.post("/data/store", async (request, response) => {
         const data = JSON.parse(request.body.data);

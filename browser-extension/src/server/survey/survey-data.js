@@ -55,8 +55,13 @@ module.exports = {
             title: "Informazioni varie",
             questions: [
                 {
-                    name: 'internet',
-                    question: 'Navigo su internet molto spesso',
+                    question: [
+                        {
+                            name: 'internet',
+                            question: 'Navigo su internet molto spesso',
+                            required: true
+                        },
+                    ],
                     type: 'likert',
                     required: true,
                 }

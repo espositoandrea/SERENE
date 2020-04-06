@@ -1,0 +1,21 @@
+$primary: #003073;
+
+@import "../../../../node_modules/bootstrap/scss/bootstrap";
+
+#sections-container .tab {
+    display: none;
+}
+
+.webcam-highlight-center {
+    position: relative;
+}
+div#webcam-video-container::after {
+    content: "";
+    background: url('/assets/images/video-mask.svg');
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.6;
+}
