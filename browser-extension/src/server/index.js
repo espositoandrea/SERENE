@@ -23,11 +23,11 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
     app.use(bodyParser.json({ limit: requestSizeLimit }));
     app.use(bodyParser.urlencoded({ limit: requestSizeLimit, extended: false }));
     app.set('view engine', 'ejs');
-    app.set('views', __dirname);
+    app.set('views', path.join(__dirname, 'views'));
 
     const survey = require("./survey/survey-data");
     app.use('/survey/', express.static(path.join(__dirname, 'survey')));
-    app.get('/survey', (req, res) => res.render('survey/survey', { survey }));
+    app.get('/survey', (req, res) => res.render('survey', { survey }));
 
     app.post("/data/store", async (request, response) => {
         const data = JSON.parse(request.body.data);
