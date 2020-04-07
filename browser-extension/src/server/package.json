@@ -7,7 +7,7 @@
     "start": "node index.js",
     "watch": "nodemon index.js",
     "postwatch": "rm survey/*.css",
-    "clean": "rm -rf ../../dist/server/",
+    "clean": "rimraf ../../dist/server/",
     "prebuild": "npm run clean",
     "build": "cpy --parents . .env.example !node_modules !**/*.css !.env ../../dist/server/",
     "dist": "npm run build && cd ../../dist/server && bestzip ../server.zip .",
@@ -46,8 +46,9 @@
     "webpack-node-externals": "^1.7.2"
   },
   "devDependencies": {
+    "bestzip": "^2.1.5",
     "cpy-cli": "^3.1.0",
     "nodemon": "^2.0.2",
-    "bestzip": "^2.1.5"
+    "rimraf": "^3.0.2"
   }
 }

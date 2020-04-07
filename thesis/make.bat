@@ -1,81 +1,61 @@
 @echo off
 
-set BASEFILENAME=Thesis
-set SOURCE_DIR=src
+SET BASEFILENAME=Thesis
+SET SOURCE_DIR=src
 
-if "%2"=="NUM" set NUM=%3
+IF /I "%1"=="all" GOTO all
+IF /I "%1"=="clean" GOTO clean
+IF /I "%1"=="build" GOTO build
+IF /I "%1"=="dist" GOTO dist
+IF /I "%1"=="titles" GOTO titles
+IF /I "%1"=="chapter" GOTO chapter
+IF /I "%1"=="	@echo % Author" GOTO 	@echo % Author
+IF /I "%1"=="" GOTO all
+GOTO error
 
-if "%1"=="" goto build REM target 'all'
-if "%1"=="clean" goto clean
-if "%1"=="build" goto build
-if "%1"=="copy" goto docopy
-if "%1"=="dist" goto dist
-if "%1"=="dist-copy" goto distcopy
-if "%1"=="titles" goto titles
-if "%1"=="chapter" goto chapter
-goto error
+:all
+	CALL make.bat build
+	GOTO :EOF
 
-:clean 
-	pushd "%SOURCE_DIR%"
-	del /Q /F *.bcf *.run.xml *.aux *.glo *.idx *.log *.toc *.ist *.acn *.acr *.alg *.bbl *.blg *.dvi *.glg *.gls *.ilg *.ind *.lof *.lot *.maf *.mtc *.mtc1 *.out *.synctex.gz "*.synctex(busy)" *.thm
-	popd
-	goto end
+:clean
+	PUSHD "%SOURCE_DIR%" && DEL /Q *.bcf *.run.xml *.aux *.glo *.idx *.log *.toc *.ist *.acn *.acr *.alg *.bbl *.blg *.dvi *.glg *.gls *.ilg *.ind *.lof *.lot *.maf *.mtc *.mtc1 *.out *.synctex.gz "*.synctex(busy)" *.thm /F && POPD
+	GOTO :EOF
 
 :build
-	pushd "%SOURCE_DIR%"
-	echo Compiling LaTeX (1/4):
-	pdflatex -synctex=1 -interaction=batchmode --shell-escape "%BASEFILENAME%.tex"
-	echo Building bibliography (2/4):
-	biber "%BASEFILENAME%"
-	echo Compiling LaTeX (3/4):
-	pdflatex -synctex=1 -interaction=batchmode --shell-escape "%BASEFILENAME%.tex"
-	echo Compiling LaTeX (4/4):
-	pdflatex -synctex=1 -interaction=batchmode --shell-escape "%BASEFILENAME%.tex"
-	popd
-	goto end
-
-:docopy
-	call make.bat build
-	pushd "%SOURCE_DIR%"
-	xcopy /Y "%BASEFILENAME%.pdf" ..
-	popd
-	goto end
+	@echo "\033[32mCompiling LaTeX (1/4):\033[0m"
+	PUSHD "%SOURCE_DIR%" && pdflatex -synctex=1 -interaction=batchmode --shell-escape "%BASEFILENAME%.tex" && POPD
+	@echo "\033[32mBuilding bibliography (2/4):\033[0m"
+	PUSHD "%SOURCE_DIR%" && biber "%BASEFILENAME%" && POPD
+	@echo "\033[32mCompiling LaTeX (3/4):\033[0m"
+	PUSHD "%SOURCE_DIR%" && pdflatex -synctex=1 -interaction=batchmode --shell-escape "%BASEFILENAME%.tex" && POPD
+	@echo "\033[32mCompiling LaTeX (4/4):\033[0m"
+	PUSHD "%SOURCE_DIR%" && pdflatex -synctex=1 -interaction=batchmode --shell-escape "%BASEFILENAME%.tex" && POPD
+	GOTO :EOF
 
 :dist
-	call make.bat build
-	call make.bat clean
-	pushd "%SOURCE_DIR%"
-	move /Y "%BASEFILENAME%.pdf" ..
-	popd
-	goto end
-	
-:distcopy
-	call make.bat copy
-	call make.bat clean
-	goto end
+	CALL make.bat build
+	MKDIR out
+	XCOPY /Y "%SOURCE_DIR%/%BASEFILENAME%.pdf" out/ 
+	GOTO :EOF
 
 :titles
-	pushd "%SOURCE_DIR%"
-	python add-titles-labels.py
-	popd
-	goto end
+	PUSHD "%SOURCE_DIR%" && python add-titles-labels.py && POPD
+	GOTO :EOF
 
 :chapter
-	if "%NUM%"=="" ( 
-		echo NUM is undefined
-		goto end
-	)
-	pushd "%SOURCE_DIR%"/chapters
-	mkdir "chapter%NUM%"
-	pushd "chapter%NUM%"
-	mkdir images
-	mkdir tables
-	echo %% Author: Andrea Esposito > chapter%NUM%.tex
-	popd
-	popd
-	goto end
+	GOTO :EOF
+
+:	@echo % Author
+	CALL make.bat Andrea
+	CALL make.bat Esposito
+	CALL make.bat >
+	CALL make.bat "$(SOURCE_DIR)"/chapters/chapter$(NUM)/chapter$(NUM).tex
+	GOTO :EOF
 
 :error
-echo make: *** No rule to make target '%1%'. Stop.
-
-:end
+    IF "%1"=="" (
+        ECHO make: *** No targets specified and no makefile found.  Stop.
+    ) ELSE (
+        ECHO make: *** No rule to make target '%1%'. Stop.
+    )
+    GOTO :EOF
