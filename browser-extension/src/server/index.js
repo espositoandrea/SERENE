@@ -7,7 +7,6 @@ const path = require('path');
 const { MongoClient } = require('mongodb');
 
 const app = express();
-const port = 1880;
 const requestSizeLimit = '50mb';
 
 MongoClient.connect(process.env.DB_HOST, (err, client) => {
@@ -25,16 +24,17 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
     app.use(bodyParser.urlencoded({ limit: requestSizeLimit, extended: false }));
     app.set('views', path.join(__dirname, 'views'));
     app.set('view engine', 'ejs');
-    app.set('layout extractScripts', true)
+    app.set('layout', 'layouts/layout');
+    app.set('layout extractScripts', true);
     app.use(expressLayouts);
 
     app.use('/assets', express.static(path.join(__dirname, 'assets')));
-    
-    // ROUTES
-    
-    app.get('/', (req, res) => res.render('home'));
 
-    app.get('/survey', (req, res) => res.render('survey', { survey: require("./survey/survey-data") }));
+    // ROUTES
+
+    app.get('/', (req, res) => res.render('home', { title: 'Home' }));
+
+    app.get('/survey', (req, res) => res.render('survey', { title: 'Survey', survey: require("./survey/survey-data") }));
 
     app.post("/data/store", async (request, response) => {
         const data = JSON.parse(request.body.data);
@@ -68,7 +68,7 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
         });
     });
 
-    app.listen(port, () => {
-        console.log(`Listening on port ${port}`);
+    app.listen(process.env.PORT, () => {
+        console.log(`Listening on port ${process.env.PORT}`);
     });
 });
