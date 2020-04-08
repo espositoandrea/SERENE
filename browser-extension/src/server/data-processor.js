@@ -49,7 +49,7 @@ class DataProcessor {
         if(!data) return;
         if(!Array.isArray(data)) data = [data];
 
-        DataProcessor._analyzeEmotions(data);
+        // DataProcessor._analyzeEmotions(data);
     }
 }
 
