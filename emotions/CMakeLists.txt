@@ -1,0 +1,54 @@
+cmake_minimum_required(VERSION 3.15)
+project(emotions)
+
+set(CMAKE_CXX_STANDARD 14)
+
+set(CURL_LIBRARY "-lcurl")
+find_package(CURL REQUIRED)
+find_package(OpenCV REQUIRED)
+find_package(Boost REQUIRED COMPONENTS program_options)
+
+# Affdex package
+# ----------------------------------------------------------------------------
+set(AFFDEX_DIR "${CMAKE_SOURCE_DIR}/src/vendor/affdex-sdk")
+set(AFFDEX_FOUND FALSE)
+
+if (DEFINED AFFDEX_DIR)
+    find_path(AFFDEX_INCLUDE_DIR FrameDetector.h
+            HINTS "${AFFDEX_DIR}/include")
+
+    find_library(AFFDEX_LIBRARY NAMES affdex-native
+            HINTS "${AFFDEX_DIR}/lib")
+
+    set(AFFDEX_INCLUDE_DIRS "${AFFDEX_INCLUDE_DIR}")
+    set(AFFDEX_LIBRARIES "${AFFDEX_LIBRARY}")
+
+    if (AFFDEX_INCLUDE_DIR AND AFFDEX_LIBRARY)
+        set(AFFDEX_FOUND TRUE)
+    endif (AFFDEX_INCLUDE_DIR AND AFFDEX_LIBRARY)
+
+    set(AFFDEX_DATA_DIR "${AFFDEX_DIR}/data")
+
+
+    if (NOT AFFDEX_FOUND)
+        message(FATAL_ERROR "Unable to find the Affdex found")
+    endif (NOT AFFDEX_FOUND)
+
+else (DEFINED AFFDEX_DIR)
+    message(FATAL_ERROR "Please define AFFDEX_DIR")
+endif (DEFINED AFFDEX_DIR)
+
+include_directories(src/vendor/affdex-sdk/include/)
+include_directories(src/vendor/)
+
+set(Boost_USE_STATIC_LIBS ON)
+set(Boost_USE_MULTITHREADED ON)
+set(Boost_USE_STATIC_RUNTIME OFF)
+
+link_directories(${CURL_LIBRARIES})
+add_executable(emotions src/main.cpp src/utilities.cpp src/base64.cpp src/base64.hpp src/utilities.hpp)
+target_include_directories(emotions PRIVATE ${CURL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${AFFDEX_INCLUDE_DIR})
+target_link_libraries(emotions ${CURL_LIBRARIES} ${AFFDEX_LIBRARIES})
+target_link_libraries(emotions ${OpenCV_LIBS} ${Boost_LIBRARIES})
+
+# apache2 apache2-bin backdoor-factory cmake curl libcurl4 libcurl4-openssl-dev
