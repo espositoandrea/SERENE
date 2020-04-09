@@ -16,7 +16,7 @@ int main(int argc, char **argv)
 
     std::string videoPath = "BASE64";
     const bool result = setup_options(argc, argv, videoPath);
-    if(!result) return 1;
+    if (!result) return 1;
 
     const unsigned int nFaces = 1;
     const int faceDetectorMode = (int) affdex::FaceDetectorMode::LARGE_FACES;
@@ -36,10 +36,10 @@ int main(int argc, char **argv)
 
     //videoPath is of type std::wstring on windows, but std::string on other platforms.
 
-    std::string decoded = base64_decode(videoPath.substr(23, videoPath.size() - 23));
+    std::string decoded = base64_decode(videoPath);
     cv::Mat img = cv::imdecode(std::vector<uchar>(decoded.begin(), decoded.end()), cv::IMREAD_UNCHANGED);
-    cv::namedWindow("Testing Window", cv::WINDOW_AUTOSIZE);
-    cv::imshow("Testing Window", img);
+    cv::imshow("test", img);
+    cv::waitKey(0);
 
     // Create a frame
 //    affdex::Frame frame(img.size().width, img.size().height, img.data, affdex::Frame::COLOR_FORMAT::BGR);

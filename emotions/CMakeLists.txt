@@ -43,7 +43,7 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-add_executable(emotions src/main.cpp src/utilities.cpp src/base64.cpp src/base64.hpp src/utilities.hpp)
+add_executable(emotions src/main.cpp src/utilities.cpp src/base64.cpp src/base64.hpp src/utilities.hpp src/data_uri.cpp src/data_uri.hpp)
 target_include_directories(emotions PRIVATE ${Boost_INCLUDE_DIRS} ${AFFDEX_INCLUDE_DIR})
 target_link_libraries(emotions ${AFFDEX_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 

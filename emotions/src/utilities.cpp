@@ -12,6 +12,7 @@
 #include <boost/program_options.hpp>
 
 #include "utilities.hpp"
+#include "data_uri.hpp"
 
 bool setup_options(int argc, char **argv,
                    std::string &image)
@@ -34,20 +35,18 @@ bool setup_options(int argc, char **argv,
             return false;
         }
 
-        std::regex exp("^data:.*?;base64,(.*?)$");
-        std::smatch matches;
-        if (std::regex_search(image, matches, exp))
+        if (data_uri::is_data_uri(image))
         {
-            image = matches[1];
+            image = data_uri(image).get_data();
         }
         else
         {
             std::ifstream file(image, std::ios::in | std::ios::binary);
             image = std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 
-            if (std::regex_search(image, matches, exp))
+            if (data_uri::is_data_uri(image))
             {
-                image = matches[1];
+                image = data_uri(image).get_data();
             }
             else
             {
