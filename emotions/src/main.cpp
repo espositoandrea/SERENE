@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include <opencv2/highgui/highgui.hpp>
+#include <opencv2/core/core.hpp>
 #include <opencv/cv.hpp>
 
 #include <PhotoDetector.h>
@@ -33,8 +35,11 @@ int main(int argc, char **argv)
 //    detector->start();
 
     //videoPath is of type std::wstring on windows, but std::string on other platforms.
-    std::string decoded = base64_decode(videoPath);
+
+    std::string decoded = base64_decode(videoPath.substr(23, videoPath.size() - 23));
     cv::Mat img = cv::imdecode(std::vector<uchar>(decoded.begin(), decoded.end()), cv::IMREAD_UNCHANGED);
+    cv::namedWindow("Testing Window", cv::WINDOW_AUTOSIZE);
+    cv::imshow("Testing Window", img);
 
     // Create a frame
 //    affdex::Frame frame(img.size().width, img.size().height, img.data, affdex::Frame::COLOR_FORMAT::BGR);

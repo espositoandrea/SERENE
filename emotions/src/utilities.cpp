@@ -6,6 +6,8 @@
 #define EMOTIONS_UTILITIES_CPP
 
 #include <iostream>
+#include <regex>
+#include <fstream>
 
 #include <boost/program_options.hpp>
 
@@ -30,6 +32,27 @@ bool setup_options(int argc, char **argv,
         {
             std::cout << description << "\n";
             return false;
+        }
+
+        std::regex exp("^data:.*?;base64,(.*?)$");
+        std::smatch matches;
+        if (std::regex_search(image, matches, exp))
+        {
+            image = matches[1];
+        }
+        else
+        {
+            std::ifstream file(image, std::ios::in | std::ios::binary);
+            image = std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+
+            if (std::regex_search(image, matches, exp))
+            {
+                image = matches[1];
+            }
+            else
+            {
+                return false;
+            }
         }
     }
     catch (po::error &e)

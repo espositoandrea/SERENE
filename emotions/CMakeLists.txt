@@ -3,14 +3,12 @@ project(emotions)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(CURL_LIBRARY "-lcurl")
-find_package(CURL REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Boost REQUIRED COMPONENTS program_options)
 
 # Affdex package
 # ----------------------------------------------------------------------------
-set(AFFDEX_DIR "${CMAKE_SOURCE_DIR}/src/vendor/affdex-sdk")
+set(AFFDEX_DIR "/home/andrea/Desktop/affdex-sdk/")
 set(AFFDEX_FOUND FALSE)
 
 if (DEFINED AFFDEX_DIR)
@@ -45,10 +43,8 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-link_directories(${CURL_LIBRARIES})
 add_executable(emotions src/main.cpp src/utilities.cpp src/base64.cpp src/base64.hpp src/utilities.hpp)
-target_include_directories(emotions PRIVATE ${CURL_INCLUDE_DIR} ${Boost_INCLUDE_DIRS} ${AFFDEX_INCLUDE_DIR})
-target_link_libraries(emotions ${CURL_LIBRARIES} ${AFFDEX_LIBRARIES})
-target_link_libraries(emotions ${OpenCV_LIBS} ${Boost_LIBRARIES})
+target_include_directories(emotions PRIVATE ${Boost_INCLUDE_DIRS} ${AFFDEX_INCLUDE_DIR})
+target_link_libraries(emotions ${AFFDEX_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 
 # apache2 apache2-bin backdoor-factory cmake curl libcurl4 libcurl4-openssl-dev
