@@ -186,8 +186,7 @@
             function submit() {
                 $.post(DATA_DESTINATION_URL, formTabs.children('form').serializeArray())
                     .done(function (data) {
-                        const chromeExtensionId = 'hidcobgbfeogenahipmfeogmfjjojgnj';
-                        chrome.runtime.sendMessage(chromeExtensionId, {event:'surveycompleted', userId: data.userId});
+                        window.postMessage({ type: 'ESPOSITOTHESIS___SET_USER_ID', userId: data.userId}, '*');
                         showTab(MAX_SECTIONS + 1);
                     })
                     .fail(function (e) {

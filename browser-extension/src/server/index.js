@@ -56,7 +56,7 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
     });
 
     app.post("/survey/store", (request, response) => {
-        let userData = request.query;
+        let userData = request.body;
 
         db.collection('users').insertOne(userData, (err, result) => {
             if (err) {

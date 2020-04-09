@@ -20,13 +20,13 @@ class DataProcessor {
                     await new Promise((resolve, reject) => {
                         let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['-i', el.image]);
                         analysis.stdout.on('data', data => {
-                            console.log("NOW:", data.toString());
+                            // console.log("NOW:", data.toString());
                             // Save the results in data
                             el.emotions = JSON.parse(data.toString());
                         });
                         analysis.on('close', code => {
                             resolve(code);
-                            console.log('END', code);
+                            // console.log('END', code);
                         });
                     });
                 }

@@ -60,3 +60,11 @@ iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
 iframe.style.display = 'none';
 document.body.appendChild(iframe);
 chrome.runtime.sendMessage({ event: 'webcampermission' });
+
+window.addEventListener('message', function(event){
+    if(event.source != window) return;
+
+    if(event.data.type && event.data.type === "ESPOSITOTHESIS___SET_USER_ID") {
+        chrome.runtime.sendMessage({ event: 'surveycompleted', userId: event.data.userId });
+    }
+});
