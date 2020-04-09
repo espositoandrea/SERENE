@@ -15,7 +15,7 @@
 
 int main(int argc, char **argv)
 {
-    std::cout << "Hello World!\n";
+    // std::cout << "Hello World!\n";
 
     std::string videoPath = "BASE64";
     const bool result = setup_options(argc, argv, videoPath);

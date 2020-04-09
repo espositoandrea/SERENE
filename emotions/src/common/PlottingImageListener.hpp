@@ -1,4 +1,10 @@
-#pragma once
+
+/**
+ * @author Affectiva, heavily modified by Andrea Esposito.
+ */
+
+#ifndef PLOTTING_IMAGE_LISTENERS_HPP
+#define PLOTTING_IMAGE_LISTENERS_HPP
 
 
 #include <iostream>
@@ -40,19 +46,10 @@ public:
 
 
     PlottingImageListener(std::ostream &csv, const bool draw_display)
-        : fStream(csv), mDrawDisplay(draw_display), mStartT(std::chrono::system_clock::now()),
-        mCaptureLastTS(-1.0f), mCaptureFPS(-1.0f),
-        mProcessLastTS(-1.0f), mProcessFPS(-1.0f)
+            : fStream(csv), mDrawDisplay(draw_display), mStartT(std::chrono::system_clock::now()),
+              mCaptureLastTS(-1.0f), mCaptureFPS(-1.0f),
+              mProcessLastTS(-1.0f), mProcessFPS(-1.0f)
     {
-
-        fStream << "TimeStamp,faceId,interocularDistance,glasses,age,ethnicity,gender,dominantEmoji,";
-        for (std::string angle : viz.HEAD_ANGLES) fStream << angle << ",";
-        for (std::string emotion : viz.EMOTIONS) fStream << emotion << ",";
-        for (std::string expression : viz.EXPRESSIONS) fStream << expression << ",";
-        for (std::string emoji : viz.EMOJIS) fStream << emoji << ",";
-        fStream << std::endl;
-        fStream.precision(4);
-        fStream << std::fixed;
     }
 
     cv::Point2f minPoint(VecFeaturePoint points)
@@ -125,66 +122,68 @@ public:
         mCaptureLastTS = image.getTimestamp();
     };
 
-    void outputToFile(const std::map<FaceId, Face> faces, const double timeStamp)
+    static void printFeatures(rapidjson::Writer<rapidjson::StringBuffer> &w, float *features, const char *key,
+                              const std::vector<std::string> &viz)
     {
-        if (faces.empty())
+        w.Key(key);
+        w.StartObject();
+        for (const std::string &property : viz)
         {
-            fStream << timeStamp << ",nan,nan,no,unknown,unknown,unknown,unknown,";
-            for (std::string angle : viz.HEAD_ANGLES) fStream << "nan,";
-            for (std::string emotion : viz.EMOTIONS) fStream << "nan,";
-            for (std::string expression : viz.EXPRESSIONS) fStream << "nan,";
-            for (std::string emoji : viz.EMOJIS) fStream << "nan,";
-            fStream << std::endl;
+            w.Key(property.c_str());
+            w.Double(*features);
+            features++;
         }
-        for (auto & face_id_pair : faces)
+        w.EndObject();
+    }
+
+    void outputToFile(const std::map<FaceId, Face> &faces, const double timeStamp)
+    {
+        rapidjson::StringBuffer s;
+        rapidjson::Writer<rapidjson::StringBuffer> w(s);
+        w.StartObject();
+//        if (faces.empty())
+//        {
+//            fStream << timeStamp << ",nan,nan,no,unknown,unknown,unknown,unknown,";
+//            for (std::string angle : viz.HEAD_ANGLES) fStream << "nan,";
+//            for (std::string emotion : viz.EMOTIONS) fStream << "nan,";
+//            for (std::string expression : viz.EXPRESSIONS) fStream << "nan,";
+//            for (std::string emoji : viz.EMOJIS) fStream << "nan,";
+//            fStream << std::endl;
+//        }
+        for (auto &face_id_pair : faces)
         {
             Face f = face_id_pair.second;
 
-            fStream << timeStamp << ","
-                << f.id << ","
-                << f.measurements.interocularDistance << ","
-                << viz.GLASSES_MAP[f.appearance.glasses] << ","
-                << viz.AGE_MAP[f.appearance.age] << ","
-                << viz.ETHNICITY_MAP[f.appearance.ethnicity] << ","
-                << viz.GENDER_MAP[f.appearance.gender] << ","
-                << affdex::EmojiToString(f.emojis.dominantEmoji) << ",";
+            w.Key("faceId");
+            w.Uint(f.id);
+            w.Key("dominantEmoji");
+            w.String(affdex::EmojiToString(f.emojis.dominantEmoji).c_str());
 
-            rapidjson::StringBuffer s; rapidjson::Writer<rapidjson::StringBuffer> w(s);
+            w.Key("measurements");
             w.StartObject();
-            float *values = (float *)&f.measurements.orientation;
-            for (std::string angle : viz.HEAD_ANGLES)
-            {
-                w.Key(angle.c_str());
-                w.Double(*values);
-//                fStream << (*values) << ",";
-                values++;
-            }
+            w.Key("interocularDistance");
+            w.Double(f.measurements.interocularDistance);
+            printFeatures(w, (float *) &f.measurements.orientation, "orientation", viz.HEAD_ANGLES);
             w.EndObject();
-            fStream<<s.GetString();
 
-            values = (float *)&f.emotions;
-            for (std::string emotion : viz.EMOTIONS)
-            {
-                fStream << (*values) << ",";
-                values++;
-            }
+            w.Key("appearance");
+            w.StartObject();
+            w.Key("glasses");
+            w.Bool(f.appearance.glasses == affdex::Glasses::Yes);
+            w.Key("age");
+            w.String(viz.AGE_MAP[f.appearance.age].c_str());
+            w.Key("ethnicity");
+            w.String(viz.ETHNICITY_MAP[f.appearance.ethnicity].c_str());
+            w.Key("gender");
+            w.String(viz.GENDER_MAP[f.appearance.gender].c_str());
+            w.EndObject();
 
-            values = (float *)&f.expressions;
-            for (std::string expression : viz.EXPRESSIONS)
-            {
-                fStream << (*values) << ",";
-                values++;
-            }
-
-            values = (float *)&f.emojis;
-            for (std::string emoji : viz.EMOJIS)
-            {
-                fStream << (*values) << ",";
-                values++;
-            }
-
-            fStream << std::endl;
+            printFeatures(w, (float *) &f.emotions, "emotions", viz.EMOTIONS);
+            printFeatures(w, (float *) &f.emotions, "expressions", viz.EXPRESSIONS);
+            printFeatures(w, (float *) &f.emojis, "emojis", viz.EMOJIS);
         }
+        w.EndObject();
+        fStream << s.GetString() << std::endl;
     }
 
     std::vector<cv::Point2f> CalculateBoundingBox(VecFeaturePoint points)
@@ -220,7 +219,7 @@ public:
         cv::Mat img = cv::Mat(image.getHeight(), image.getWidth(), CV_8UC3, imgdata.get());
         viz.updateImage(img);
 
-        for (auto & face_id_pair : faces)
+        for (auto &face_id_pair : faces)
         {
             Face f = face_id_pair.second;
             VecFeaturePoint points = f.featurePoints;
@@ -241,3 +240,5 @@ public:
     }
 
 };
+
+#endif
