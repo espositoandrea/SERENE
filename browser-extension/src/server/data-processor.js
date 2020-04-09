@@ -13,25 +13,15 @@ class DataProcessor {
     static _analyzeEmotions(data) {
         try {
             // Analyze the images in a browser (needed by Affdex)
-            const puppeteer = require('puppeteer');
-            const results = await (async () => {
-                const browser = await puppeteer.launch();
-                const page = await browser.newPage();
-                await page.addScriptTag({ path: require.resolve('jquery') });
-                await page.addScriptTag({ path: require.resolve('lodash') });
-                await page.addScriptTag({ path: './emotion-analysis/affdex/affdex.js' });
-                await page.addScriptTag({ path: './emotion-analysis/emotion-analysis.js' });
-                page.on('console', msg => console.log('PAGE LOG:', msg.text()));
-
-                const res = await page.evaluate((image) => {
-                    return window.EmotionAnalysis.analyzePhoto(image);
-                }, data.map(e => e.image).filter(e => e));
-                await browser.close();
-                return res;
-            })();
-            // Save the results in data
+            const { spawn } = require('child_process');
             data.forEach((el, index) => {
-                if (el.image) el.emotions = results[index];
+                if (el.image) {
+                    let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['-i', el.image]);
+                    analysis.stdout.on('data', data => {
+                        // Save the results in data
+                        el.emotions = JSON.parse(data);
+                    });
+                }
             });
         } catch (e) {
             // TODO: Analysis error. Handle this error.
