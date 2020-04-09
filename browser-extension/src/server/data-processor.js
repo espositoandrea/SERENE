@@ -10,19 +10,27 @@ class DataProcessor {
      * 
      * @param {Object} data The data to work on.
      */
-    static _analyzeEmotions(data) {
+    static async _analyzeEmotions(data) {
         try {
             // Analyze the images in a browser (needed by Affdex)
             const { spawn } = require('child_process');
-            data.forEach((el, index) => {
+            for (let index = 0; index < data.length; index++){
+                let el = data[index];
                 if (el.image) {
-                    let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['-i', el.image]);
-                    analysis.stdout.on('data', data => {
-                        // Save the results in data
-                        el.emotions = JSON.parse(data);
+                    await new Promise((resolve, reject) => {
+                        let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['-i', el.image]);
+                        analysis.stdout.on('data', data => {
+                            console.log("NOW:", data.toString());
+                            // Save the results in data
+                            el.emotions = JSON.parse(data.toString());
+                        });
+                        analysis.on('close', code => {
+                            resolve(code);
+                            console.log('END', code);
+                        });
                     });
                 }
-            });
+            }
         } catch (e) {
             // TODO: Analysis error. Handle this error.
             console.error("Analysis error", e);
@@ -35,12 +43,12 @@ class DataProcessor {
      *
      * @param {Object|Array} data The data to be processed.
      */
-    static process(data){
+    static async process(data){
         if(!data) return;
         if(!Array.isArray(data)) data = [data];
 
-        // DataProcessor._analyzeEmotions(data);
+        await DataProcessor._analyzeEmotions(data);
     }
 }
 
-module.exports.default = DataProcessor;
+module.exports = DataProcessor;

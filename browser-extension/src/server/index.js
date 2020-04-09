@@ -42,16 +42,17 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
         response.send({ done: true, errors: null });
 
         const DataProcessor = require('./data-processor');
-        DataProcessor.process(data);
+        DataProcessor.process(data)
+            .then(()=>{
+                db.collection('interactions').insertMany(data, (err, result) => {
+                    if (err) {
+                        // TODO: There was an error in writing to the DB: handle this error
+                        return console.log(err);
+                    }
 
-        db.collection('interactions').insertMany(data, (err, result) => {
-            if (err) {
-                // TODO: There was an error in writing to the DB: handle this error
-                return console.log(err);
-            }
-
-            console.log('saved to database');
-        });
+                    console.log('saved to database');
+                });
+            });
     });
 
     app.post("/survey/store", (request, response) => {
