@@ -14,43 +14,55 @@
 #include "utilities.hpp"
 #include "data_uri.hpp"
 
-bool setup_options(int argc, char **argv,
-                   std::string &image)
+exit_codes setup_options(int argc, char **argv,
+                   std::vector <std::string> &images)
 {
     namespace po = boost::program_options;
 
-    po::options_description description("Analyze the emotions of an image using Affectiva");
-    description.add_options()
+    po::options_description options("Analyze the emotions of an image using Affectiva");
+    options.add_options()
             ("help,h", "Display this help message")
-            ("image,i", po::value<std::string>(&image)->required(), "The image to be analyzed (as a data URI)");
+            ("image,i", po::value < std::vector < std::string > > (&images)->multitoken(),
+             "The image to be analyzed (as a data URI)");
+
+    po::positional_options_description arguments;
+    arguments.add("image", -1);
+
     po::variables_map args = nullptr;
     try
     {
-        po::store(po::parse_command_line(argc, argv, description), args);
+        po::store(po::command_line_parser(argc, argv).options(options).positional(arguments).run(), args);
         po::notify(args);
 
         if (args.count("help"))
         {
-            std::cout << description << "\n";
-            return false;
+            std::cout << options << "\n";
+            return exit_codes::HALT;
+        }
+        else if (!args.count("image"))
+        {
+            throw po::error("You must specify at least an image!");
         }
 
-        if (data_uri::is_data_uri(image))
+        for (auto &image: images)
         {
-            image = data_uri(image).get_data();
-        }
-        else
-        {
-            std::ifstream file(image, std::ios::in | std::ios::binary);
-            image = std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
-
             if (data_uri::is_data_uri(image))
             {
                 image = data_uri(image).get_data();
             }
             else
             {
-                return false;
+                std::ifstream file(image, std::ios::in | std::ios::binary);
+                image = std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
+
+                if (data_uri::is_data_uri(image))
+                {
+                    image = data_uri(image).get_data();
+                }
+                else
+                {
+                    throw po::error("A given image is invalid!");
+                }
             }
         }
     }
@@ -58,15 +70,15 @@ bool setup_options(int argc, char **argv,
     {
         std::cerr << "ERROR: " << e.what() << std::endl << std::endl;
         std::cerr << "For help, use the -h option." << std::endl << std::endl;
-        return false;
+        return exit_codes::ARGUMENT_ERROR;
     }
     catch (...)
     {
         std::cerr << "Unknown error!\n";
-        return false;
+        return exit_codes::UNKNOWN_ARGUMENT_ERROR;
     }
 
-    return true;
+    return exit_codes::OK;
 }
 
 #endif //EMOTIONS_UTILITIES_CPP

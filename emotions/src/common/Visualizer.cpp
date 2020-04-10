@@ -4,33 +4,33 @@
 #include <algorithm>
 
 Visualizer::Visualizer():
-  GREEN_COLOR_CLASSIFIERS({
-    "joy"
-  }),
-  RED_COLOR_CLASSIFIERS({
-    "anger", "disgust", "sadness", "fear", "contempt"
-  })
+        GREEN_COLOR_CLASSIFIERS({
+                                        "joy"
+                                }),
+        RED_COLOR_CLASSIFIERS({
+                                      "anger", "disgust", "sadness", "fear", "contempt"
+                              })
 {
     logo_resized = false;
     logo = cv::imdecode(cv::InputArray(small_logo), CV_LOAD_IMAGE_UNCHANGED);
 
     EXPRESSIONS = {
-        "smile", "innerBrowRaise", "browRaise", "browFurrow", "noseWrinkle",
-        "upperLipRaise", "lipCornerDepressor", "chinRaise", "lipPucker", "lipPress",
-        "lipSuck", "mouthOpen", "smirk", "eyeClosure", "attention", "eyeWiden", "cheekRaise",
-        "lidTighten", "dimpler", "lipStretch", "jawDrop"
+            "smile", "innerBrowRaise", "browRaise", "browFurrow", "noseWrinkle",
+            "upperLipRaise", "lipCornerDepressor", "chinRaise", "lipPucker", "lipPress",
+            "lipSuck", "mouthOpen", "smirk", "eyeClosure", "attention", "eyeWiden", "cheekRaise",
+            "lidTighten", "dimpler", "lipStretch", "jawDrop"
     };
 
     EMOTIONS = {
-        "joy", "fear", "disgust", "sadness", "anger",
-        "surprise", "contempt", "valence", "engagement"
+            "joy", "fear", "disgust", "sadness", "anger",
+            "surprise", "contempt", "valence", "engagement"
     };
 
     HEAD_ANGLES = { "pitch", "yaw", "roll" };
 
 
     EMOJIS = std::vector<std::string> {
-        "relaxed", "smiley", "laughing",
+            "relaxed", "smiley", "laughing",
             "kissing", "disappointed",
             "rage", "smirk", "wink",
             "stuckOutTongueWinkingEye", "stuckOutTongue",
@@ -38,35 +38,35 @@ Visualizer::Visualizer():
     };
 
     GENDER_MAP = std::map<affdex::Gender, std::string> {
-        { affdex::Gender::Male, "male" },
-        { affdex::Gender::Female, "female" },
-        { affdex::Gender::Unknown, "unknown" },
+            { affdex::Gender::Male, "male" },
+            { affdex::Gender::Female, "female" },
+            { affdex::Gender::Unknown, "unknown" },
 
     };
 
-    GLASSES_MAP = std::map<affdex::Glasses, std::string> {
-        { affdex::Glasses::Yes, "yes" },
-        { affdex::Glasses::No, "no" }
+    GLASSES_MAP = std::map<affdex::Glasses, bool> {
+            { affdex::Glasses::Yes, true },
+            { affdex::Glasses::No, false }
     };
 
     AGE_MAP = std::map<affdex::Age, std::string> {
-        { affdex::Age::AGE_UNKNOWN, "unknown"},
-        { affdex::Age::AGE_UNDER_18, "under 18" },
-        { affdex::Age::AGE_18_24, "18-24" },
-        { affdex::Age::AGE_25_34, "25-34" },
-        { affdex::Age::AGE_35_44, "35-44" },
-        { affdex::Age::AGE_45_54, "45-54" },
-        { affdex::Age::AGE_55_64, "55-64" },
-        { affdex::Age::AGE_65_PLUS, "65 plus" }
+            { affdex::Age::AGE_UNKNOWN, "unknown"},
+            { affdex::Age::AGE_UNDER_18, "under 18" },
+            { affdex::Age::AGE_18_24, "18-24" },
+            { affdex::Age::AGE_25_34, "25-34" },
+            { affdex::Age::AGE_35_44, "35-44" },
+            { affdex::Age::AGE_45_54, "45-54" },
+            { affdex::Age::AGE_55_64, "55-64" },
+            { affdex::Age::AGE_65_PLUS, "65 plus" }
     };
 
     ETHNICITY_MAP = std::map<affdex::Ethnicity, std::string> {
-        { affdex::Ethnicity::UNKNOWN, "unknown"},
-        { affdex::Ethnicity::CAUCASIAN, "caucasian" },
-        { affdex::Ethnicity::BLACK_AFRICAN, "black african" },
-        { affdex::Ethnicity::SOUTH_ASIAN, "south asian" },
-        { affdex::Ethnicity::EAST_ASIAN, "east asian" },
-        { affdex::Ethnicity::HISPANIC, "hispanic" }
+            { affdex::Ethnicity::UNKNOWN, "unknown"},
+            { affdex::Ethnicity::CAUCASIAN, "caucasian" },
+            { affdex::Ethnicity::BLACK_AFRICAN, "black african" },
+            { affdex::Ethnicity::SOUTH_ASIAN, "south asian" },
+            { affdex::Ethnicity::EAST_ASIAN, "east asian" },
+            { affdex::Ethnicity::HISPANIC, "hispanic" }
     };
 }
 
@@ -106,17 +106,17 @@ void Visualizer::drawValues(const float * first, const std::vector<std::string> 
 
 void Visualizer::updateImage(cv::Mat output_img)
 {
-  img = output_img;
+    img = output_img;
 
-  if (!logo_resized)
-  {
-      double logo_width = (logo.size().width > img.size().width*0.25 ? img.size().width*0.25 : logo.size().width);
-      double logo_height = ((double)logo_width) * ((double)logo.size().height / logo.size().width);
-      cv::resize(logo, logo, cv::Size(logo_width, logo_height));
-      logo_resized = true;
-  }
-  cv::Mat roi = img(cv::Rect(img.cols - logo.cols - 10, 10, logo.cols, logo.rows));
-  overlayImage(logo, roi, cv::Point(0, 0));
+    if (!logo_resized)
+    {
+        double logo_width = (logo.size().width > img.size().width*0.25 ? img.size().width*0.25 : logo.size().width);
+        double logo_height = ((double)logo_width) * ((double)logo.size().height / logo.size().width);
+        cv::resize(logo, logo, cv::Size(logo_width, logo_height));
+        logo_resized = true;
+    }
+    cv::Mat roi = img(cv::Rect(img.cols - logo.cols - 10, 10, logo.cols, logo.rows));
+    overlayImage(logo, roi, cv::Point(0, 0));
 }
 
 void Visualizer::drawPoints(affdex::VecFeaturePoint points)
@@ -261,7 +261,7 @@ void Visualizer::drawHeadOrientation(affdex::Orientation headAngles, const int x
 }
 
 void Visualizer::drawAppearance(affdex::Appearance appearance, const int x, int &padding,
-                              bool align_right, cv::Scalar color)
+                                bool align_right, cv::Scalar color)
 {
     drawText("gender", GENDER_MAP[appearance.gender], cv::Point(x, padding += spacing), align_right, color );
     drawText("age", AGE_MAP[appearance.age], cv::Point(x, padding += spacing), align_right, color );

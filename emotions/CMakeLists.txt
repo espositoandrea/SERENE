@@ -8,7 +8,6 @@ find_package(Boost REQUIRED COMPONENTS program_options)
 
 # Affdex package
 # ----------------------------------------------------------------------------
-set(AFFDEX_DIR "/home/andrea/Desktop/affdex-sdk/")
 set(AFFDEX_FOUND FALSE)
 
 if (DEFINED AFFDEX_DIR)
@@ -43,7 +42,7 @@ set(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 set(Boost_USE_STATIC_RUNTIME OFF)
 
-add_executable(emotions src/main.cpp src/utilities.cpp src/base64.cpp src/base64.hpp src/utilities.hpp src/data_uri.cpp src/data_uri.hpp src/common/Visualizer.cpp)
+add_executable(emotions src/main.cpp src/utilities.cpp src/base64.cpp src/data_uri.cpp src/common/Visualizer.cpp src/common/PlottingImageListener.cpp)
 target_include_directories(emotions PRIVATE ${Boost_INCLUDE_DIRS} ${AFFDEX_INCLUDE_DIR})
 target_link_libraries(emotions ${AFFDEX_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
 

@@ -5,7 +5,9 @@
 #ifndef EMOTIONS_UTILITIES_HPP
 #define EMOTIONS_UTILITIES_HPP
 
-bool setup_options(int argc, char **argv,
-                   std::string &image);
+#include "exit_codes.hpp"
+
+exit_codes setup_options(int argc, char **argv,
+                   std::vector<std::string> &images);
 
 #endif //EMOTIONS_UTILITIES_HPP

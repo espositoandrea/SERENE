@@ -10,23 +10,23 @@
 #include "common/PlottingImageListener.hpp"
 #include "common/StatusListener.hpp"
 
+#include "exit_codes.hpp"
 #include "utilities.hpp"
 #include "base64.hpp"
 
 int main(int argc, char **argv)
 {
-    // std::cout << "Hello World!\n";
-
-    std::string videoPath = "BASE64";
-    const bool result = setup_options(argc, argv, videoPath);
-    if (!result) return 1;
+    std::vector <std::string> images;
+    const exit_codes result = setup_options(argc, argv, images);
+    if (result != exit_codes::OK) return static_cast<int>(result);
 
     const unsigned int nFaces = 1;
     const int faceDetectorMode = (int) affdex::FaceDetectorMode::LARGE_FACES;
 
-    std::shared_ptr<affdex::Detector> detector  = std::make_shared<affdex::PhotoDetector>(nFaces, (affdex::FaceDetectorMode) faceDetectorMode);
+    std::shared_ptr <affdex::Detector> detector = std::make_shared<affdex::PhotoDetector>(nFaces,
+                                                                                          (affdex::FaceDetectorMode) faceDetectorMode);
 
-    std::shared_ptr<PlottingImageListener> listenPtr(new PlottingImageListener(std::cout, false));
+    std::shared_ptr <PlottingImageListener> listenPtr(new PlottingImageListener());
 
     detector->setDetectAllEmotions(true);
     detector->setDetectAllExpressions(true);
@@ -37,41 +37,31 @@ int main(int argc, char **argv)
 
     detector->start();
 
-    std::shared_ptr<StatusListener> videoListenPtr = std::make_shared<StatusListener>();
+    std::shared_ptr <StatusListener> videoListenPtr = std::make_shared<StatusListener>();
     detector->setProcessStatusListener(videoListenPtr.get());
 
-    //videoPath is of type std::wstring on windows, but std::string on other platforms.
-
-    std::string decoded = base64_decode(videoPath);
-    cv::Mat img = cv::imdecode(std::vector<uchar>(decoded.begin(), decoded.end()), cv::IMREAD_UNCHANGED);
-
-    // Create a frame
-    affdex::Frame frame(img.size().width, img.size().height, img.data, affdex::Frame::COLOR_FORMAT::BGR);
-
-    ((affdex::PhotoDetector *) detector.get())->process(frame); //Process an image
-
-    do
+    for (const auto &image : images)
     {
-        if (listenPtr->getDataSize() > 0)
+        std::string decoded = base64_decode(image);
+        cv::Mat img = cv::imdecode(std::vector<uchar>(decoded.begin(), decoded.end()), cv::IMREAD_UNCHANGED);
+
+        affdex::Frame frame(img.size().width, img.size().height, img.data, affdex::Frame::COLOR_FORMAT::BGR);
+
+        ((affdex::PhotoDetector *) detector.get())->process(frame); //Process an image
+
+        do
         {
-            std::pair<Frame, std::map<FaceId, Face> > dataPoint = listenPtr->getData();
-            affdex::Frame frame = dataPoint.first;
-            std::map<FaceId, Face> faces = dataPoint.second;
-
-
-            if (false)
+            if (listenPtr->getDataSize() > 0)
             {
-                listenPtr->draw(faces, frame);
+                std::pair <Frame, std::map<FaceId, Face>> dataPoint = listenPtr->getData();
+                affdex::Frame frame = dataPoint.first;
+                std::map <FaceId, Face> faces = dataPoint.second;
+
+                listenPtr->addResult(faces, frame.getTimestamp());
             }
+        } while ((videoListenPtr->isRunning() || listenPtr->getDataSize() > 0));
+    }
 
-            std::cerr << "timestamp: " << frame.getTimestamp()
-                      << " cfps: " << listenPtr->getCaptureFrameRate()
-                      << " pfps: " << listenPtr->getProcessingFrameRate()
-                      << " faces: "<< faces.size() << std::endl;
-
-            listenPtr->outputToFile(faces, frame.getTimestamp());
-        }
-    } while ((videoListenPtr->isRunning() || listenPtr->getDataSize() > 0));
-
+    listenPtr->outputToFile(std::cout);
     return 0;
 }
