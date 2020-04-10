@@ -10,27 +10,22 @@ class DataProcessor {
      * 
      * @param {Object} data The data to work on.
      */
-    static async _analyzeEmotions(data) {
+    static _analyzeEmotions(data) {
         try {
             // Analyze the images in a browser (needed by Affdex)
-            const { spawn } = require('child_process');
-            for (let index = 0; index < data.length; index++){
-                let el = data[index];
-                if (el.image) {
-                    await new Promise((resolve, reject) => {
-                        let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['-i', el.image]);
-                        analysis.stdout.on('data', data => {
-                            // console.log("NOW:", data.toString());
-                            // Save the results in data
-                            el.emotions = JSON.parse(data.toString());
-                        });
-                        analysis.on('close', code => {
-                            resolve(code);
-                            // console.log('END', code);
-                        });
-                    });
+            const { spawnSync } = require('child_process');
+            let analysis = spawnSync(process.env.EMOTIONS_EXECUTABLE, data.filter(e => e).map(e => e.image));
+            let emotions = JSON.parse(analysis.stdout.toString());
+            let i = 0;
+            data.forEach(e => {
+                if(e.image) {
+                    e.emotions = emotions[i];
+                    i++;
                 }
-            }
+
+                // DELETING THE IMAGE
+                delete e.image;
+            });
         } catch (e) {
             // TODO: Analysis error. Handle this error.
             console.error("Analysis error", e);
@@ -43,11 +38,11 @@ class DataProcessor {
      *
      * @param {Object|Array} data The data to be processed.
      */
-    static async process(data){
-        if(!data) return;
-        if(!Array.isArray(data)) data = [data];
+    static process(data) {
+        if (!data) return;
+        if (!Array.isArray(data)) data = [data];
 
-        await DataProcessor._analyzeEmotions(data);
+        DataProcessor._analyzeEmotions(data);
     }
 }
 
