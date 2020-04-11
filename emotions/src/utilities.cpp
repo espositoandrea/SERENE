@@ -19,7 +19,7 @@ exit_codes setup_options(int argc, char **argv,
 {
     namespace po = boost::program_options;
 
-    po::options_description options("Analyze the emotions of an image using Affectiva");
+    po::options_description options("Available options");
     options.add_options()
             ("help,h", "Display this help message")
             ("image,i", po::value < std::vector < std::string > > (&images)->multitoken(),
@@ -36,7 +36,9 @@ exit_codes setup_options(int argc, char **argv,
 
         if (args.count("help"))
         {
-            std::cout << options << "\n";
+            std::cout << "Usage: " << argv[0] << " [options] IMAGE..." << std::endl;
+            std::cout << "Analyze the emotions of an image using Affectiva." << std::endl;
+            std::cout << std::endl << options << std::endl;
             return exit_codes::HALT;
         }
         else if (!args.count("image"))
