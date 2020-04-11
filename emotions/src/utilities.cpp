@@ -1,9 +1,10 @@
-//
-// Created by andrea on 08/04/20.
-//
-
-#ifndef EMOTIONS_UTILITIES_CPP
-#define EMOTIONS_UTILITIES_CPP
+/**
+ * \file utilities.cpp
+ * \brief Implementation of utilities.hpp.
+ *
+ * \author Andrea Esposito
+ * \date April 8, 2020
+ */
 
 #include <iostream>
 #include <regex>
@@ -14,24 +15,30 @@
 #include "utilities.hpp"
 #include "data_uri.hpp"
 
-exit_codes setup_options(int argc, char **argv,
-                   std::vector <std::string> &images)
+exit_codes setup_options(int argc, char **argv, std::vector <std::string> &images)
 {
     namespace po = boost::program_options;
 
     po::options_description options("Available options");
     options.add_options()
-            ("help,h", "Display this help message")
+            ("help,h", "Display this help message");
+
+    po::options_description hidden("Hidden options");
+    hidden.add_options()
             ("image,i", po::value < std::vector < std::string > > (&images)->multitoken(),
              "The image to be analyzed (as a data URI)");
 
     po::positional_options_description arguments;
     arguments.add("image", -1);
 
+    po::options_description all_options("Hidden options");
+    all_options.add(options);
+    all_options.add(hidden);
+
     po::variables_map args = nullptr;
     try
     {
-        po::store(po::command_line_parser(argc, argv).options(options).positional(arguments).run(), args);
+        po::store(po::command_line_parser(argc, argv).options(all_options).positional(arguments).run(), args);
         po::notify(args);
 
         if (args.count("help"))
@@ -82,5 +89,3 @@ exit_codes setup_options(int argc, char **argv,
 
     return exit_codes::OK;
 }
-
-#endif //EMOTIONS_UTILITIES_CPP

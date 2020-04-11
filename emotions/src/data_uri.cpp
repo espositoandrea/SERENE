@@ -1,6 +1,10 @@
-//
-// Created by andrea on 09/04/20.
-//
+/**
+ * \file data_uri.cpp
+ * \brief Implementation of data_uri.hpp
+ *
+ * \author Andrea Esposito
+ * \date April 9, 2020
+ */
 
 #include "data_uri.hpp"
 

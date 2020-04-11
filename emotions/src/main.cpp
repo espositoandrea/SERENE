@@ -1,3 +1,34 @@
+/*! \mainpage Emotion Analysis Tool
+ *
+ * \tableofcontents
+ *
+ * \section the-tool The tool
+ *
+ * This tool is responsible of the emotion analysis of images. It can be used
+ * through command line using its interface.
+ *
+ * ```
+ * emotions [<option>...] IMAGE...
+ *
+ * <option> := -h | --help
+ * ```
+ *
+ * Using the above CLI (Command Line Interface), the argument IMAGE can be used
+ * multiple times. It must represents either a file containing _only_ the \ref
+ * data_uri "data URI" of an image or the \ref data_uri "data URI" itself.
+ *
+ * \section the-project The project
+ */
+
+/**
+ * \file main.cpp
+ *
+ * \brief The main file.
+ *
+ * This file is the main file of the tool.
+ *
+ * \author Andrea Esposito <[github.com/espositoandrea](https://github.com/espositoandrea)>
+ */
 #include <iostream>
 
 #include <opencv2/highgui/highgui.hpp>
@@ -14,6 +45,15 @@
 #include "utilities.hpp"
 #include "base64.hpp"
 
+/**
+ * \brief The main entry point.
+ *
+ * This is the entry point of the tool.
+ *
+ * \param argc The length of `argv`.
+ * \param argv The array of arguments given through the command line.
+ * \return An \ref exit_codes "exit code" based on the execution.
+ */
 int main(int argc, char **argv)
 {
     std::vector <std::string> images;
@@ -42,7 +82,7 @@ int main(int argc, char **argv)
 
     for (const auto &image : images)
     {
-        std::string decoded = base64_decode(image);
+        std::string decoded = base64::decode(image);
         cv::Mat img = cv::imdecode(std::vector<uchar>(decoded.begin(), decoded.end()), cv::IMREAD_UNCHANGED);
 
         affdex::Frame frame(img.size().width, img.size().height, img.data, affdex::Frame::COLOR_FORMAT::BGR);
