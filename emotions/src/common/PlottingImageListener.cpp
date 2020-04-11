@@ -117,18 +117,22 @@ void PlottingImageListener::addResult(const std::map <FaceId, Face> &faces, cons
 {
     rapidjson::Value v;
     v.SetObject();
-//        if (faces.empty())
-//        {
-//            fStream << timeStamp << ",nan,nan,no,unknown,unknown,unknown,unknown,";
-//            for (std::string angle : viz.HEAD_ANGLES) fStream << "nan,";
-//            for (std::string emotion : viz.EMOTIONS) fStream << "nan,";
-//            for (std::string expression : viz.EXPRESSIONS) fStream << "nan,";
-//            for (std::string emoji : viz.EMOJIS) fStream << "nan,";
-//            fStream << std::endl;
-//        }
+    // if (faces.empty())
+    // {
+    //     fStream << timeStamp << ",nan,nan,no,unknown,unknown,unknown,unknown,";
+    //     for (std::string angle : viz.HEAD_ANGLES) fStream << "nan,";
+    //     for (std::string emotion : viz.EMOTIONS) fStream << "nan,";
+    //     for (std::string expression : viz.EXPRESSIONS) fStream << "nan,";
+    //     for (std::string emoji : viz.EMOJIS) fStream << "nan,";
+    //     fStream << std::endl;
+    // }
     auto &allocator = document.GetAllocator();
-    // NOTE: To save all faces, decomment this for and change the definition of f (along with the structure of the JSON)
+    // NOTE: To save all faces, decomment this 'for' (and comment the 'if') and
+    // change the definition of f (see the comment), alongside with the
+    // structure of the JSON 
+    //
     // for (auto &face_id_pair : faces)
+    if (!faces.empty())
     {
         Face f = faces.begin()->second; // To save all faces, change 'faces.begin()->' to 'face_id_pair.'
 
