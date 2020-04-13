@@ -1,0 +1,661 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The Emotion Analysis Tool &mdash; Emotions Analysis Tool  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The Browser Extension" href="extension.html" />
+    <link rel="prev" title="The Structure of the Repository" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Emotions Analysis Tool
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Emotion Analysis Tool</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-documentation">Code Documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="extension.html">The Browser Extension</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">The Server</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Emotions Analysis Tool</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>The Emotion Analysis Tool</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/emotions-tool.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-emotion-analysis-tool">
+<h1>The Emotion Analysis Tool<a class="headerlink" href="#the-emotion-analysis-tool" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>The tool can be used through CLI (or executed by another script).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">emotions</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;...</span><span class="p">]</span> <span class="n">IMAGE</span><span class="o">...</span>
+</pre></div>
+</div>
+<p>The argument <code class="docutils literal notranslate"><span class="pre">IMAGE</span></code> can be repeated several times. It must be either a data
+URI or the path to a file containing a data URI. The available options are:</p>
+<dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>Get the help message</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="code-documentation">
+<h2>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="_CPPv48data_uri">
+<span id="_CPPv38data_uri"></span><span id="_CPPv28data_uri"></span><span id="data_uri"></span><span class="target" id="classdata__uri"></span><em class="property">class </em><code class="sig-name descname">data_uri</code><a class="headerlink" href="#_CPPv48data_uri" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;data_uri.hpp&gt;</em><p>A utility class to handle data URIs. </p>
+<p>This class represents a data URI. A data URI is defined by <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">MDN</a> as a string with the followind sintax: <code class="docutils literal notranslate"><span class="pre">data:[&lt;mediatype&gt;][;</span><a class="reference internal" href="#namespacebase64"><span class="std std-ref"><span class="pre">base64</span></span></a><span class="pre">],&lt;data&gt;</span></code>. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="function">
+<dt id="_CPPv4N8data_uri8data_uriERKNSt6stringE">
+<span id="_CPPv3N8data_uri8data_uriERKNSt6stringE"></span><span id="_CPPv2N8data_uri8data_uriERKNSt6stringE"></span><span id="data_uri::data_uri__ssCR"></span><span class="target" id="classdata__uri_1a165605d80a014c6e4b7710845b1b1c16"></span><code class="sig-name descname">data_uri</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8data_uri8data_uriERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The class constructor. </p>
+<p>This constructor creates a <a class="reference internal" href="#classdata__uri"><span class="std std-ref">data_uri</span></a> from a string.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code>: The string representing the data uri.</p></li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><a class="reference internal" href="#classdata__uri_1_1string__not__uri"><span class="std std-ref"><span class="pre">data_uri::string_not_uri</span></span></a></code>: if <code class="docutils literal notranslate"><span class="pre">s</span></code> is not a valid data URI. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4NK8data_uri8get_typeEv">
+<span id="_CPPv3NK8data_uri8get_typeEv"></span><span id="_CPPv2NK8data_uri8get_typeEv"></span><span id="data_uri::get_typeC"></span><span class="target" id="classdata__uri_1ad6e326548d0dfa5bbbe9c2669411b51d"></span>std::string <code class="sig-name descname">get_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK8data_uri8get_typeEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the media type. </p>
+<p>This function returns the media type of the data URI.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The media type (<code class="docutils literal notranslate"><span class="pre">&lt;mediatype&gt;</span></code> in <code class="docutils literal notranslate"><span class="pre">data:&lt;mediatype&gt;;</span><a class="reference internal" href="#namespacebase64"><span class="std std-ref"><span class="pre">base64</span></span></a><span class="pre">,&lt;data&gt;</span></code>). </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4NK8data_uri8get_dataEv">
+<span id="_CPPv3NK8data_uri8get_dataEv"></span><span id="_CPPv2NK8data_uri8get_dataEv"></span><span id="data_uri::get_dataC"></span><span class="target" id="classdata__uri_1abdaaf7f55ee1e2c4fa41d17dd6fed06a"></span>std::string <code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK8data_uri8get_dataEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the data. </p>
+<p>This function returns the data contained in the data URI.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The data (<code class="docutils literal notranslate"><span class="pre">&lt;data&gt;</span></code> in <code class="docutils literal notranslate"><span class="pre">data:&lt;mediatype&gt;;</span><a class="reference internal" href="#namespacebase64"><span class="std std-ref"><span class="pre">base64</span></span></a><span class="pre">,&lt;data&gt;</span></code>). </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4NK8data_uri7get_uriEv">
+<span id="_CPPv3NK8data_uri7get_uriEv"></span><span id="_CPPv2NK8data_uri7get_uriEv"></span><span id="data_uri::get_uriC"></span><span class="target" id="classdata__uri_1a185ada68e77e608015d6bf265e7ce1d3"></span>std::string <code class="sig-name descname">get_uri</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK8data_uri7get_uriEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get the URI. </p>
+<p>This function returns the entire URI as a string.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The URI as a string. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="function">
+<dt id="_CPPv4N8data_uri11is_data_uriERKNSt6stringE">
+<span id="_CPPv3N8data_uri11is_data_uriERKNSt6stringE"></span><span id="_CPPv2N8data_uri11is_data_uriERKNSt6stringE"></span><span id="data_uri::is_data_uri__ssCR"></span><span class="target" id="classdata__uri_1a25847f2495afbd6352cd6ee5e1bc5c56"></span>bool <code class="sig-name descname">is_data_uri</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8data_uri11is_data_uriERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check if a string is a data URI. </p>
+<p>The function checks if a string is in the format <code class="docutils literal notranslate"><span class="pre">data:&lt;mediatype&gt;;</span><a class="reference internal" href="#namespacebase64"><span class="std std-ref"><span class="pre">base64</span></span></a><span class="pre">,&lt;data&gt;</span></code>.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>True if <code class="docutils literal notranslate"><span class="pre">s</span></code> is a data URI, false otherwise. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code>: The string to be checked </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Private Members</p>
+<dl class="member">
+<dt id="_CPPv4N8data_uri6m_typeE">
+<span id="_CPPv3N8data_uri6m_typeE"></span><span id="_CPPv2N8data_uri6m_typeE"></span><span id="data_uri::m_type__ss"></span><span class="target" id="classdata__uri_1a7b1d728fdc8279c3c99503db1b279728"></span>std::string <code class="sig-name descname">m_type</code><a class="headerlink" href="#_CPPv4N8data_uri6m_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv4N8data_uri6m_dataE">
+<span id="_CPPv3N8data_uri6m_dataE"></span><span id="_CPPv2N8data_uri6m_dataE"></span><span id="data_uri::m_data__ss"></span><span class="target" id="classdata__uri_1a1fb69f1bc56c5c536545d9ac6cb88924"></span>std::string <code class="sig-name descname">m_data</code><a class="headerlink" href="#_CPPv4N8data_uri6m_dataE" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="class">
+<dt id="_CPPv4N8data_uri14string_not_uriE">
+<span id="_CPPv3N8data_uri14string_not_uriE"></span><span id="_CPPv2N8data_uri14string_not_uriE"></span><span id="data_uri::string_not_uri"></span><span class="target" id="classdata__uri_1_1string__not__uri"></span><em class="property">class </em><code class="sig-name descname">string_not_uri</code> : <em class="property">public</em> exception<a class="headerlink" href="#_CPPv4N8data_uri14string_not_uriE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><em>#include &lt;data_uri.hpp&gt;</em><p>An exception raised if a string is not an URI. </p>
+<p>This exception is thrown if a string, assumed to be one, is not a data URI. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Private Functions</p>
+<dl class="function">
+<dt id="_CPPv4NK8data_uri14string_not_uri4whatEv">
+<span id="_CPPv3NK8data_uri14string_not_uri4whatEv"></span><span id="_CPPv2NK8data_uri14string_not_uri4whatEv"></span><span id="data_uri::string_not_uri::whatC"></span><span class="target" id="classdata__uri_1_1string__not__uri_1a75f923704c559ba25515a409ece4879f"></span><em class="property">const</em> char *<code class="sig-name descname">what</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK8data_uri14string_not_uri4whatEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="type">
+<dt id="_CPPv46base64">
+<span id="_CPPv36base64"></span><span id="_CPPv26base64"></span><span id="base64"></span><span class="target" id="namespacebase64"></span><em class="property">namespace </em><code class="sig-name descname">base64</code><a class="headerlink" href="#_CPPv46base64" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Namespace for dealing with <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> strings. </p>
+<p>This namespace contains utilities to deal with <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> strings. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv4N6base646encodeERKNSt6stringE">
+<span id="_CPPv3N6base646encodeERKNSt6stringE"></span><span id="_CPPv2N6base646encodeERKNSt6stringE"></span><span id="base64::encode__ssCR"></span><span class="target" id="namespacebase64_1a47c61bb5df3dae8cd38f44b6b69e5b4d"></span>std::string <code class="sig-name descname">encode</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6base646encodeERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Encode a string to <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a>. </p>
+<p>This function encodes a string to a <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> string.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The encoded string. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code>: The string to be encoded. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N6base646encodeEPKhj">
+<span id="_CPPv3N6base646encodeEPKhj"></span><span id="_CPPv2N6base646encodeEPKhj"></span><span id="base64::encode__unsigned-cCP.unsigned-i"></span><span class="target" id="namespacebase64_1a75634806af39e9fc4bd201fe97e644c3"></span>std::string <code class="sig-name descname">encode</code><span class="sig-paren">(</span>unsigned char<em class="property">const</em>  *<em>s</em>, unsigned int <em>len</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6base646encodeEPKhj" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Encode a string to <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a>. </p>
+<p>This function encodes a string to a <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> string.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The encoded string. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code>: The string to be encoded. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">len</span></code>: The length of the string <code class="docutils literal notranslate"><span class="pre">s</span></code>. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv4N6base646decodeERKNSt6stringE">
+<span id="_CPPv3N6base646decodeERKNSt6stringE"></span><span id="_CPPv2N6base646decodeERKNSt6stringE"></span><span id="base64::decode__ssCR"></span><span class="target" id="namespacebase64_1ac113404f22a064fcbaf015e9cab04bdf"></span>std::string <code class="sig-name descname">decode</code><span class="sig-paren">(</span>std::string<em class="property">const</em>  &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6base646decodeERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Decode a <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> string. </p>
+<p>This function decodes a <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> string to a binary string.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>The decoded string. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">s</span></code>: The string to be decoded. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="file">
+<dt>
+<span class="target" id="base64_8cpp"></span><em>file</em> <code class="sig-name descname">base64.cpp</code></dt>
+<dd><em>#include “base64.hpp”</em><em>#include &lt;iostream&gt;</em><p>Implementation of <a class="reference internal" href="#base64_8hpp"><span class="std std-ref">base64.hpp</span></a>. </p>
+<p><a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> encoding and decoding with C++.</p>
+<p><dl class="simple">
+<dt><strong>Version</strong></dt><dd><p>1.01.00</p>
+</dd>
+<dt><strong>Copyright</strong></dt><dd><p>Copyright (C) 2004-2017 René Nyffenegger<p> This source code is provided ‘as-is’, without any express or implied warranty. In no event will the author be held liable for any damages arising from the use of this software.</p>
+<p> Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions: </p>
+<ul class="simple">
+<li><p>The origin of this source code must not be misrepresented; you must not claim that you wrote the original source code. If you use this source code in a product, an acknowledgment in the product documentation would be appreciated but is not required. </p></li>
+<li><p>Altered source versions must be plainly marked as such, and must not be misrepresented as being the original source code. </p></li>
+<li><p>This notice may not be removed or altered from any source distribution. </p></li>
+</ul>
+<p>René Nyffenegger </p>
+<a class="reference external" href="mailto:rene&#46;nyffenegger&#37;&#52;&#48;adp-gmbh&#46;ch">rene<span>&#46;</span>nyffenegger<span>&#64;</span>adp-gmbh<span>&#46;</span>ch</a></p>
+</dd>
+<dt><strong>Author</strong></dt><dd><p><a class="reference external" href="https://renenyffenegger.ch/notes/development/Base64/Encoding-and-decoding-base-64-with-cpp">René Nyffenegger</a> </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv49is_base64h">
+<span id="_CPPv39is_base64h"></span><span id="_CPPv29is_base64h"></span><span id="is_base64__unsigned-c"></span><span class="target" id="base64_8cpp_1ac30e44d6346a447e9632f629932fb218"></span><em class="property">static</em> bool <code class="sig-name descname">is_base64</code><span class="sig-paren">(</span>unsigned char <em>c</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49is_base64h" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Variables</p>
+<dl class="member">
+<dt>
+<span class="target" id="base64_8cpp_1afacd58bf72ada31670f59541c2743643"></span><code class="sig-name descname">const std::string base64_chars=        &quot;ABCDEFGHIJKLMNOPQRSTUVWXYZ&quot;        &quot;abcdefghijklmnopqrstuvwxyz&quot;        &quot;0123456789+/&quot;</code></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="file">
+<dt>
+<span class="target" id="base64_8hpp"></span><em>file</em> <code class="sig-name descname">base64.hpp</code></dt>
+<dd><em>#include &lt;string&gt;</em><p>Encode and decode <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> string. </p>
+<p><dl class="simple">
+<dt><strong>Version</strong></dt><dd><p>1.01.00 </p>
+</dd>
+<dt><strong>Authors</strong></dt><dd><p><a class="reference external" href="https://renenyffenegger.ch/notes/development/Base64/Encoding-and-decoding-base-64-with-cpp">René Nyffenegger</a>, modified and documented by Andrea Esposito. </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="file">
+<dt>
+<span class="target" id="data__uri_8cpp"></span><em>file</em> <code class="sig-name descname">data_uri.cpp</code></dt>
+<dd><em>#include “data_uri.hpp”</em><p>Implementation of <a class="reference internal" href="#data__uri_8hpp"><span class="std std-ref">data_uri.hpp</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Andrea Esposito </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>April 9, 2020 </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Variables</p>
+<dl class="member">
+<dt id="_CPPv48PROTOCOL">
+<span id="_CPPv38PROTOCOL"></span><span id="_CPPv28PROTOCOL"></span><span id="PROTOCOL__ssC"></span><span class="target" id="data__uri_8cpp_1aa094b1356e3aa576d3e292b8d63dd1fc"></span><em class="property">const</em> std::string <code class="sig-name descname">PROTOCOL</code> = &quot;data:&quot;<a class="headerlink" href="#_CPPv48PROTOCOL" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+<dl class="member">
+<dt id="_CPPv46BASE64">
+<span id="_CPPv36BASE64"></span><span id="_CPPv26BASE64"></span><span id="BASE64__ssC"></span><span class="target" id="data__uri_8cpp_1ad5e3ec44979b867f2714f374bc92c08f"></span><em class="property">const</em> std::string <code class="sig-name descname">BASE64</code> = &quot;;base64,&quot;<a class="headerlink" href="#_CPPv46BASE64" title="Permalink to this definition">¶</a><br /></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="file">
+<dt>
+<span class="target" id="data__uri_8hpp"></span><em>file</em> <code class="sig-name descname">data_uri.hpp</code></dt>
+<dd><em>#include &lt;string&gt;</em><p>An header to manage data URIs. </p>
+<p>This header contains useful declaration to manage data URIs.</p>
+<p><dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Andrea Esposito </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>April 9, 2020 </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="file">
+<dt>
+<span class="target" id="exit__codes_8hpp"></span><em>file</em> <code class="sig-name descname">exit_codes.hpp</code></dt>
+<dd><p>An header to define the exit codes of the tool. </p>
+<p>This header contains the definition of all the exit codes of the tool</p>
+<p><dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Andrea Esposito </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>April 10, 2020 </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Enums</p>
+<dl class="enum">
+<dt id="_CPPv410exit_codes">
+<span id="_CPPv310exit_codes"></span><span id="_CPPv210exit_codes"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517"></span><em class="property">enum </em><code class="sig-name descname">exit_codes</code><a class="headerlink" href="#_CPPv410exit_codes" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>A collection of all the exit codes of the tool. </p>
+<p>This enum contains all the (expected) exit codes of the tool. </p>
+<p><em>Values:</em></p>
+<dl class="enumerator">
+<dt id="_CPPv42OK">
+<span id="_CPPv32OK"></span><span id="_CPPv22OK"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517ae0aa021e21dddbd6d8cecec71e9cf564"></span><code class="sig-name descname">OK</code> = 0<a class="headerlink" href="#_CPPv42OK" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The tool exited with no error completing its tasks. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv44HALT">
+<span id="_CPPv34HALT"></span><span id="_CPPv24HALT"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517abf2d798abfe8267da4f101692b6cfecd"></span><code class="sig-name descname">HALT</code> = 1<a class="headerlink" href="#_CPPv44HALT" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The tool exited with no error, but without completing its tasks. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv414ARGUMENT_ERROR">
+<span id="_CPPv314ARGUMENT_ERROR"></span><span id="_CPPv214ARGUMENT_ERROR"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517a33533d864578f42ec03d223afdcced52"></span><code class="sig-name descname">ARGUMENT_ERROR</code> = 2<a class="headerlink" href="#_CPPv414ARGUMENT_ERROR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The tool exited due to errors in the given arguments. </p>
+</dd></dl>
+
+<dl class="enumerator">
+<dt id="_CPPv422UNKNOWN_ARGUMENT_ERROR">
+<span id="_CPPv322UNKNOWN_ARGUMENT_ERROR"></span><span id="_CPPv222UNKNOWN_ARGUMENT_ERROR"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517a7058916b49a079ad1c754635780e9fa2"></span><code class="sig-name descname">UNKNOWN_ARGUMENT_ERROR</code> = 3<a class="headerlink" href="#_CPPv422UNKNOWN_ARGUMENT_ERROR" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The tool exited due to unknown errors while parsing the arguments. </p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="file">
+<dt>
+<span class="target" id="main_8cpp"></span><em>file</em> <code class="sig-name descname">main.cpp</code></dt>
+<dd><em>#include &lt;iostream&gt;</em><em>#include &lt;opencv2/highgui/highgui.hpp&gt;</em><em>#include &lt;opencv2/core/core.hpp&gt;</em><em>#include &lt;opencv/cv.hpp&gt;</em><em>#include &lt;PhotoDetector.h&gt;</em><em>#include &lt;Frame.h&gt;</em><em>#include “common/PlottingImageListener.hpp”</em><em>#include &lt;memory&gt;</em><em>#include &lt;chrono&gt;</em><em>#include &lt;thread&gt;</em><em>#include &lt;mutex&gt;</em><em>#include &lt;fstream&gt;</em><em>#include &lt;boost/filesystem.hpp&gt;</em><em>#include &lt;boost/timer/timer.hpp&gt;</em><em>#include &lt;rapidjson/writer.h&gt;</em><em>#include &lt;rapidjson/document.h&gt;</em><em>#include “D:/VMs Shared Folder/Bachelor-Thesis/emotions/src/common/Visualizer.h”</em><em>#include &lt;opencv2/imgproc/imgproc.hpp&gt;</em><em>#include &lt;Face.h&gt;</em><em>#include &lt;set&gt;</em><em>#include “ImageListener.h”</em><em>#include “common/StatusListener.hpp”</em><em>#include &lt;boost/program_options.hpp&gt;</em><em>#include &lt;boost/algorithm/string.hpp&gt;</em><em>#include “ProcessStatusListener.h”</em><em>#include “exit_codes.hpp”</em><em>#include “utilities.hpp”</em><em>#include “base64.hpp”</em><p>The main file. </p>
+<p>This file is the main file of the tool.</p>
+<p><dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Andrea Esposito &lt;<a class="reference external" href="https://github.com/espositoandrea">github.com/espositoandrea</a>&gt; </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv44mainiPPc">
+<span id="_CPPv34mainiPPc"></span><span id="_CPPv24mainiPPc"></span><span id="main__i.cPP"></span><span class="target" id="main_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627"></span>int <code class="sig-name descname">main</code><span class="sig-paren">(</span>int <em>argc</em>, char **<em>argv</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv44mainiPPc" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>The main entry point. </p>
+<p>This is the entry point of the tool.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>An <a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517"><span class="std std-ref">exit code</span></a> based on the execution. </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The length of <code class="docutils literal notranslate"><span class="pre">argv</span></code>. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The array of arguments given through the command line. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="file">
+<dt>
+<span class="target" id="utilities_8cpp"></span><em>file</em> <code class="sig-name descname">utilities.cpp</code></dt>
+<dd><em>#include &lt;iostream&gt;</em><em>#include &lt;regex&gt;</em><em>#include &lt;fstream&gt;</em><em>#include &lt;boost/program_options.hpp&gt;</em><em>#include “utilities.hpp”</em><em>#include “data_uri.hpp”</em><p>Implementation of <a class="reference internal" href="#utilities_8hpp"><span class="std std-ref">utilities.hpp</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Andrea Esposito </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>April 8, 2020 </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv413setup_optionsiPPcRNSt6vectorINSt6stringEEE">
+<span id="_CPPv313setup_optionsiPPcRNSt6vectorINSt6stringEEE"></span><span id="_CPPv213setup_optionsiPPcRNSt6vectorINSt6stringEEE"></span><span id="setup_options__i.cPP.std::vector:ss:R"></span><span class="target" id="utilities_8cpp_1a45117365249afe8c7f56d9ee82f4ec70"></span><a class="reference internal" href="#_CPPv410exit_codes" title="exit_codes">exit_codes</a> <code class="sig-name descname">setup_options</code><span class="sig-paren">(</span>int <em>argc</em>, char **<em>argv</em>, std::vector&lt;std::string&gt; &amp;<em>images</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413setup_optionsiPPcRNSt6vectorINSt6stringEEE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set up the tool’s options and arguments. </p>
+<p>This function is responsible of the CLI API of the tool. It sets and handles the available options and arguments.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>An <a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517"><span class="std std-ref">exit code</span></a>:<ul class="simple">
+<li><p><a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517ae0aa021e21dddbd6d8cecec71e9cf564"><span class="std std-ref">exit_codes::OK</span></a> If the given arguments are valid and no errors occurred.</p></li>
+<li><p><a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517abf2d798abfe8267da4f101692b6cfecd"><span class="std std-ref">exit_codes::HALT</span></a> If the given arguments are valid but the argument combination stops the execution.</p></li>
+<li><p><a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517a33533d864578f42ec03d223afdcced52"><span class="std std-ref">exit_codes::ARGUMENT_ERROR</span></a> If the given arguments are invalid</p></li>
+<li><p><a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517a7058916b49a079ad1c754635780e9fa2"><span class="std std-ref">exit_codes::UNKNOWN_ARGUMENT_ERROR</span></a> If an unknown error occurred. </p></li>
+</ul>
+</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The length of <code class="docutils literal notranslate"><span class="pre">argv</span></code>. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The array of arguments passed via CLI. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">images</span></code>: A variable that will contain the images passed through the CLI API. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="file">
+<dt>
+<span class="target" id="utilities_8hpp"></span><em>file</em> <code class="sig-name descname">utilities.hpp</code></dt>
+<dd><em>#include “exit_codes.hpp”</em><p>An header containing various useful functions. </p>
+<p>This header contains various and miscellaneous functions useful in other sections of the source code.</p>
+<p><dl class="simple">
+<dt><strong>Author</strong></dt><dd><p>Andrea Esposito </p>
+</dd>
+<dt><strong>Date</strong></dt><dd><p>April 8, 2020 </p>
+</dd>
+</dl>
+</p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="_CPPv413setup_optionsiPPcRNSt6vectorINSt6stringEEE">
+<span id="_CPPv313setup_optionsiPPcRNSt6vectorINSt6stringEEE"></span><span id="_CPPv213setup_optionsiPPcRNSt6vectorINSt6stringEEE"></span><span class="target" id="utilities_8hpp_1a45117365249afe8c7f56d9ee82f4ec70"></span><a class="reference internal" href="#_CPPv410exit_codes" title="exit_codes">exit_codes</a> <code class="sig-name descname">setup_options</code><span class="sig-paren">(</span>int <em>argc</em>, char **<em>argv</em>, std::vector&lt;std::string&gt; &amp;<em>images</em><span class="sig-paren">)</span><br /></dt>
+<dd><p>Set up the tool’s options and arguments. </p>
+<p>This function is responsible of the CLI API of the tool. It sets and handles the available options and arguments.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>An <a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517"><span class="std std-ref">exit code</span></a>:<ul class="simple">
+<li><p><a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517ae0aa021e21dddbd6d8cecec71e9cf564"><span class="std std-ref">exit_codes::OK</span></a> If the given arguments are valid and no errors occurred.</p></li>
+<li><p><a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517abf2d798abfe8267da4f101692b6cfecd"><span class="std std-ref">exit_codes::HALT</span></a> If the given arguments are valid but the argument combination stops the execution.</p></li>
+<li><p><a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517a33533d864578f42ec03d223afdcced52"><span class="std std-ref">exit_codes::ARGUMENT_ERROR</span></a> If the given arguments are invalid</p></li>
+<li><p><a class="reference internal" href="#exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517a7058916b49a079ad1c754635780e9fa2"><span class="std std-ref">exit_codes::UNKNOWN_ARGUMENT_ERROR</span></a> If an unknown error occurred. </p></li>
+</ul>
+</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">argc</span></code>: The length of <code class="docutils literal notranslate"><span class="pre">argv</span></code>. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">argv</span></code>: The array of arguments passed via CLI. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">images</span></code>: A variable that will contain the images passed through the CLI API. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="dir">
+<dt>
+<span class="target" id="dir_68267d1309a1af8e8297ef4c3efbcdba"></span><em>dir</em> <code class="sig-name descname">src</code></dt>
+<dd></dd></dl>
+
+<dl class="page">
+<dt>
+<span class="target" id="indexpage"></span><em>page</em> <code class="sig-name descname">index</code></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="extension.html" class="btn btn-neutral float-right" title="The Browser Extension" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="The Structure of the Repository" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Esposito
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

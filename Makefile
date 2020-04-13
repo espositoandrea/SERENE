@@ -1,7 +1,7 @@
-.PHONY: thesis
+.PHONY: thesis docs
 
 thesis:
 	cd thesis && $(MAKE) dist
 
-cppdoc:
-	cd emotions && doxygen Doxyfile
+docs:
+	cd docs/src && $(MAKE)
