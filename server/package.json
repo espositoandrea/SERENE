@@ -6,13 +6,12 @@
   "scripts": {
     "start": "node index.js",
     "watch": "nodemon index.js",
-    "postwatch": "rm survey/*.css",
-    "clean": "rimraf ../../dist/server/",
+    "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
-    "build:node": "cpy --parents . .env.example !node_modules !**/*.css !.env ../../dist/server/",
-    "build:emotions": "cd ../../../emotions && cpy bin/emotions ../../dist/server/ && cpy --parents lib/ ../browser-extension/dist/server/lib/",
+    "build:node": "cpy --parents . .env.example !node_modules !**/*.css !.env ../server/dist/",
+    "build:emotions": "cd ../emotions && cpy bin/emotions ../server/dist/ && cpy --parents lib/ ../server/dist/lib/",
     "build": "npm-run-all --parallel build:*",
-    "dist": "npm run build && cd ../../dist/server && bestzip ../server.zip .",
+    "dist": "npm run build && cd ../server/dist && bestzip server.zip .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",

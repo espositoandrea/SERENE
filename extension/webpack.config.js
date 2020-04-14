@@ -28,11 +28,11 @@ const commonConfig = {
 
 const extensionConfig = Object.assign({}, commonConfig, {
     entry: {
-        contentscript: join(__dirname, 'src/extension/contentscript.ts'),
-        background: join(__dirname, 'src/extension/background.ts')
+        contentscript: join(__dirname, 'src/contentscript.ts'),
+        background: join(__dirname, 'src/background.ts')
     },
     output: {
-        path: join(__dirname, 'dist/extension/'),
+        path: join(__dirname, 'dist/'),
         filename: '[name].js',
     },
     module: {
