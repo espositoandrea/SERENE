@@ -29,7 +29,7 @@ class DataProcessor {
                         let j = 0;
                         for (let i = 0; i < data.length; i++) {
                             if (data[i].image) {
-                                data[i].emotions = emotions[j];
+                                data[i].emotions = emotions[j].emotions || {};
                                 j++;
                             }
                         }
