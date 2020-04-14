@@ -10,7 +10,7 @@
     "clean": "rimraf ../../dist/server/",
     "prebuild": "npm run clean",
     "build:node": "cpy --parents . .env.example !node_modules !**/*.css !.env ../../dist/server/",
-    "build:emotions": "cpy ../../../emotions/emotions ../../dist/server/",
+    "build:emotions": "cd ../../../emotions && cpy bin/emotions ../../dist/server/ && cpy --parents lib/ ../browser-extension/dist/server/lib/",
     "build": "npm-run-all --parallel build:*",
     "dist": "npm run build && cd ../../dist/server && bestzip ../server.zip .",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -38,6 +38,7 @@
     "node-sass-middleware": "^0.11.0",
     "npm-run-all": "^4.1.5",
     "sass-loader": "^8.0.2",
+    "shortid": "^2.2.15",
     "ts-node": "^8.8.1",
     "tslint": "^6.1.0",
     "typescript": "^3.8.3",

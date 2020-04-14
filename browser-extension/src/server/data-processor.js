@@ -11,25 +11,54 @@ class DataProcessor {
      * @param {Object} data The data to work on.
      */
     static _analyzeEmotions(data) {
-        try {
-            // Analyze the images in a browser (needed by Affdex)
-            const { spawnSync } = require('child_process');
-            let analysis = spawnSync(process.env.EMOTIONS_EXECUTABLE, data.filter(e => e).map(e => e.image));
-            let emotions = JSON.parse(analysis.stdout.toString());
-            let i = 0;
-            data.forEach(e => {
-                if(e.image) {
-                    e.emotions = emotions[i];
-                    i++;
-                }
+        return new Promise(resolve => {
+            const shortid = require('shortid');
+            const fs = require('fs');
+            const fileName = shortid.generate() + '.temp';
+            const file = fs.createWriteStream(fileName);
+            data.forEach(e => e.image && file.write(e.image + '\n'));
+            file.end();
+            try {
+                const { spawn } = require('child_process');
+                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName]);
+                let out = '';
+                analysis.stdout.on('data', (chunk) => out += chunk.toString());
+                analysis.on("close", code => {
+                    if (out !== "") {
+                        let emotions = JSON.parse(out);
+                        let j = 0;
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].image) {
+                                data[i].emotions = emotions[j];
+                                j++;
+                            }
+                        }
+                    }
+                    fs.unlink(fileName, err => {
+                        if (err) console.error(err);
+                        else console.log("Deleted temp file: ", fileName);
+                    });
+                    data.forEach(e => {
+                        // DELETING THE IMAGE
+                        delete e.image;
+                    });
 
-                // DELETING THE IMAGE
-                delete e.image;
-            });
-        } catch (e) {
-            // TODO: Analysis error. Handle this error.
-            console.error("Analysis error", e);
-        }
+                    resolve(data);
+                });
+            } catch (e) {
+                // TODO: Analysis error. Handle this error.
+                console.error("Analysis error", e);
+                fs.unlink(fileName, err => {
+                    if (err) console.error(err);
+                    else console.log("Deleted temp file: ", fileName);
+                });
+                data.forEach(e => {
+                    // DELETING THE IMAGE
+                    delete e.image;
+                });
+                resolve(data);
+            }
+        });
     }
 
     /**
@@ -42,7 +71,7 @@ class DataProcessor {
         if (!data) return;
         if (!Array.isArray(data)) data = [data];
 
-        DataProcessor._analyzeEmotions(data);
+        return DataProcessor._analyzeEmotions(data);
     }
 }
 

@@ -43,7 +43,7 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
 
         const DataProcessor = require('./data-processor');
         DataProcessor.process(data)
-            .then(()=>{
+            .then((data)=>{
                 db.collection('interactions').insertMany(data, (err, result) => {
                     if (err) {
                         // TODO: There was an error in writing to the DB: handle this error

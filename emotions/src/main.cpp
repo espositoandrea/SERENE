@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     detector->setDetectAllExpressions(true);
     detector->setDetectAllEmojis(true);
     detector->setDetectAllAppearances(true);
-    detector->setClassifierPath(affdex::path("/home/andrea/Desktop/affdex-sdk/data/"));
+    detector->setClassifierPath(affdex::path("lib/affdex-sdk/data/"));
     detector->setImageListener(listenPtr.get());
 
     detector->start();
