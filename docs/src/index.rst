@@ -2,11 +2,22 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents
+   :caption: The Emotions Tool
 
-   emotions-tool
-   extension
-   server
+   emotions-tool/index
+   emotions-tool/code
+
+.. toctree::
+   :maxdepth: 2
+   :caption: The Browser Extension
+
+   extension/index
+
+.. toctree::
+   :maxdepth: 2
+   :caption: The Extension
+
+   server/index
 
 Indices and tables
 ==================

@@ -33,7 +33,7 @@ extensions = [
 
 # Setup the breathe extension
 breathe_projects = {
-    "emotions-tool": "./emotions"
+    "emotions-tool": "./doxygen/emotions"
 }
 breathe_default_project = "emotions-tool"
 

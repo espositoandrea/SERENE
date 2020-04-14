@@ -45,5 +45,3 @@ set(Boost_USE_STATIC_RUNTIME OFF)
 add_executable(emotions src/main.cpp src/utilities.cpp src/base64.cpp src/data_uri.cpp src/common/Visualizer.cpp src/common/PlottingImageListener.cpp)
 target_include_directories(emotions PRIVATE ${Boost_INCLUDE_DIRS} ${AFFDEX_INCLUDE_DIR})
 target_link_libraries(emotions ${AFFDEX_LIBRARIES} ${OpenCV_LIBS} ${Boost_LIBRARIES})
-
-# apache2 apache2-bin backdoor-factory cmake curl libcurl4 libcurl4-openssl-dev
