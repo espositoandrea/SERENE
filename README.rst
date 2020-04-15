@@ -19,20 +19,22 @@
 The Structure of the Repository
 ===============================
 
-``browser-extension/``
-   This folder contains the browser extension.
+``emotions/``
+   This folder contains the Emotion Analysis Tool (written in C++).
 
-   ``browser-extension/src/``
-      The folder containing the source code of the browser extension.
+``extension/``
+   This folder contains the source code of the browser extension (written in
+   TypeScript).
+
+``icon/``
+   This folder contains the logo and the icons of the project.
+
+``server/``
+   This folder contains the server's source code (written in JavaScript).
 
 ``thesis/``
    This folder contains the thesis itself.
 
-   ``thesis/src/``
-      This folder contains the source code (*LaTeX*) of the document.
-
-   ``thesis/out/``
-      This folder contains the final PDF built by running the command ``make dist``
 
 The Browser Extension
 =====================

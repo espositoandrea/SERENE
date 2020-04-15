@@ -11,7 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Setup directory
-        run: cd docs && mkdir doxygen
+        run: |
+          cd docs && mkdir doxygen
+          cd ../icon && make logo
       - name: Run Doxygen
         uses: mattnotmitt/doxygen-action@v1.1.0
         with:

@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Emotions Analysis Tool'
+project = "Andrea Esposito's Bachelor's Degree Thesis"
 copyright = '2020, Andrea Esposito'
 author = 'Andrea Esposito'
 
@@ -38,7 +38,7 @@ breathe_projects = {
 breathe_default_project = "emotions-tool"
 
 # Add any paths that contain templates here, relative to this directory.
-templates_path = ['_templates']
+# templates_path = ['_templates']
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -58,10 +58,12 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-# html_theme_options = {
+html_logo = '_static/logo.svg'
+
+html_theme_options = {
 #     'canonical_url': '',
 #     'analytics_id': 'UA-XXXXXXX-1',  #  Provided by Google in your dashboard
-#     'logo_only': False,
+    'logo_only': True,
 #     'display_version': True,
 #     'prev_next_buttons_location': 'bottom',
 #     'style_external_links': False,
@@ -73,4 +75,4 @@ html_static_path = ['_static']
 #     'navigation_depth': 4,
 #     'includehidden': True,
 #     'titles_only': False
-# }
+}

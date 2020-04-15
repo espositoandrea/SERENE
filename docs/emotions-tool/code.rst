@@ -16,6 +16,8 @@ The Exit Codes
 
 .. doxygenenum:: exit_codes
 
+.. _data-uri:
+
 The Data URI
 ------------
 
