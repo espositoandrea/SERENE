@@ -7,14 +7,12 @@ Installation
 To use the tool, download its compiled binary from the repository and execute it
 from a console.
 
-Requirements
-~~~~~~~~~~~~
+.. IMPORTANT:: The tool has been tested on **Ubuntu Xenial 16.04**. 
+   
+   The `Affdex SDK`_ is only available on Windows and Ubuntu Xenial 16.04, so
+   compatibility with other Operative Systems is not guaranteed.
 
-The tool has been tested on **Ubuntu Xenial 16.04**. The `Affdex API`_ is only
-available on Windows and Ubuntu Xenial 16.04, so compatibility with other
-Operative Systems is not guaranteed.
-
-.. _Affdex API: https://github.com/Affectiva/cpp-sdk-samples/releases
+.. _Affdex SDK: https://github.com/Affectiva/cpp-sdk-samples/releases
 
 From source with CMake
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -41,20 +39,34 @@ Finally, create and compile the CMakeProject:
 
    mkdir bin
    cd bin
-   cmake -DAFFDEX_DIR=/path/to/affdex/ -G "CodeBlocks - Unix Makefiles" ..
+   cmake -G "CodeBlocks - Unix Makefiles" ..
    make
 
 
 Usage
 -----
 
+.. IMPORTANT:: To use the tool you must have the `Affdex SDK`_ installed on your
+   machine. Then, you have to add ``/path/to/affdex-sdk/lib`` to the variable
+   ``$LD_LIBRARY_PATH`` (on Ubuntu). 
+
+   .. code-block:: shell
+
+      export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/affdex-sdk/lib/
+
+   The tool will then search, in its folder, for the folder
+   ``lib/affdex-sdk/data/`` (that has to contain the data used by Affdex).
+
 The tool can be used through CLI (or executed by another script).
 
 ::
 
     ./emotions [<option>...] IMAGE...
+    ./emotions [<option>...] --file FILE
 
-The argument ``IMAGE`` can be repeated several times. It must be either a data
-URI or the path to a file containing a data URI. The available options are:
+Where ``IMAGE`` is a :ref:`data URI <data-uri>`. The available
+options are:
 
--h, --help   Get the help message
+-h, --help             Get the help message
+-f FILE, --file FILE   The file containing the images to be analyzed (as a data
+                       URI)

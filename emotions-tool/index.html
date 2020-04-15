@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Quick Start &mdash; Emotions Analysis Tool  documentation</title>
+  <title>Quick Start &mdash; Andrea Esposito&#39;s Bachelor&#39;s Degree Thesis  documentation</title>
   
 
   
@@ -50,9 +50,12 @@
           
 
           
-            <a href="../index.html" class="icon icon-home"> Emotions Analysis Tool
+            <a href="../index.html">
           
 
+          
+            
+            <img src="../_static/logo.svg" class="logo" alt="Logo"/>
           
           </a>
 
@@ -84,7 +87,6 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#requirements">Requirements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#from-source-with-cmake">From source with CMake</a></li>
 </ul>
 </li>
@@ -114,7 +116,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Emotions Analysis Tool</a>
+          <a href="../index.html">Andrea Esposito's Bachelor's Degree Thesis</a>
         
       </nav>
 
@@ -170,11 +172,11 @@
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>To use the tool, download its compiled binary from the repository and execute it
 from a console.</p>
-<div class="section" id="requirements">
-<h3>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h3>
-<p>The tool has been tested on <strong>Ubuntu Xenial 16.04</strong>. The <a class="reference external" href="https://github.com/Affectiva/cpp-sdk-samples/releases">Affdex API</a> is only
-available on Windows and Ubuntu Xenial 16.04, so compatibility with other
-Operative Systems is not guaranteed.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The tool has been tested on <strong>Ubuntu Xenial 16.04</strong>.</p>
+<p>The <a class="reference external" href="https://github.com/Affectiva/cpp-sdk-samples/releases">Affdex SDK</a> is only available on Windows and Ubuntu Xenial 16.04, so
+compatibility with other Operative Systems is not guaranteed.</p>
 </div>
 <div class="section" id="from-source-with-cmake">
 <h3>From source with CMake<a class="headerlink" href="#from-source-with-cmake" title="Permalink to this headline">¶</a></h3>
@@ -191,7 +193,7 @@ commands:</p>
 <p>Finally, create and compile the CMakeProject:</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir bin
 <span class="nb">cd</span> bin
-cmake -DAFFDEX_DIR<span class="o">=</span>/path/to/affdex/ -G <span class="s2">&quot;CodeBlocks - Unix Makefiles&quot;</span> ..
+cmake -G <span class="s2">&quot;CodeBlocks - Unix Makefiles&quot;</span> ..
 make
 </pre></div>
 </div>
@@ -199,15 +201,31 @@ make
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>The tool can be used through CLI (or executed by another script).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">emotions</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;...</span><span class="p">]</span> <span class="n">IMAGE</span><span class="o">...</span>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>To use the tool you must have the <a class="reference external" href="https://github.com/Affectiva/cpp-sdk-samples/releases">Affdex SDK</a> installed on your
+machine. Then, you have to add <code class="docutils literal notranslate"><span class="pre">/path/to/affdex-sdk/lib</span></code> to the variable
+<code class="docutils literal notranslate"><span class="pre">$LD_LIBRARY_PATH</span></code> (on Ubuntu).</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/path/to/affdex-sdk/lib/
 </pre></div>
 </div>
-<p>The argument <code class="docutils literal notranslate"><span class="pre">IMAGE</span></code> can be repeated several times. It must be either a data
-URI or the path to a file containing a data URI. The available options are:</p>
+<p>The tool will then search, in its folder, for the folder
+<code class="docutils literal notranslate"><span class="pre">lib/affdex-sdk/data/</span></code> (that has to contain the data used by Affdex).</p>
+</div>
+<p>The tool can be used through CLI (or executed by another script).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">emotions</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;...</span><span class="p">]</span> <span class="n">IMAGE</span><span class="o">...</span>
+<span class="o">./</span><span class="n">emotions</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;...</span><span class="p">]</span> <span class="o">--</span><span class="n">file</span> <span class="n">FILE</span>
+</pre></div>
+</div>
+<p>Where <code class="docutils literal notranslate"><span class="pre">IMAGE</span></code> is a <a class="reference internal" href="code.html#data-uri"><span class="std std-ref">data URI</span></a>. The available
+options are:</p>
 <dl class="option-list">
 <dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
 <dd><p>Get the help message</p>
+</dd>
+<dt><kbd><span class="option">-f <var>FILE</var></span>, <span class="option">--file <var>FILE</var></span></kbd></dt>
+<dd><p>The file containing the images to be analyzed (as a data
+URI)</p>
 </dd>
 </dl>
 </div>
