@@ -5,6 +5,7 @@
     "module": "commonjs",
     "sourceMap": false,
     "types": [
+      "@types/firefox-webext-browser",
       "@types/chrome",
       "node"
     ],

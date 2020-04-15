@@ -1,4 +1,5 @@
 import './contentscript.scss';
+import WebcamFacade from "./webcam-facade";
 
 
 // Listen for mouse movements
@@ -48,15 +49,25 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         sendResponse(getScroll());
     } else if (request.event == 'getwindowsize') {
         sendResponse(getWindowSize());
+    }else if(request.event == 'snapwebcam'){
+        window.postMessage({ type: 'ESPOSITOTHESIS___SNAP_WEBCAM' }, '*');
+        window.addEventListener('message', function (event) {
+            if (event.data.type && event.data.type === "ESPOSITOTHESIS___RETURN_WEBCAM_SNAP") {
+                sendResponse(event.data.snap)
+            }
+        });
     }
 });
 
-let iframe = document.createElement('iframe');
-iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
-iframe.style.display = 'none';
-iframe.setAttribute('allow', 'camera');
-document.body.appendChild(iframe);
-chrome.runtime.sendMessage({event: 'webcampermission'});
+if (navigator.userAgent.search("Firefox") === -1) {
+    // Chrome
+    let iframe = document.createElement('iframe');
+    iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
+    iframe.style.display = 'none';
+    iframe.setAttribute('allow', 'camera');
+    document.body.appendChild(iframe);
+    chrome.runtime.sendMessage({event: 'webcampermission'});
+}
 
 window.addEventListener('message', function (event) {
     if (event.source != window) return;

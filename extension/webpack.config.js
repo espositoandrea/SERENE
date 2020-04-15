@@ -31,7 +31,8 @@ const commonConfig = {
 const extensionConfig = Object.assign({}, commonConfig, {
     entry: {
         contentscript: join(__dirname, 'src/contentscript.ts'),
-        background: join(__dirname, 'src/background.ts')
+        background: join(__dirname, 'src/background.ts'),
+        firefox: join(__dirname, 'src/firefox.ts'),
     },
     output: {
         path: join(__dirname, 'dist/'),

