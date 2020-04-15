@@ -5,20 +5,20 @@ import './contentscript.scss';
 document.addEventListener('mousemove', function (e) {
     let x = e.pageX;
     let y = e.pageY;
-    chrome.runtime.sendMessage({ event: 'mousemove', mouse: { position: { x, y } } });
+    chrome.runtime.sendMessage({event: 'mousemove', mouse: {position: [x, y]}});
 });
 
 // Listen for mouse buttons' click
 ['mousedown', 'mouseup'].forEach(ev => {
     document.addEventListener(ev, (e: MouseEvent) => {
-        chrome.runtime.sendMessage({ event: ev, mouse: { button: e.button } });
+        chrome.runtime.sendMessage({event: ev, mouse: {button: e.button}});
     });
 });
 
 // Listen for keyboard buttons's
 ['keydown', 'keyup'].forEach(ev => {
     document.addEventListener(ev, (e: KeyboardEvent) => {
-        chrome.runtime.sendMessage({ event: ev, keyboard: { key: e.key } });
+        chrome.runtime.sendMessage({event: ev, keyboard: {key: e.key}});
     });
 });
 
@@ -33,24 +33,20 @@ function getScroll() {
     let relativeX = 100 * (absoluteX + document.documentElement.clientWidth) / width;
 
     return {
-        absolute: { x: absoluteX, y: absoluteY },
-        relative: { x: relativeX, y: relativeY }
+        absolute: [absoluteX, absoluteY],
+        relative: [relativeX, relativeY]
     };
 }
 
 function getWindowSize() {
-    return {
-        width: window.outerWidth,
-        height: window.outerHeight
-    };
+    return [window.outerWidth, window.outerHeight];
 }
 
 // Add listener for messages from the extension process
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.event == 'getscrolllocation') {
         sendResponse(getScroll());
-    }
-    else if (request.event == 'getwindowsize') {
+    } else if (request.event == 'getwindowsize') {
         sendResponse(getWindowSize());
     }
 });
@@ -60,12 +56,12 @@ iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
 iframe.style.display = 'none';
 iframe.setAttribute('allow', 'camera');
 document.body.appendChild(iframe);
-chrome.runtime.sendMessage({ event: 'webcampermission' });
+chrome.runtime.sendMessage({event: 'webcampermission'});
 
-window.addEventListener('message', function(event){
-    if(event.source != window) return;
+window.addEventListener('message', function (event) {
+    if (event.source != window) return;
 
-    if(event.data.type && event.data.type === "ESPOSITOTHESIS___SET_USER_ID") {
-        chrome.runtime.sendMessage({ event: 'surveycompleted', userId: event.data.userId });
+    if (event.data.type && event.data.type === "ESPOSITOTHESIS___SET_USER_ID") {
+        chrome.runtime.sendMessage({event: 'surveycompleted', userId: event.data.userId});
     }
 });

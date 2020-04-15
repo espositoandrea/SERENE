@@ -2,12 +2,20 @@
  * The data processor.
  *
  * This class processes the collected data, by adding various features (that can
- * be extracted by the existing fields). 
+ * be extracted by the existing fields).
  */
 class DataProcessor {
+    static get _minimumAcceptedValue() {
+        return 1;
+    }
+
+    static _roundValue(val) {
+        return Math.round((val + Number.EPSILON) * 100) / 100;
+    }
+
     /**
      * Extract the emotions from the image field.
-     * 
+     *
      * @param {Object} data The data to work on.
      */
     static _analyzeEmotions(data) {
@@ -16,11 +24,12 @@ class DataProcessor {
             const fs = require('fs');
             const fileName = 'temp/' + shortid.generate() + '.temp';
             const file = fs.createWriteStream(fileName);
-            data.forEach(e => e.image && file.write(e.image + '\n'));
+            data.forEach(e => e.i && file.write(e.i + '\n'));
             file.end();
+
             try {
-                const { spawn } = require('child_process');
-                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName], { stdio: ['pipe', 'pipe', 'ignore'] });
+                const {spawn} = require('child_process');
+                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName], {stdio: ['pipe', 'pipe', 'ignore']});
                 let out = '';
                 analysis.stdout.on('data', (chunk) => out += chunk.toString());
                 analysis.on("close", code => {
@@ -28,8 +37,17 @@ class DataProcessor {
                         let emotions = JSON.parse(out);
                         let j = 0;
                         for (let i = 0; i < data.length; i++) {
-                            if (data[i].image) {
-                                data[i].emotions = emotions[j].emotions || {};
+                            if (data[i].i) {
+                                data[i].e = {};
+                                if (emotions[j].emotions) {
+                                    Object.entries(emotions[j].emotions).forEach(([key, value]) => {
+                                        let newKey = key === "surprise" ? "su" : key.substr(0, 1);
+                                        value = DataProcessor._roundValue(value);
+                                        if (key === "valence" || key === "engagement" || value>= DataProcessor._minimumAcceptedValue) {
+                                            data[i].e[newKey] = value;
+                                        }
+                                    });
+                                }
                                 j++;
                             }
                         }
@@ -40,7 +58,7 @@ class DataProcessor {
                     });
                     data.forEach(e => {
                         // DELETING THE IMAGE
-                        delete e.image;
+                        delete e.i;
                     });
 
                     resolve(data);
@@ -54,7 +72,7 @@ class DataProcessor {
                 });
                 data.forEach(e => {
                     // DELETING THE IMAGE
-                    delete e.image;
+                    delete e.i;
                 });
                 resolve(data);
             }

@@ -6,30 +6,24 @@ import WebcamFacade from "./webcam-facade";
  * The structure of the collected data.
  */
 export interface CollectedData {
-    users_id: string,
-    timestamp: string,
-    url: string,
-    mouse: {
-        position: {
-            x: number,
-            y: number
-        },
-        buttons: {
-            leftPressed: boolean,
-            middlePressed: boolean,
-            rightPressed: boolean
+    ui: string, ///< The user ID
+    t: string, ///< The timestamp
+    u: string, ///< The visited URL
+    m: { ///< Various data regarding the mouse
+        p: [number, number], ///< The mouse position. p[0] is the X position, p[1] is the Y position.
+        b: { ///< The mouse buttons
+            l: boolean, ///< Is the left button pressed?
+            m: boolean, ///< Is the middle button pressed?
+            r: boolean ///< Is the right button pressed?
         }
     },
-    scroll: {
-        absolute: { x: number, y: number },
-        relative: { x: number, y: number }
+    s: { ///< Various data about the scroll position
+        a: [number, number] ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
+        r: [number, number] ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
     },
-    window: {
-        width: number,
-        height: number
-    },
-    keyboard: string[],
-    image: string,
+    w: [number, number], ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+    k: string[], ///< An array of keys that's currently pressed
+    i: string, ///< The webcam snapshot as a data URI.
 }
 
 /**
@@ -37,7 +31,6 @@ export interface CollectedData {
  */
 export interface CollectionOptions {
     mainInterval?: number, // defaults to 100 ms
-    emotionsInterval?: number, // defaults to 1000 ms
     sendInterval?: number, // defaults to 5000 ms
     url?: {
         getProtocol?: boolean,
@@ -54,14 +47,14 @@ export interface CollectionOptions {
  * This class collects the required data.
  */
 export class Collector {
-    private mousePosition: CollectedData['mouse']['position'] = { x: 0, y: 0 };
-    private mouseButtons: CollectedData['mouse']['buttons'] = {
-        leftPressed: false,
-        middlePressed: false,
-        rightPressed: false
+    private mousePosition: CollectedData['m']['p'] = [0, 0];
+    private mouseButtons: CollectedData['m']['b'] = {
+        l: false,
+        m: false,
+        r: false
     };
     private pressedKeys: Set<string> = new Set<string>();
-    private userId: string;
+    private readonly userId: string;
 
     private _areListenersRegistered: boolean = false;
 
@@ -69,17 +62,17 @@ export class Collector {
         if (this._areListenersRegistered) return;
 
         chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-            let mouseButtonFromInteger = (btn: number) => btn < 3 ? ['left', 'middle', 'right'][btn] : 'button' + (btn + 1);
+            let mouseButtonFromInteger = (btn: number) => btn < 3 ? ['l', 'm', 'r'][btn] : 'b' + (btn + 1);
 
             switch (request.event) {
                 case "mousemove":
                     this.mousePosition = request.mouse.position;
                     break;
                 case "mousedown":
-                    this.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = true;
+                    this.mouseButtons[mouseButtonFromInteger(request.mouse.button)] = true;
                     break;
                 case "mouseup":
-                    this.mouseButtons[mouseButtonFromInteger(request.mouse.button) + 'Pressed'] = false;
+                    this.mouseButtons[mouseButtonFromInteger(request.mouse.button)] = false;
                     break;
                 case "keydown":
                     this.pressedKeys.add(request.keyboard.key);
@@ -100,7 +93,7 @@ export class Collector {
      */
     public constructor(userId: string) {
         this.registerListeners();
-        userId = userId;
+        this.userId = userId;
     }
 
     /**
@@ -109,9 +102,9 @@ export class Collector {
      * @param options The url collection options.
      * @return Promise A promise with the collected data.
      */
-    async getURL({ url }: CollectionOptions): Promise<string> {
+    async getURL({url}: CollectionOptions): Promise<CollectedData['u']> {
         return await new Promise<string>(resolve => {
-            chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
+            chrome.tabs.query({active: true, lastFocusedWindow: true}, function (tabs) {
                 if (!tabs || !tabs[0] || !tabs[0].url) {
                     resolve(null);
                 } else {
@@ -138,10 +131,10 @@ export class Collector {
      *
      * @return Object The mouse data.
      */
-    getMouseData(): CollectedData['mouse'] {
+    getMouseData(): CollectedData['m'] {
         return {
-            position: this.mousePosition,
-            buttons: this.mouseButtons,
+            p: this.mousePosition,
+            b: this.mouseButtons,
         };
     }
 
@@ -150,7 +143,7 @@ export class Collector {
      *
      * @return Object The keyboard data.
      */
-    getKeyboardData(): CollectedData['keyboard'] {
+    getKeyboardData(): CollectedData['k'] {
         return Array.from(this.pressedKeys);
     }
 
@@ -159,13 +152,13 @@ export class Collector {
      *
      * @note The relative position is based on the lowest point of the screen.
      */
-    async getScrollData(): Promise<CollectedData['scroll']> {
-        return await new Promise<CollectedData['scroll']>(resolve => {
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    async getScrollData(): Promise<CollectedData['s']> {
+        return await new Promise<CollectedData['s']>(resolve => {
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
                     resolve(null);
                 } else {
-                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getscrolllocation' }, function (response) {
+                    chrome.tabs.sendMessage(tabs[0].id, {event: 'getscrolllocation'}, function (response) {
                         if (chrome.runtime.lastError) {
                             // The target page has disabled the execution of
                             // content scripts
@@ -184,13 +177,13 @@ export class Collector {
      *
      * @note The relative position is based on the lowest point of the screen.
      */
-    async getWindowData(): Promise<CollectedData['window']> {
-        return await new Promise<CollectedData['window']>(resolve => {
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    async getWindowData(): Promise<CollectedData['w']> {
+        return await new Promise<CollectedData['w']>(resolve => {
+            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
                     resolve(null);
                 } else {
-                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getwindowsize' }, function (response) {
+                    chrome.tabs.sendMessage(tabs[0].id, {event: 'getwindowsize'}, function (response) {
                         if (chrome.runtime.lastError) {
                             // The target page has disabled the execution of
                             // content scripts
@@ -210,14 +203,14 @@ export class Collector {
      */
     async getData(options: CollectionOptions): Promise<CollectedData> {
         return {
-            users_id: this.userId,
-            timestamp: new Date().toISOString(),
-            url: await this.getURL(options),
-            mouse: this.getMouseData(),
-            scroll: await this.getScrollData(),
-            window: await this.getWindowData(),
-            keyboard: this.getKeyboardData(),
-            image: WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null
+            ui: this.userId,
+            t: new Date().toISOString(),
+            u: await this.getURL(options),
+            m: this.getMouseData(),
+            s: await this.getScrollData(),
+            w: await this.getWindowData(),
+            k: this.getKeyboardData(),
+            i: WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null
         };
     }
 
@@ -227,7 +220,7 @@ export class Collector {
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
         const URL = 'http://giuseppe-desolda.ddns.net:8080/data/store';
-        return $.post(URL, { data: JSON.stringify(data) });
+        return $.post(URL, {data: JSON.stringify(data)});
     }
 }
 
@@ -235,15 +228,15 @@ export class Collector {
 /**
  * A facade function that collects all the required data.
  *
+ * @param userId The user ID
  * @param options Various options for the collection
  * @return Promise A promise with the collected data.
  */
-export default function collect(userId, options?: CollectionOptions): void {
+export default function collect(userId: string, options?: CollectionOptions): void {
     if (!userId) return;
 
     const defaultCollectionOptions: CollectionOptions = {
         mainInterval: 100,
-        emotionsInterval: 1000,
         sendInterval: 5000,
         url: {
             getProtocol: true,
@@ -253,7 +246,7 @@ export default function collect(userId, options?: CollectionOptions): void {
             getAnchor: false
         }
     };
-    options = _.merge(defaultCollectionOptions, options ?? {});
+    options = _.merge(defaultCollectionOptions, options || {});
 
     const collector = new Collector(userId);
 
@@ -261,8 +254,6 @@ export default function collect(userId, options?: CollectionOptions): void {
     // analysis that include the emotions (EA - Emotion Analysis) is used to
     // get the number of analysis without emotions between one EA and another.
     let numberOfCycles = 0;
-    let cyclesForEmotion = Math.floor(options.emotionsInterval / options.mainInterval);
-
     let resultChunk: CollectedData[] = [];
 
     let collectorInterval: any = undefined;
