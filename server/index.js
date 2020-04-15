@@ -37,6 +37,7 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
     app.use(expressLayouts);
 
     app.use('/assets', express.static(path.join(__dirname, 'assets')));
+    app.use('/downloads', express.static(path.join(__dirname, 'downloads')));
 
     // ROUTES
 
