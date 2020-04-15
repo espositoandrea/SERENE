@@ -14,13 +14,13 @@ class DataProcessor {
         return new Promise(resolve => {
             const shortid = require('shortid');
             const fs = require('fs');
-            const fileName = shortid.generate() + '.temp';
+            const fileName = 'temp/' + shortid.generate() + '.temp';
             const file = fs.createWriteStream(fileName);
             data.forEach(e => e.image && file.write(e.image + '\n'));
             file.end();
             try {
                 const { spawn } = require('child_process');
-                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName]);
+                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName], { stdio: ['pipe', 'pipe', 'ignore'] });
                 let out = '';
                 analysis.stdout.on('data', (chunk) => out += chunk.toString());
                 analysis.on("close", code => {

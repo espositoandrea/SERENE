@@ -10,6 +10,12 @@ const cors = require('cors');
 const app = express();
 const requestSizeLimit = '50mb';
 
+const fs = require('fs');
+if (!fs.existsSync('temp')) {
+    console.log('Creating temp/ directory');
+    fs.mkdirSync('temp');
+}
+
 MongoClient.connect(process.env.DB_HOST, (err, client) => {
     if (err) return console.log(err);
     const db = client.db(process.env.DB_NAME);
@@ -45,7 +51,7 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
 
         const DataProcessor = require('./data-processor');
         DataProcessor.process(data)
-            .then((data)=>{
+            .then((data) => {
                 db.collection('interactions').insertMany(data, (err, result) => {
                     if (err) {
                         // TODO: There was an error in writing to the DB: handle this error
