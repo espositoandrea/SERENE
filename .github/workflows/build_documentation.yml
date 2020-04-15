@@ -1,0 +1,42 @@
+name: Build Documentation
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Setup directory
+        run: cd docs && mkdir doxygen
+      - name: Run Doxygen
+        uses: mattnotmitt/doxygen-action@v1.1.0
+        with:
+          working-directory: 'emotions/'
+          doxyfile-path: 'Doxyfile'
+      - name: Build Sphinx documentation
+        uses: ammaraskar/sphinx-action@0.4
+        with:
+          pre-build-command: "pip install sphinx_rtd_theme"
+          docs-folder: "docs/"
+          build-command: "sphinx-build -b html . _build"
+      - name: Commit documentation changes
+        run: |
+          git clone https://espositoandrea:${{ secrets.GITHUB_TOKEN }}@github.com/espositoandrea/Bachelor-Thesis.git --branch gh-pages --single-branch gh-pages
+          cp -r docs/_build/* gh-pages/
+          cd gh-pages
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update documentation" -a || true
+          # The above command will fail if no changes were present, so we ignore
+          # that.
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          directory: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}

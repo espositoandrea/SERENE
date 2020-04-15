@@ -8,7 +8,7 @@ SOURCEDIR     = .
 BUILDDIR      = _build
 
 all:
-	cd ../../emotions/ && doxygen Doxyfile
+	cd ../emotions/ && doxygen Doxyfile
 	$(SPHINXBUILD) -b html "$(SOURCEDIR)" "$(BUILDDIR)"
 	mv "$(BUILDDIR)/**" ..
 	rm "$(BUILDDIR)"
