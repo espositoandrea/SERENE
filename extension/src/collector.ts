@@ -115,17 +115,17 @@ export class Collector {
                 if (!tabs || !tabs[0] || !tabs[0].url) {
                     resolve(null);
                 } else {
-                    const regexResult = /^(?<protocol>.*?):\/\/(?<domain>[^/]*?)(?:\/|$)(?<path>[^?]*?)(?:(?:\?|$)(?<query>[^#]*?))?(?:#|$)(?<anchor>.*?)$/.exec(tabs[0].url);
+                    const regexResult = /^(.*?):\/\/([^/]*?)(?:\/|$)([^?]*?)(?:(?:\?|$)([^#]*?))?(?:#|$)(.*?)$/.exec(tabs[0].url);
 
                     if (!regexResult) {
                         resolve(null);
                     } else {
                         let outUrl = '';
-                        url.getProtocol && (outUrl += regexResult.groups.protocol + '://');
-                        url.getDomain && (outUrl += regexResult.groups.domain + '/');
-                        url.getPath && (outUrl += regexResult.groups.path);
-                        url.getQuery && regexResult.groups.query && (outUrl += '?' + regexResult.groups.query);
-                        url.getAnchor && regexResult.groups.anchor && (outUrl += '#' + regexResult.groups.anchor);
+                        url.getProtocol && (outUrl += regexResult[1] + '://');
+                        url.getDomain && (outUrl += regexResult[2] + '/');
+                        url.getPath && (outUrl += regexResult[3]);
+                        url.getQuery && regexResult[4] && (outUrl += '?' + regexResult[4]);
+                        url.getAnchor && regexResult[5] && (outUrl += '#' + regexResult[5]);
                         resolve(outUrl);
                     }
                 }
@@ -227,7 +227,7 @@ export class Collector {
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
         const URL = 'http://giuseppe-desolda.ddns.net:8080/data/store';
-        return $.post(URL, { data: JSON.stringify(data) })
+        return $.post(URL, { data: JSON.stringify(data) });
     }
 }
 

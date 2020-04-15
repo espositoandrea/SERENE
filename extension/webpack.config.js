@@ -5,6 +5,8 @@ const nodeExternals = require('webpack-node-externals');
 const {optimize} = require('webpack');
 const {join} = require('path');
 
+process.env.NODE_ENV = 'development';
+
 let prodPlugins = [];
 if (process.env.NODE_ENV === 'production') {
     prodPlugins.push(

@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const sassMiddleware = require('node-sass-middleware');
 const path = require('path');
 const { MongoClient } = require('mongodb');
+const cors = require('cors');
 
 const app = express();
 const requestSizeLimit = '50mb';
@@ -22,6 +23,7 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
     );
     app.use(bodyParser.json({ limit: requestSizeLimit }));
     app.use(bodyParser.urlencoded({ limit: requestSizeLimit, extended: false }));
+    app.use(cors());
     app.set('views', path.join(__dirname, 'views'));
     app.set('view engine', 'ejs');
     app.set('layout', 'layouts/layout');
