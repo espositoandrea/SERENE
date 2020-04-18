@@ -199,7 +199,7 @@ export class Collector {
     }
 
     static async getPhoto(): Promise<CollectedData['i']> {
-        if (navigator.userAgent.search("Firefox") === -1) {
+        if (typeof browser === 'undefined' || navigator.userAgent.search("Firefox") === -1) {
             return WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null;
         }
         return await new Promise<CollectedData['i']>(resolve => {

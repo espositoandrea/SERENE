@@ -32,7 +32,7 @@ getUserId()
             alert("Impossibile utilizzare l'estensione se non si è compilato il questionario.");
             return;
         }
-        if (browser && browser.runtime && browser.runtime.getBrowserInfo) {
+        if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getBrowserInfo) {
             browser.runtime.getBrowserInfo()
                 .then(info => {
                     if (info.name == "Firefox") {
