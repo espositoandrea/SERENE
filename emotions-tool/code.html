@@ -179,7 +179,7 @@
 </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv44mainiPPc">
 <span id="_CPPv34mainiPPc"></span><span id="_CPPv24mainiPPc"></span><span id="main__i.cPP"></span><span class="target" id="main_8cpp_1a3c04138a5bfe5d72780bb7e82a18e627"></span>int <code class="sig-name descname">main</code><span class="sig-paren">(</span>int <em>argc</em>, char **<em>argv</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv44mainiPPc" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The main entry point. </p>
@@ -200,7 +200,7 @@
 </div>
 <div class="section" id="the-cli">
 <h2>The CLI<a class="headerlink" href="#the-cli" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv413setup_optionsiPPcRNSt6vectorINSt6stringEEE">
 <span id="_CPPv313setup_optionsiPPcRNSt6vectorINSt6stringEEE"></span><span id="_CPPv213setup_optionsiPPcRNSt6vectorINSt6stringEEE"></span><span id="setup_options__i.cPP.std::vector:ss:R"></span><span class="target" id="utilities_8hpp_1a45117365249afe8c7f56d9ee82f4ec70"></span><a class="reference internal" href="#_CPPv410exit_codes" title="exit_codes">exit_codes</a> <code class="sig-name descname">setup_options</code><span class="sig-paren">(</span>int <em>argc</em>, char **<em>argv</em>, std::vector&lt;std::string&gt; &amp;<em>images</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413setup_optionsiPPcRNSt6vectorINSt6stringEEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set up the tool’s options and arguments. </p>
@@ -227,31 +227,31 @@
 </div>
 <div class="section" id="the-exit-codes">
 <h2>The Exit Codes<a class="headerlink" href="#the-exit-codes" title="Permalink to this headline">¶</a></h2>
-<dl class="enum">
+<dl class="cpp enum">
 <dt id="_CPPv410exit_codes">
 <span id="_CPPv310exit_codes"></span><span id="_CPPv210exit_codes"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517"></span><em class="property">enum </em><code class="sig-name descname">exit_codes</code><a class="headerlink" href="#_CPPv410exit_codes" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A collection of all the exit codes of the tool. </p>
 <p>This enum contains all the (expected) exit codes of the tool. </p>
 <p><em>Values:</em></p>
-<dl class="enumerator">
+<dl class="cpp enumerator">
 <dt id="_CPPv42OK">
 <span id="_CPPv32OK"></span><span id="_CPPv22OK"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517ae0aa021e21dddbd6d8cecec71e9cf564"></span><code class="sig-name descname">OK</code> = 0<a class="headerlink" href="#_CPPv42OK" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The tool exited with no error completing its tasks. </p>
 </dd></dl>
 
-<dl class="enumerator">
+<dl class="cpp enumerator">
 <dt id="_CPPv44HALT">
 <span id="_CPPv34HALT"></span><span id="_CPPv24HALT"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517abf2d798abfe8267da4f101692b6cfecd"></span><code class="sig-name descname">HALT</code> = 1<a class="headerlink" href="#_CPPv44HALT" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The tool exited with no error, but without completing its tasks. </p>
 </dd></dl>
 
-<dl class="enumerator">
+<dl class="cpp enumerator">
 <dt id="_CPPv414ARGUMENT_ERROR">
 <span id="_CPPv314ARGUMENT_ERROR"></span><span id="_CPPv214ARGUMENT_ERROR"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517a33533d864578f42ec03d223afdcced52"></span><code class="sig-name descname">ARGUMENT_ERROR</code> = 2<a class="headerlink" href="#_CPPv414ARGUMENT_ERROR" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The tool exited due to errors in the given arguments. </p>
 </dd></dl>
 
-<dl class="enumerator">
+<dl class="cpp enumerator">
 <dt id="_CPPv422UNKNOWN_ARGUMENT_ERROR">
 <span id="_CPPv322UNKNOWN_ARGUMENT_ERROR"></span><span id="_CPPv222UNKNOWN_ARGUMENT_ERROR"></span><span class="target" id="exit__codes_8hpp_1a83f0e31148ba1bcd936c008f1ea8d517a7058916b49a079ad1c754635780e9fa2"></span><code class="sig-name descname">UNKNOWN_ARGUMENT_ERROR</code> = 3<a class="headerlink" href="#_CPPv422UNKNOWN_ARGUMENT_ERROR" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The tool exited due to unknown errors while parsing the arguments. </p>
@@ -262,14 +262,14 @@
 </div>
 <div class="section" id="the-data-uri">
 <span id="data-uri"></span><h2>The Data URI<a class="headerlink" href="#the-data-uri" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
+<dl class="cpp class">
 <dt id="_CPPv48data_uri">
 <span id="_CPPv38data_uri"></span><span id="_CPPv28data_uri"></span><span id="data_uri"></span><span class="target" id="classdata__uri"></span><em class="property">class </em><code class="sig-name descname">data_uri</code><a class="headerlink" href="#_CPPv48data_uri" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>A utility class to handle data URIs. </p>
 <p>This class represents a data URI. A data URI is defined by <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs">MDN</a> as a string with the followind sintax: <code class="docutils literal notranslate"><span class="pre">data:[&lt;mediatype&gt;][;</span><a class="reference internal" href="#namespacebase64"><span class="std std-ref"><span class="pre">base64</span></span></a><span class="pre">],&lt;data&gt;</span></code>. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N8data_uri8data_uriERKNSt6stringE">
 <span id="_CPPv3N8data_uri8data_uriERKNSt6stringE"></span><span id="_CPPv2N8data_uri8data_uriERKNSt6stringE"></span><span id="data_uri::data_uri__ssCR"></span><span class="target" id="classdata__uri_1a165605d80a014c6e4b7710845b1b1c16"></span><code class="sig-name descname">data_uri</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8data_uri8data_uriERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>The class constructor. </p>
@@ -287,7 +287,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK8data_uri8get_typeEv">
 <span id="_CPPv3NK8data_uri8get_typeEv"></span><span id="_CPPv2NK8data_uri8get_typeEv"></span><span id="data_uri::get_typeC"></span><span class="target" id="classdata__uri_1ad6e326548d0dfa5bbbe9c2669411b51d"></span>std::string <code class="sig-name descname">get_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK8data_uri8get_typeEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the media type. </p>
@@ -299,7 +299,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK8data_uri8get_dataEv">
 <span id="_CPPv3NK8data_uri8get_dataEv"></span><span id="_CPPv2NK8data_uri8get_dataEv"></span><span id="data_uri::get_dataC"></span><span class="target" id="classdata__uri_1abdaaf7f55ee1e2c4fa41d17dd6fed06a"></span>std::string <code class="sig-name descname">get_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK8data_uri8get_dataEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the data. </p>
@@ -311,7 +311,7 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK8data_uri7get_uriEv">
 <span id="_CPPv3NK8data_uri7get_uriEv"></span><span id="_CPPv2NK8data_uri7get_uriEv"></span><span id="data_uri::get_uriC"></span><span class="target" id="classdata__uri_1a185ada68e77e608015d6bf265e7ce1d3"></span>std::string <code class="sig-name descname">get_uri</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK8data_uri7get_uriEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the URI. </p>
@@ -326,7 +326,7 @@
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Static Functions</p>
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N8data_uri11is_data_uriERKNSt6stringE">
 <span id="_CPPv3N8data_uri11is_data_uriERKNSt6stringE"></span><span id="_CPPv2N8data_uri11is_data_uriERKNSt6stringE"></span><span id="data_uri::is_data_uri__ssCR"></span><span class="target" id="classdata__uri_1a25847f2495afbd6352cd6ee5e1bc5c56"></span>bool <code class="sig-name descname">is_data_uri</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N8data_uri11is_data_uriERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Check if a string is a data URI. </p>
@@ -343,7 +343,7 @@
 </dd></dl>
 
 </div>
-<dl class="class">
+<dl class="cpp class">
 <dt id="_CPPv4N8data_uri14string_not_uriE">
 <span id="_CPPv3N8data_uri14string_not_uriE"></span><span id="_CPPv2N8data_uri14string_not_uriE"></span><span id="data_uri::string_not_uri"></span><span class="target" id="classdata__uri_1_1string__not__uri"></span><em class="property">class </em><code class="sig-name descname">string_not_uri</code> : <em class="property">public</em> exception<a class="headerlink" href="#_CPPv4N8data_uri14string_not_uriE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>An exception raised if a string is not an URI. </p>
@@ -355,14 +355,14 @@
 </div>
 <div class="section" id="the-base64-utilities">
 <h2>The Base64 Utilities<a class="headerlink" href="#the-base64-utilities" title="Permalink to this headline">¶</a></h2>
-<dl class="type">
+<dl class="cpp type">
 <dt id="_CPPv46base64">
 <span id="_CPPv36base64"></span><span id="_CPPv26base64"></span><span id="base64"></span><span class="target" id="namespacebase64"></span><em class="property">namespace </em><code class="sig-name descname">base64</code><a class="headerlink" href="#_CPPv46base64" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Namespace for dealing with <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> strings. </p>
 <p>This namespace contains utilities to deal with <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> strings. </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N6base646encodeERKNSt6stringE">
 <span id="_CPPv3N6base646encodeERKNSt6stringE"></span><span id="_CPPv2N6base646encodeERKNSt6stringE"></span><span id="base64::encode__ssCR"></span><span class="target" id="namespacebase64_1a47c61bb5df3dae8cd38f44b6b69e5b4d"></span>std::string <code class="sig-name descname">encode</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6base646encodeERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Encode a string to <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a>. </p>
@@ -378,9 +378,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N6base646encodeEPKhj">
-<span id="_CPPv3N6base646encodeEPKhj"></span><span id="_CPPv2N6base646encodeEPKhj"></span><span id="base64::encode__unsigned-cCP.unsigned-i"></span><span class="target" id="namespacebase64_1a75634806af39e9fc4bd201fe97e644c3"></span>std::string <code class="sig-name descname">encode</code><span class="sig-paren">(</span>unsigned char<em class="property">const</em>  *<em>s</em>, unsigned int <em>len</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6base646encodeEPKhj" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N6base646encodeEPKhj"></span><span id="_CPPv2N6base646encodeEPKhj"></span><span id="base64::encode__unsigned-cCP.unsigned-i"></span><span class="target" id="namespacebase64_1a75634806af39e9fc4bd201fe97e644c3"></span>std::string <code class="sig-name descname">encode</code><span class="sig-paren">(</span>unsigned char <em class="property">const</em> *<em>s</em>, unsigned int <em>len</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6base646encodeEPKhj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Encode a string to <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a>. </p>
 <p>This function encodes a string to a <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> string.</p>
 <p><dl class="simple">
@@ -395,9 +395,9 @@
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N6base646decodeERKNSt6stringE">
-<span id="_CPPv3N6base646decodeERKNSt6stringE"></span><span id="_CPPv2N6base646decodeERKNSt6stringE"></span><span id="base64::decode__ssCR"></span><span class="target" id="namespacebase64_1ac113404f22a064fcbaf015e9cab04bdf"></span>std::string <code class="sig-name descname">decode</code><span class="sig-paren">(</span>std::string<em class="property">const</em>  &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6base646decodeERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N6base646decodeERKNSt6stringE"></span><span id="_CPPv2N6base646decodeERKNSt6stringE"></span><span id="base64::decode__ssCR"></span><span class="target" id="namespacebase64_1ac113404f22a064fcbaf015e9cab04bdf"></span>std::string <code class="sig-name descname">decode</code><span class="sig-paren">(</span>std::string <em class="property">const</em> &amp;<em>s</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N6base646decodeERKNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Decode a <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> string. </p>
 <p>This function decodes a <a class="reference internal" href="#namespacebase64"><span class="std std-ref">base64</span></a> string to a binary string.</p>
 <p><dl class="simple">
