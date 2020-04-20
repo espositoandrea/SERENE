@@ -6,11 +6,12 @@ const sassMiddleware = require('node-sass-middleware');
 const path = require('path');
 const { MongoClient } = require('mongodb');
 const cors = require('cors');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 const requestSizeLimit = '50mb';
 
-const fs = require('fs');
 if (!fs.existsSync('temp')) {
     console.log('Creating temp/ directory');
     fs.mkdirSync('temp');
@@ -78,7 +79,12 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
         });
     });
 
-    app.listen(process.env.PORT, () => {
+    const httpsServer = https.createServer({
+        key: fs.readFileSync(process.env.HTTPS_CERT_KEY),
+        cert: fs.readFileSync(process.env.HTTPS_CERT)
+    }, app);
+
+    httpsServer.listen(process.env.PORT, () => {
         console.log(`Listening on port ${process.env.PORT}`);
     });
 });

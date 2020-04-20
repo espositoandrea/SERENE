@@ -4,7 +4,7 @@ import collect from "./collector";
 chrome.runtime.onInstalled.addListener((object) => {
     if (object.reason === 'install') {
         chrome.storage.local.set({userId: undefined});
-        chrome.tabs.create({url: "http://giuseppe-desolda.ddns.net:8080/survey"}, function (tab) {
+        chrome.tabs.create({url: "https://giuseppe-desolda.ddns.net:8080/survey"}, function (tab) {
             console.log('Opened survey');
         });
     }

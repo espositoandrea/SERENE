@@ -243,7 +243,7 @@ export class Collector {
      * @param data The data to be sent.
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
-        const URL = 'http://giuseppe-desolda.ddns.net:8080/data/store';
+        const URL = 'https://giuseppe-desolda.ddns.net:8080/data/store';
         return $.post(URL, {data: JSON.stringify(data)});
     }
 }
