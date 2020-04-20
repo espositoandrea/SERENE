@@ -12,18 +12,6 @@ module.exports = {
             title: 'Anagrafica',
             questions: [
                 {
-                    name: 'name',
-                    question: 'Nome',
-                    type: 'text',
-                    required: true,
-                },
-                {
-                    name: 'surname',
-                    question: 'Cognome',
-                    type: 'text',
-                    required: true,
-                },
-                {
                     name: 'age',
                     question: 'Età',
                     type: 'number',
