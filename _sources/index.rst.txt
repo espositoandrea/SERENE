@@ -15,9 +15,11 @@
 
 .. toctree::
    :maxdepth: 2
-   :caption: The Extension
+   :caption: The Server
 
    server/index
+   server/data-processor
+   server/survey
 
 Indices and tables
 ==================
