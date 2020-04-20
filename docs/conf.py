@@ -20,6 +20,7 @@
 project = "Andrea Esposito's Bachelor's Degree Thesis"
 copyright = '2020, Andrea Esposito'
 author = 'Andrea Esposito'
+version = 'development'
 
 
 # -- General configuration ---------------------------------------------------
@@ -28,7 +29,9 @@ author = 'Andrea Esposito'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'breathe'
+    'breathe',
+    'sphinx_js',
+    'sphinx_rtd_theme'
 ]
 
 # Setup the breathe extension
@@ -36,6 +39,14 @@ breathe_projects = {
     "emotions-tool": "./doxygen/emotions"
 }
 breathe_default_project = "emotions-tool"
+
+# Setup the sphinx_js extension
+root_for_relative_js_paths = '..'
+js_source_path = [
+    '../server/',
+    '../server/survey/',
+    '../extension/survey/',
+]
 
 # Add any paths that contain templates here, relative to this directory.
 # templates_path = ['_templates']
@@ -61,18 +72,36 @@ html_static_path = ['_static']
 html_logo = '_static/logo.svg'
 
 html_theme_options = {
-#     'canonical_url': '',
-#     'analytics_id': 'UA-XXXXXXX-1',  #  Provided by Google in your dashboard
+    #     'canonical_url': '',
+    #     'analytics_id': 'UA-XXXXXXX-1',  #  Provided by Google in your dashboard
     'logo_only': True,
-#     'display_version': True,
-#     'prev_next_buttons_location': 'bottom',
-#     'style_external_links': False,
-#     'vcs_pageview_mode': '',
-#     'style_nav_header_background': 'white',
-#     # Toc options
-#     'collapse_navigation': True,
-#     'sticky_navigation': True,
-#     'navigation_depth': 4,
-#     'includehidden': True,
-#     'titles_only': False
+    'display_version': True,
+    #     'prev_next_buttons_location': 'bottom',
+    #     'style_external_links': False,
+    #     'vcs_pageview_mode': '',
+    #     'style_nav_header_background': 'white',
+    #     # Toc options
+    #     'collapse_navigation': True,
+    #     'sticky_navigation': True,
+    #     'navigation_depth': 4,
+    #     'includehidden': True,
+    #     'titles_only': False
+}
+
+# List of tuples:
+# (source file, target name, title, author, document class [howto/manual], False).
+latex_documents = [
+    ('documentation', 'documentation.tex', "Technical Documentation",
+     'Andrea Esposito', 'manual', False),
+]
+latex_use_modindex = True
+latex_elements = {
+    'papersize': 'a4paper',
+    'pointsize': '11pt',
+    'preamble': r'''
+        \usepackage{hyperref}
+        \setcounter{tocdepth}{3}
+        \addto\captionsenglish{\renewcommand{\contentsname}{Table of contents}}
+    ''',
+    'figure_align': 'htbp',
 }

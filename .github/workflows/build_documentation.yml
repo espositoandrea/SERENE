@@ -10,24 +10,40 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Setup directory
+      - name: Setup Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v1
+        with:
+            python-version: '3.8'
+      - name: Install Dependencies
+        run: |
+          cd docs
+          npm i -g jsdoc typedoc
+          pip install sphinx==2.4.4 sphinx_rtd_theme
+          pip install -r requirements.txt
+          sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
+      - name: Setup Directory
         run: |
           cd docs && mkdir doxygen
-          cd ../icon && make logo
       - name: Run Doxygen
         uses: mattnotmitt/doxygen-action@v1.1.0
         with:
           working-directory: 'emotions/'
           doxyfile-path: 'Doxyfile'
-      - name: Build Sphinx documentation
-        uses: ammaraskar/sphinx-action@0.4
-        with:
-          pre-build-command: "pip install sphinx_rtd_theme"
-          docs-folder: "docs/"
-          build-command: "sphinx-build -b html . _build"
+      - name: Build Sphinx Documentation
+        run: |
+          cd docs
+          sphinx-build -b html . _build
+          sphinx-build -M latexpdf . _build/_pdf
       - name: Commit documentation changes
         run: |
           git clone https://espositoandrea:${{ secrets.GITHUB_TOKEN }}@github.com/espositoandrea/Bachelor-Thesis.git --branch gh-pages --single-branch gh-pages
+          if [ -d "gh-pages/_pdf" ]; then rm -rf gh-pages/_pdf/; fi
+          mkdir -p gh-pages/_pdf/ && cp -r docs/_build/_pdf/latex/*.pdf gh-pages/_pdf/
+          rm -fr docs/_build/_pdf/
           cp -r docs/_build/* gh-pages/
           cd gh-pages
           git config --local user.email "action@github.com"

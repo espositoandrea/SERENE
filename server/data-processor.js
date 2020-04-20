@@ -5,10 +5,25 @@
  * be extracted by the existing fields).
  */
 class DataProcessor {
+    /**
+     * Get the minimum accepted value for the emotions' fields. If the
+     * registered value is less than the returned value, the emotions' object
+     * can be safely discarded.
+     * 
+     * @returns {number} The minimum accepted value.
+     * @private
+     */
     static get _minimumAcceptedValue() {
         return 1;
     }
 
+    /**
+     * Round a value to two decimal places.
+     * 
+     * @param {number} val The value to be rounded.
+     * @returns {number} The value rounded to two decimal places.
+     * @private
+     */
     static _roundValue(val) {
         return Math.round((val + Number.EPSILON) * 100) / 100;
     }
@@ -17,6 +32,9 @@ class DataProcessor {
      * Extract the emotions from the image field.
      *
      * @param {Object} data The data to work on.
+     * @returns {Promise<Object[]>} A promise that will be resolved once the
+     * analysis is completed. The returned parameter contains the modified data.
+     * @private
      */
     static _analyzeEmotions(data) {
         return new Promise(resolve => {
@@ -83,7 +101,10 @@ class DataProcessor {
      * Process the data. This modify the passed data injecting various features
      * in them.
      *
-     * @param {Object|Array} data The data to be processed.
+     * @param {Object|Object[]} data The data to be processed.
+     * @returns {Promise<Object[]>} A promise that will be resolved once all the
+     * data have been processed. The promise's parameter holds the modified
+     * data.
      */
     static process(data) {
         if (!data) return;
