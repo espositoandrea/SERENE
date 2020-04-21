@@ -1,4 +1,4 @@
-name: Build Documentation
+name: Build Documents
 
 on:
   push:
@@ -24,7 +24,6 @@ jobs:
           npm i -g jsdoc typedoc
           pip install sphinx==2.4.4 sphinx_rtd_theme
           pip install -r requirements.txt
-          sudo apt-get install -y latexmk texlive-latex-recommended texlive-latex-extra texlive-fonts-recommended
       - name: Setup Directory
         run: |
           cd docs && mkdir doxygen
@@ -37,13 +36,25 @@ jobs:
         run: |
           cd docs
           sphinx-build -b html . _build
-          sphinx-build -M latexpdf . _build/_pdf
+          sphinx-build -b latex . _build/_pdf
+      - name: Build Documentation
+        uses: xu-cheng/latex-action@master
+        with:
+          working_directory: docs/_build/_pdf
+          root_file: documentation.tex
+      # - name: Build Thesis
+      #   uses: xu-cheng/latex-action@master
+      #   with:
+      #     working_directory: thesis/src/
+      #     root_file: Thesis.tex
       - name: Commit documentation changes
         run: |
           git clone https://espositoandrea:${{ secrets.GITHUB_TOKEN }}@github.com/espositoandrea/Bachelor-Thesis.git --branch gh-pages --single-branch gh-pages
           if [ -d "gh-pages/_pdf" ]; then rm -rf gh-pages/_pdf/; fi
-          mkdir -p gh-pages/_pdf/ && cp -r docs/_build/_pdf/latex/*.pdf gh-pages/_pdf/
+          mkdir -p gh-pages/_pdf/
+          cp docs/_build/_pdf/*.pdf gh-pages/_pdf/
           rm -fr docs/_build/_pdf/
+          # cp thesis/src/*.pdf gh-pages/_pdf/
           cp -r docs/_build/* gh-pages/
           cd gh-pages
           git config --local user.email "action@github.com"
