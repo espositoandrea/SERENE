@@ -39,3 +39,13 @@
    server/index
    server/data-processor
    server/survey
+
+.. raw:: latex
+
+   \part{License}
+
+.. toctree::
+   :hidden:
+   :caption: License
+   
+   licenses
