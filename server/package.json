@@ -8,6 +8,7 @@
     "watch": "nodemon index.js",
     "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
+    "build:extension-scripts": "cd ../extension && cross-env NODE_ENV=production  webpack src/firefox.ts --output-path ../server/dist/assets/js --output-filename firefox.js",
     "build:node": "cpy --parents . .env.example !node_modules !**/*.css !.env ../server/dist/",
     "build:emotions": "cd ../emotions && cpy bin/emotions ../server/dist/ && cpy --parents lib/ ../server/dist/",
     "build": "npm-run-all --parallel build:*",
@@ -51,6 +52,7 @@
   "devDependencies": {
     "bestzip": "^2.1.5",
     "cpy-cli": "^3.1.0",
+    "cross-env": "^7.0.2",
     "nodemon": "^2.0.2",
     "rimraf": "^3.0.2"
   }

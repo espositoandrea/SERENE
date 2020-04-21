@@ -1,23 +1,21 @@
-const {CheckerPlugin} = require('awesome-typescript-loader');
+const { CheckerPlugin } = require('awesome-typescript-loader');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const nodeExternals = require('webpack-node-externals');
-const {optimize} = require('webpack');
-const {join} = require('path');
-
-process.env.NODE_ENV = 'development';
+const { optimize } = require('webpack');
+const { join } = require('path');
 
 let prodPlugins = [];
+let isProduction = false;
 if (process.env.NODE_ENV === 'production') {
+    isProduction = true;
     prodPlugins.push(
         new optimize.AggressiveMergingPlugin(),
         new optimize.OccurrenceOrderPlugin()
     );
 }
 
-const commonConfig = {
+module.exports = {
     mode: process.env.NODE_ENV,
-    devtool: 'inline-source-map',
+    devtool: isProduction ? 'source-map' : 'inline-source-map',
     plugins: [
         new CheckerPlugin(),
         ...prodPlugins,
@@ -26,9 +24,6 @@ const commonConfig = {
             chunkFilename: '[id].css',
         }),
     ],
-};
-
-const extensionConfig = Object.assign({}, commonConfig, {
     entry: {
         contentscript: join(__dirname, 'src/contentscript.ts'),
         background: join(__dirname, 'src/background.ts'),
@@ -54,6 +49,4 @@ const extensionConfig = Object.assign({}, commonConfig, {
     resolve: {
         extensions: ['.ts', '.js'],
     },
-});
-
-module.exports = [extensionConfig];
+};
