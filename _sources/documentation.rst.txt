@@ -48,4 +48,4 @@
    :hidden:
    :caption: License
    
-   LICENSE
+   licenses
