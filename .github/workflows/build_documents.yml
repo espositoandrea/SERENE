@@ -21,7 +21,7 @@ jobs:
       - name: Install Dependencies
         run: |
           cd docs
-          npm i -g jsdoc typedoc
+          npm i -g jsdoc typedoc typescript
           pip install sphinx==2.4.4 sphinx_rtd_theme
           pip install -r requirements.txt
       - name: Setup Directory

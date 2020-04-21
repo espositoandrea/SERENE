@@ -1,6 +1,6 @@
 The Data Processor
 ==================
 
-.. js:autoclass:: DataProcessor
-   :members:
-   :private-members:
+.. .. js:autoclass:: DataProcessor
+..    :members:
+..    :private-members:

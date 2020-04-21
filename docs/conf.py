@@ -43,9 +43,8 @@ breathe_default_project = "emotions-tool"
 # Setup the sphinx_js extension
 root_for_relative_js_paths = '..'
 js_source_path = [
-    '../server/',
-    '../server/survey/',
-    '../extension/survey/',
+    '../server/src/',
+    '../extension/src/',
 ]
 
 # Add any paths that contain templates here, relative to this directory.

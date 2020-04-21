@@ -1,10 +1,14 @@
+import * as fs from 'fs';
+import * as shortid from 'shortid';
+import { spawn } from 'child_process';
+
 /**
  * The data processor.
  *
  * This class processes the collected data, by adding various features (that can
  * be extracted by the existing fields).
  */
-class DataProcessor {
+export default class DataProcessor {
     /**
      * Get the minimum accepted value for the emotions' fields. If the
      * registered value is less than the returned value, the emotions' object
@@ -38,16 +42,13 @@ class DataProcessor {
      */
     static _analyzeEmotions(data) {
         return new Promise(resolve => {
-            const shortid = require('shortid');
-            const fs = require('fs');
             const fileName = 'temp/' + shortid.generate() + '.temp';
             const file = fs.createWriteStream(fileName);
             data.forEach(e => e.i && file.write(e.i + '\n'));
             file.end();
 
             try {
-                const {spawn} = require('child_process');
-                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName], {stdio: ['pipe', 'pipe', 'ignore']});
+                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName], { stdio: ['pipe', 'pipe', 'ignore'] });
                 let out = '';
                 analysis.stdout.on('data', (chunk) => out += chunk.toString());
                 analysis.on("close", code => {
@@ -61,7 +62,7 @@ class DataProcessor {
                                     Object.entries(emotions[j].emotions).forEach(([key, value]) => {
                                         let newKey = key === "surprise" ? "su" : key.substr(0, 1);
                                         value = DataProcessor._roundValue(value);
-                                        if (key === "valence" || key === "engagement" || value>= DataProcessor._minimumAcceptedValue) {
+                                        if (key === "valence" || key === "engagement" || value >= DataProcessor._minimumAcceptedValue) {
                                             data[i].e[newKey] = value;
                                         }
                                     });
@@ -113,5 +114,3 @@ class DataProcessor {
         return DataProcessor._analyzeEmotions(data);
     }
 }
-
-module.exports = DataProcessor;
