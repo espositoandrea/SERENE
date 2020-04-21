@@ -52,8 +52,8 @@ function getScroll() {
     let relativeX = 100 * (absoluteX + document.documentElement.clientWidth) / width;
 
     return {
-        absolute: [absoluteX, absoluteY],
-        relative: [relativeX, relativeY]
+        a: [absoluteX, absoluteY],
+        r: [relativeX, relativeY]
     };
 }
 

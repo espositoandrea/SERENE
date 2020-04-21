@@ -26,7 +26,7 @@ import {response} from "express";
  */
 export type CollectedData = {
     ui: string, ///< The user ID
-    t: string, ///< The timestamp
+    t: number, ///< The timestamp
     u: string, ///< The visited URL
     m: { ///< Various data regarding the mouse
         p: [number, number], ///< The mouse position. p[0] is the X position, p[1] is the Y position.
@@ -246,7 +246,7 @@ export class Collector {
     async getData(options: CollectionOptions): Promise<CollectedData> {
         return {
             ui: this.userId,
-            t: new Date().toISOString(),
+            t: Date.now(),
             u: await this.getURL(options),
             m: this.getMouseData(),
             s: await this.getScrollData(),
