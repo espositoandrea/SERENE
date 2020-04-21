@@ -1,9 +1,8 @@
 The Survey
 ==========
 
-The survey is generated using the export defined in the module
-``survey/survey-data.js``. Here is documented the structure of the exported
-object.
+The survey is generated using the exported object defined in the module
+``survey-data.js``. Here is documented the structure of that object.
 
 .. js:autoclass:: Survey
    :members:

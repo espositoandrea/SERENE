@@ -44,7 +44,7 @@ MongoClient.connect(process.env.DB_HOST, (err, client) => {
 
     app.get('/', (req, res) => res.render('home', { title: 'Home' }));
 
-    app.get('/survey', (req, res) => res.render('survey', { title: 'Survey', survey: require("./survey/survey-data") }));
+    app.get('/survey', (req, res) => res.render('survey', { title: 'Survey', survey: require("./survey-data") }));
 
     app.post("/data/store", async (request, response) => {
         const data = JSON.parse(request.body.data);
