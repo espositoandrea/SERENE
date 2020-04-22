@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dist": "npm run build && bestzip dist/extension.zip dist/**",
-    "build": "webpack --config webpack.config.js",
+    "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rimraf dist && cpy manifest.json dist && cpy src/assets/* dist/assets",
     "prebuild": "npm run clean",
     "prewatch": "npm run clean",
-    "watch": "NODE_ENV=development webpack --config webpack.config.js -w",
+    "watch": "cross-env NODE_ENV=development webpack --config webpack.config.js -w",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -30,6 +30,7 @@
     "body-parser": "^1.19.0",
     "bootstrap": "^4.4.1",
     "cpy-cli": "^3.1.0",
+    "cross-env": "^7.0.2",
     "css-loader": "^3.4.2",
     "ejs-loader": "^0.3.5",
     "express": "^4.17.1",

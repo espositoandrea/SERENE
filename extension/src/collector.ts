@@ -19,7 +19,7 @@
 import * as _ from "lodash";
 import * as $ from 'jquery';
 import WebcamFacade from "./webcam-facade";
-import {response} from "express";
+import { response } from "express";
 
 /**
  * The structure of the collected data.
@@ -41,7 +41,12 @@ export type CollectedData = {
         r: [number, number] ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
     },
     w: [number, number], ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
-    k: string[], ///< An array of keys that's currently pressed
+    k: { ///< An array of keys that's currently pressed
+        a: boolean, ///< Is a alphabetic key pressed?
+        n: boolean, ///< Is a numeric key pressed?
+        s: boolean, ///< Is a simbol key pressed?
+        f: boolean ///< Is a function key pressed?
+    },
     i: string, ///< The webcam snapshot as a data URI.
 }
 
@@ -50,6 +55,7 @@ export type CollectedData = {
  */
 export type CollectionOptions = {
     mainInterval?: number, // defaults to 100 ms
+    emotionsInterval?: number, // defaults to 100 ms
     sendInterval?: number, // defaults to 5000 ms
     url?: {
         getProtocol?: boolean,
@@ -97,7 +103,11 @@ export class Collector {
                     this.pressedKeys.add(request.keyboard.key);
                     break;
                 case "keyup":
-                    this.pressedKeys.delete(request.keyboard.key);
+                    if (!this.pressedKeys.delete(request.keyboard.key)) {
+                        // Error fix: released a key that was pressed
+                        // Example: the key '[' emits as '[' on press and 'è' on release on Chrome
+                        this.pressedKeys.clear();
+                    }
                     break;
                 case 'webcampermission':
                     WebcamFacade.enableWebcam();
@@ -105,6 +115,23 @@ export class Collector {
             }
         });
         this._areListenersRegistered = true;
+    }
+
+    private static getKeyType(key: string) {
+        key = key.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
+        // The following 'if's will fail if the key's length not equal to 1
+        if (/^[a-zA-Z]$/i.test(key)) {
+            return 'a';
+        }
+        else if (/^[0-9]$/.test(key)) {
+            return 'n';
+        }
+        else if (/^[|\\!"£$%&/()=?^'-_.:,;#@+*\[\]]$/.test(key)) {
+            return 's';
+        }
+        else {
+            return 'f';
+        }
     }
 
     /**
@@ -121,9 +148,9 @@ export class Collector {
      * @param options The url collection options.
      * @return Promise A promise with the collected data.
      */
-    async getURL({url}: CollectionOptions): Promise<CollectedData['u']> {
+    async getURL({ url }: CollectionOptions): Promise<CollectedData['u']> {
         return await new Promise<string>(resolve => {
-            chrome.tabs.query({active: true, lastFocusedWindow: true}, function (tabs) {
+            chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
                 if (!tabs || !tabs[0] || !tabs[0].url) {
                     resolve(null);
                 } else {
@@ -163,7 +190,13 @@ export class Collector {
      * @return Object The keyboard data.
      */
     getKeyboardData(): CollectedData['k'] {
-        return Array.from(this.pressedKeys);
+        let types = new Set<string>([...this.pressedKeys].map(k => Collector.getKeyType(k)));
+        return {
+            a: types.has('a'),
+            f: types.has('f'),
+            n: types.has('n'),
+            s: types.has('s')
+        };
     }
 
     /**
@@ -173,11 +206,11 @@ export class Collector {
      */
     async getScrollData(): Promise<CollectedData['s']> {
         return await new Promise<CollectedData['s']>(resolve => {
-            chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
                     resolve(null);
                 } else {
-                    chrome.tabs.sendMessage(tabs[0].id, {event: 'getscrolllocation'}, function (response) {
+                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getscrolllocation' }, function (response) {
                         if (chrome.runtime.lastError) {
                             // The target page has disabled the execution of
                             // content scripts
@@ -198,11 +231,11 @@ export class Collector {
      */
     async getWindowData(): Promise<CollectedData['w']> {
         return await new Promise<CollectedData['w']>(resolve => {
-            chrome.tabs.query({active: true}, function (tabs) {
+            chrome.tabs.query({ active: true }, function (tabs) {
                 if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
                     resolve(null);
                 } else {
-                    chrome.tabs.sendMessage(tabs[0].id, {event: 'getwindowsize'}, function (response) {
+                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getwindowsize' }, function (response) {
                         if (chrome.runtime.lastError) {
                             // The target page has disabled the execution of
                             // content scripts
@@ -221,12 +254,12 @@ export class Collector {
             return WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null;
         }
         return await new Promise<CollectedData['i']>(resolve => {
-            browser.tabs.query({active: true, currentWindow: true})
+            browser.tabs.query({ active: true, currentWindow: true })
                 .then((tabs) => {
                     if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
                         resolve(null);
                     } else {
-                        browser.tabs.sendMessage(tabs[0].id, {event: 'snapwebcam'})
+                        browser.tabs.sendMessage(tabs[0].id, { event: 'snapwebcam' })
                             .then(async response => {
                                 if (browser.runtime.lastError) {
                                     resolve(null);
@@ -242,8 +275,9 @@ export class Collector {
     /**
      * Get all the required data.
      * @param options Various collection options
+     * @param photo Wether or not to get the webcam snapshot
      */
-    async getData(options: CollectionOptions): Promise<CollectedData> {
+    async getData(options: CollectionOptions, photo: boolean): Promise<CollectedData> {
         return {
             ui: this.userId,
             t: Date.now(),
@@ -252,7 +286,7 @@ export class Collector {
             s: await this.getScrollData(),
             w: await this.getWindowData(),
             k: this.getKeyboardData(),
-            i: await Collector.getPhoto()
+            i: photo ? await Collector.getPhoto() : null,
         };
     }
 
@@ -261,8 +295,9 @@ export class Collector {
      * @param data The data to be sent.
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
+        console.log(data.filter(d=>d.i))
         const URL = 'https://giuseppe-desolda.ddns.net:8080/data/store';
-        return $.post(URL, {data: JSON.stringify(data)});
+        return $.post(URL, { data: JSON.stringify(data) });
     }
 }
 
@@ -278,7 +313,8 @@ export default function collect(userId: string, options?: CollectionOptions): vo
     if (!userId) return;
 
     const defaultCollectionOptions: CollectionOptions = {
-        mainInterval: 100,
+        mainInterval: 10,
+        emotionsInterval: 100,
         sendInterval: 5000,
         url: {
             getProtocol: true,
@@ -296,6 +332,7 @@ export default function collect(userId: string, options?: CollectionOptions): vo
     // analysis that include the emotions (EA - Emotion Analysis) is used to
     // get the number of analysis without emotions between one EA and another.
     let numberOfCycles = 0;
+    let cyclesForEmotion = Math.floor(options.emotionsInterval / options.mainInterval);
     let resultChunk: CollectedData[] = [];
 
     let collectorInterval: any = undefined;
@@ -309,8 +346,11 @@ export default function collect(userId: string, options?: CollectionOptions): vo
         }
 
         collectorInterval = setInterval(async function () {
-            resultChunk.push(await collector.getData(options));
             numberOfCycles++;
+            // If we have to send a snapshot, reset the counter
+            let hasToSendSnapshot = (numberOfCycles === cyclesForEmotion);
+            if (hasToSendSnapshot) numberOfCycles = 0;
+            resultChunk.push(await collector.getData(options, hasToSendSnapshot));
         }, options.mainInterval);
     };
 

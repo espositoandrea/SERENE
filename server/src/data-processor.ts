@@ -64,9 +64,10 @@ export default class DataProcessor {
             const file = fs.createWriteStream(fileName);
             data.forEach(e => e.i && file.write(e.i + '\n'));
             file.end();
+            console.log('Created temp file: ', fileName);
 
             try {
-                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName], { stdio: ['pipe', 'pipe', 'ignore'] });
+                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName], { stdio: ['pipe', 'pipe', 'pipe'] });
                 let out = '';
                 analysis.stdout.on('data', (chunk) => out += chunk.toString());
                 analysis.on("close", code => {
