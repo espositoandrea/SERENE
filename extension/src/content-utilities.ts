@@ -35,7 +35,7 @@ export default class ContentScript {
             },
             timestamp: Date.now(),
             url: window.location.href,
-            width: new ScreenCoordinates(window.innerWidth, window.outerHeight)
+            window: new ScreenCoordinates(window.innerWidth, window.outerHeight)
         }
         ContentScript.takeWebcamPhoto = false;
         ContentScript.webcamPhoto = undefined;

@@ -41,7 +41,7 @@ export type CollectedData = {
         absolute: ScreenCoordinates ///< The absolute scroll position.
         relative: ScreenCoordinates ///< The relative scroll position (from the bottom of the screen).
     },
-    width: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+    window: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
     keyboard: { ///< An array of keys that's currently pressed
         alpha: boolean, ///< Is a alphabetic key pressed?
         numeric: boolean, ///< Is a numeric key pressed?
@@ -136,7 +136,7 @@ export class Collector {
             timestamp: data.timestamp,
             url: Collector.getUrl(data.url, options.url ?? {}),
             userId: this.userId,
-            width: data.width
+            window: data.window
         };
     }
 

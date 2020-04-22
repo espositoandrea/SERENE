@@ -25,7 +25,7 @@ export type RawData = {
         absolute: ScreenCoordinates ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
         relative: ScreenCoordinates ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
     },
-    width: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+    window: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
     keyboard: Array<string> ///< An array of keys that's currently pressed
 }
 
