@@ -155,7 +155,6 @@ function sendToServer (data: CollectedData[]): JQuery.jqXHR {
 function collect(userId: string, collectedData: RawData, options: CollectionOptions) {
     const collector = new Collector(userId);
     const finalData: CollectedData = collector.process(collectedData, options);
-    console.log(finalData);
     return finalData;
 }
 
