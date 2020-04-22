@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import collect from "./collector";
 import { Message, MessageEvents } from "./common-types";
 import WebcamFacade from "./webcam-facade";
 import configureCollector from "./collector";
@@ -62,7 +61,8 @@ getUserId()
                             width: 600,
                             height: 400,
                             type: "popup"
-                        });
+                        })
+                        .then(w=>localStorage.setItem('popupId', w.id.toString()));
                     }
                 });
         }

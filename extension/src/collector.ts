@@ -139,17 +139,17 @@ export class Collector {
             window: data.window
         };
     }
+}
 
-    /**
-     * Send a batch of data to the server.
-     * @param data The data to be sent.
-     */
-    public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
-        if (data.length == 0) return;
+/**
+ * Send a batch of data to the server.
+ * @param data The data to be sent.
+ */
+function sendToServer (data: CollectedData[]): JQuery.jqXHR {
+    if (data.length == 0) return;
 
-        const URL = 'https://giuseppe-desolda.ddns.net:8080/data/store';
-        return $.post(URL, { data: JSON.stringify(data) });
-    }
+    const URL = 'https://giuseppe-desolda.ddns.net:8080/data/store';
+    return $.post(URL, { data: JSON.stringify(data) });
 }
 
 function collect(userId: string, collectedData: RawData, options: CollectionOptions) {
@@ -160,12 +160,30 @@ function collect(userId: string, collectedData: RawData, options: CollectionOpti
 }
 
 function askForWebcamSnapshot() {
-    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-        if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
-            let photo = (navigator.userAgent.search("Firefox") !== -1) ? undefined : await WebcamFacade.snapPhoto();
-            chrome.tabs.sendMessage(tabs[0].id, { event: 'snapwebcam', data: photo });
-        }
-    });
+    if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getBrowserInfo && localStorage.getItem('popupId')) {
+        browser.tabs.query({ windowId: parseInt(localStorage.getItem('popupId')) })
+            .then(tabs => {
+                if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
+                    browser.tabs.sendMessage(tabs[0].id, { event: 'ESPOSITOTHESIS___SNAP_WEBCAM' })
+                        .then(response => {
+                            browser.tabs.query({ active: true, currentWindow: true })
+                                .then(tabs => {
+                                    if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
+                                        browser.tabs.sendMessage(tabs[0].id, { event: 'snapwebcam', data: response.snap });
+                                    }
+                                });
+                        });
+                }
+            });
+    }
+    else {
+        chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+            if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
+                let photo = (navigator.userAgent.search("Firefox") !== -1) ? undefined : await WebcamFacade.snapPhoto();
+                chrome.tabs.sendMessage(tabs[0].id, { event: 'snapwebcam', data: photo });
+            }
+        });
+    }
 }
 
 
@@ -193,13 +211,14 @@ export default function configureCollector(userId: string, options?: CollectionO
     };
     options = _.merge(defaultCollectionOptions, options || {});
 
+    askForWebcamSnapshot();
     setInterval(askForWebcamSnapshot, options.emotionsInterval);
 
     let data: CollectedData[] = new Array<CollectedData>();
 
     setInterval(() => {
         // Send to server and clear collected data
-        Collector.sendToServer(data)
+        sendToServer(data)
             .fail((data, status, error) => console.error(error));
         data = new Array<CollectedData>();
     }, options.sendInterval);

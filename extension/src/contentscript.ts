@@ -20,6 +20,8 @@ import './contentscript.scss';
 import ContentScript from "./content-utilities";
 import { Message } from './common-types';
 
+ContentScript.registerEvents();
+
 if (navigator.userAgent.search("Firefox") === -1) {
     // Chrome
     let iframe = document.createElement('iframe');
@@ -37,5 +39,3 @@ window.addEventListener('message', function (event) {
         chrome.runtime.sendMessage(new Message("surveycompleted", { userId: event.data.userId }));
     }
 });
-
-ContentScript.registerEvents();

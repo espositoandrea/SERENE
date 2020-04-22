@@ -78,22 +78,11 @@ export default class ContentScript {
                 ContentScript.sendCollectionRequest();
             }
         });
-        chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             if (request.event == 'snapwebcam') {
-                if (navigator.userAgent.search("Firefox") !== -1) {
-                    window.postMessage({ type: 'ESPOSITOTHESIS___SNAP_WEBCAM' }, '*');
-                    window.addEventListener('message', (event) => {
-                        if (event.data.type && event.data.type === "ESPOSITOTHESIS___RETURN_WEBCAM_SNAP") {
-                            ContentScript.takeWebcamPhoto = true;
-                            ContentScript.webcamPhoto = event.data.snap;
-                            ContentScript.sendCollectionRequest();
-                        }
-                    });
-                } else {
-                    ContentScript.takeWebcamPhoto = true;
-                    ContentScript.webcamPhoto = request.data;
-                    ContentScript.sendCollectionRequest();
-                }
+                ContentScript.takeWebcamPhoto = true;
+                ContentScript.webcamPhoto = request.data;
+                ContentScript.sendCollectionRequest();
             }
         });
     }
