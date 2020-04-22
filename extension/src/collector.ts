@@ -19,28 +19,29 @@
 import * as _ from "lodash";
 import * as $ from 'jquery';
 import WebcamFacade from "./webcam-facade";
-import { response } from "express";
+import { ScreenCoordinates, RawData, KeyboardKey, Message, MessageEvents } from "./common-types";
 
 /**
  * The structure of the collected data.
  */
 export type CollectedData = {
-    ui: string, ///< The user ID
+    userId: string, ///< The user ID
     timestamp: number, ///< The timestamp
     url: string, ///< The visited URL
     mouse: { ///< Various data regarding the mouse
-        position: [number, number], ///< The mouse position. p[0] is the X position, p[1] is the Y position.
+        position: ScreenCoordinates, ///< The mouse position.
         buttons: { ///< The mouse buttons
             left: boolean, ///< Is the left button pressed?
             middle: boolean, ///< Is the middle button pressed?
-            right: boolean ///< Is the right button pressed?
+            right: boolean, ///< Is the right button pressed?
+            [key: string]: boolean ///< Are other buttons pressed?
         }
     },
     scroll: { ///< Various data about the scroll position
-        absolute: [number, number] ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
-        relative: [number, number] ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
+        absolute: ScreenCoordinates ///< The absolute scroll position.
+        relative: ScreenCoordinates ///< The relative scroll position (from the bottom of the screen).
     },
-    width: [number, number], ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+    width: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
     keyboard: { ///< An array of keys that's currently pressed
         alpha: boolean, ///< Is a alphabetic key pressed?
         numeric: boolean, ///< Is a numeric key pressed?
@@ -72,221 +73,70 @@ export type CollectionOptions = {
  * This class collects the required data.
  */
 export class Collector {
-    private mousePosition: CollectedData['m']['p'] = [0, 0];
-    private mouseButtons: CollectedData['m']['b'] = {
-        l: false,
-        m: false,
-        r: false
-    };
-    private pressedKeys: Set<string> = new Set<string>();
     private readonly userId: string;
-
-    private _areListenersRegistered: boolean = false;
-
-    private registerListeners() {
-        if (this._areListenersRegistered) return;
-
-        chrome.runtime.onMessage.addListener((request) => {
-            let mouseButtonFromInteger = (btn: number) => btn < 3 ? ['l', 'm', 'r'][btn] : 'b' + (btn + 1);
-
-            switch (request.event) {
-                case "mousemove":
-                    this.mousePosition = request.mouse.position;
-                    break;
-                case "mousedown":
-                    this.mouseButtons[mouseButtonFromInteger(request.mouse.button)] = true;
-                    break;
-                case "mouseup":
-                    this.mouseButtons[mouseButtonFromInteger(request.mouse.button)] = false;
-                    break;
-                case "keydown":
-                    this.pressedKeys.add(request.keyboard.key);
-                    break;
-                case "keyup":
-                    if (!this.pressedKeys.delete(request.keyboard.key)) {
-                        // Error fix: released a key that was pressed
-                        // Example: the key '[' emits as '[' on press and 'è' on release on Chrome
-                        this.pressedKeys.clear();
-                    }
-                    break;
-                case 'webcampermission':
-                    WebcamFacade.enableWebcam();
-                    break;
-            }
-        });
-        this._areListenersRegistered = true;
-    }
-
-    public static getKeyType(key: string) {
-        key = key.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
-        // The following 'if's will fail if the key's length not equal to 1
-        if (/^[a-zA-Z]$/i.test(key)) {
-            return 'a';
-        }
-        else if (/^[0-9]$/.test(key)) {
-            return 'n';
-        }
-        else if (/^[|\\!"£$%&/()=?^'-_.:,;#@+*\[\]]$/.test(key)) {
-            return 's';
-        }
-        else {
-            return 'f';
-        }
-    }
 
     /**
      * The Collector constructor. It registers some messaging events.
      */
     public constructor(userId: string) {
-        this.registerListeners();
         this.userId = userId;
     }
 
-    /**
-     * Get the URL currently visited by the user.
-     *
-     * @param options The url collection options.
-     * @return Promise A promise with the collected data.
-     */
-    async getURL({ url }: CollectionOptions): Promise<CollectedData['u']> {
-        return await new Promise<string>(resolve => {
-            chrome.tabs.query({ active: true, lastFocusedWindow: true }, function (tabs) {
-                if (!tabs || !tabs[0] || !tabs[0].url) {
-                    resolve(null);
-                } else {
-                    const regexResult = /^(.*?):\/\/([^/]*?)(?:\/|$)([^?]*?)(?:(?:\?|$)([^#]*?))?(?:#|$)(.*?)$/.exec(tabs[0].url);
+    private static getUrl(url, urlOptions: CollectionOptions['url']): CollectedData['url'] | null {
+        const regexResult = /^(.*?):\/\/([^/]*?)(?:\/|$)([^?]*?)(?:(?:\?|$)([^#]*?))?(?:#|$)(.*?)$/.exec(url);
 
-                    if (!regexResult) {
-                        resolve(null);
-                    } else {
-                        let outUrl = '';
-                        url.getProtocol && (outUrl += regexResult[1] + '://');
-                        url.getDomain && (outUrl += regexResult[2] + '/');
-                        url.getPath && (outUrl += regexResult[3]);
-                        url.getQuery && regexResult[4] && (outUrl += '?' + regexResult[4]);
-                        url.getAnchor && regexResult[5] && (outUrl += '#' + regexResult[5]);
-                        resolve(outUrl);
-                    }
-                }
-            });
-        });
-    }
-
-    /**
-     * Get all the information about the mouse.
-     *
-     * @return Object The mouse data.
-     */
-    getMouseData(): CollectedData['m'] {
-        return {
-            p: this.mousePosition,
-            b: this.mouseButtons,
-        };
-    }
-
-    /**
-     * Get all the information about the keyboard.
-     *
-     * @return Object The keyboard data.
-     */
-    getKeyboardData(): CollectedData['k'] {
-        let types = new Set<string>([...this.pressedKeys].map(k => Collector.getKeyType(k)));
-        return {
-            a: types.has('a'),
-            f: types.has('f'),
-            n: types.has('n'),
-            s: types.has('s')
-        };
-    }
-
-    /**
-     * Get the data about the scroll position.
-     *
-     * @note The relative position is based on the lowest point of the screen.
-     */
-    async getScrollData(): Promise<CollectedData['s']> {
-        return await new Promise<CollectedData['s']>(resolve => {
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
-                    resolve(null);
-                } else {
-                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getscrolllocation' }, function (response) {
-                        if (chrome.runtime.lastError) {
-                            // The target page has disabled the execution of
-                            // content scripts
-                            resolve(null);
-                        } else {
-                            resolve(response);
-                        }
-                    });
-                }
-            });
-        });
-    }
-
-    /**
-     * Get the data about the scroll position.
-     *
-     * @note The relative position is based on the lowest point of the screen.
-     */
-    async getWindowData(): Promise<CollectedData['w']> {
-        return await new Promise<CollectedData['w']>(resolve => {
-            chrome.tabs.query({ active: true }, function (tabs) {
-                if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
-                    resolve(null);
-                } else {
-                    chrome.tabs.sendMessage(tabs[0].id, { event: 'getwindowsize' }, function (response) {
-                        if (chrome.runtime.lastError) {
-                            // The target page has disabled the execution of
-                            // content scripts
-                            resolve(null);
-                        } else {
-                            resolve(response);
-                        }
-                    });
-                }
-            });
-        });
-    }
-
-    static async getPhoto(): Promise<CollectedData['i']> {
-        if (typeof browser === 'undefined' || navigator.userAgent.search("Firefox") === -1) {
-            return WebcamFacade.isEnabled ? await WebcamFacade.snapPhoto() : null;
+        if (!regexResult) {
+            return null;
+        } else {
+            let outUrl = '';
+            urlOptions.getProtocol && (outUrl += regexResult[1] + '://');
+            urlOptions.getDomain && (outUrl += regexResult[2] + '/');
+            urlOptions.getPath && (outUrl += regexResult[3]);
+            urlOptions.getQuery && regexResult[4] && (outUrl += '?' + regexResult[4]);
+            urlOptions.getAnchor && regexResult[5] && (outUrl += '#' + regexResult[5]);
+            return outUrl;
         }
-        return await new Promise<CollectedData['i']>(resolve => {
-            browser.tabs.query({ active: true, currentWindow: true })
-                .then((tabs) => {
-                    if (tabs === undefined || tabs[0] === undefined || tabs[0].id === undefined) {
-                        resolve(null);
-                    } else {
-                        browser.tabs.sendMessage(tabs[0].id, { event: 'snapwebcam' })
-                            .then(async response => {
-                                if (browser.runtime.lastError) {
-                                    resolve(null);
-                                } else {
-                                    resolve(await response);
-                                }
-                            });
-                    }
-                });
-        });
     }
 
-    /**
-     * Get all the required data.
-     * @param options Various collection options
-     * @param photo Wether or not to get the webcam snapshot
-     */
-    async getData(options: CollectionOptions, photo: boolean): Promise<CollectedData> {
+    private static getKeyboardData(pressedKeys: Set<string>): CollectedData['keyboard'] {
+        let types = new Set<KeyboardKey.Types>([...pressedKeys].map(k => KeyboardKey.getType(k)));
         return {
-            ui: this.userId,
-            t: Date.now(),
-            u: await this.getURL(options),
-            m: this.getMouseData(),
-            s: await this.getScrollData(),
-            w: await this.getWindowData(),
-            k: this.getKeyboardData(),
-            i: photo ? await Collector.getPhoto() : null,
+            alpha: types.has(KeyboardKey.Types.ALPHABETIC),
+            function: types.has(KeyboardKey.Types.FUNCTION),
+            numeric: types.has(KeyboardKey.Types.NUMERIC),
+            symbol: types.has(KeyboardKey.Types.SYMBOLIC)
+        };
+    }
+
+    private static getMouseButtons(buttons: Set<number>): CollectedData['mouse']['buttons'] {
+        let obj: CollectedData['mouse']['buttons'] = {
+            left: buttons.has(0),
+            middle: buttons.has(1),
+            right: buttons.has(2)
+        };
+
+        buttons.forEach(button => {
+            if (button > 2) {
+                obj['button' + (button + 1)] = true;
+            }
+        });
+
+        return obj;
+    }
+
+    public process(data: RawData, options: CollectionOptions): CollectedData {
+        return {
+            image: data.image,
+            mouse: {
+                buttons: Collector.getMouseButtons(new Set<number>(data.mouse.buttons)),
+                position: data.mouse.position
+            },
+            keyboard: Collector.getKeyboardData(new Set<string>(data.keyboard)),
+            scroll: data.scroll,
+            timestamp: data.timestamp,
+            url: Collector.getUrl(data.url, options.url ?? {}),
+            userId: this.userId,
+            width: data.width
         };
     }
 
@@ -295,10 +145,27 @@ export class Collector {
      * @param data The data to be sent.
      */
     public static sendToServer(data: CollectedData[]): JQuery.jqXHR {
-        console.log(data.filter(d=>d.i))
+        if (data.length == 0) return;
+
         const URL = 'https://giuseppe-desolda.ddns.net:8080/data/store';
         return $.post(URL, { data: JSON.stringify(data) });
     }
+}
+
+function collect(userId: string, collectedData: RawData, options: CollectionOptions) {
+    const collector = new Collector(userId);
+    const finalData: CollectedData = collector.process(collectedData, options);
+    console.log(finalData);
+    return finalData;
+}
+
+function askForWebcamSnapshot() {
+    chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
+        if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
+            let photo = (navigator.userAgent.search("Firefox") !== -1) ? undefined : await WebcamFacade.snapPhoto();
+            chrome.tabs.sendMessage(tabs[0].id, { event: 'snapwebcam', data: photo });
+        }
+    });
 }
 
 
@@ -309,7 +176,7 @@ export class Collector {
  * @param options Various options for the collection
  * @return Promise A promise with the collected data.
  */
-export default function collect(userId: string, options?: CollectionOptions): void {
+export default function configureCollector(userId: string, options?: CollectionOptions): void {
     if (!userId) return;
 
     const defaultCollectionOptions: CollectionOptions = {
@@ -326,34 +193,22 @@ export default function collect(userId: string, options?: CollectionOptions): vo
     };
     options = _.merge(defaultCollectionOptions, options || {});
 
-    const collector = new Collector(userId);
+    setInterval(askForWebcamSnapshot, options.emotionsInterval);
 
-    // To simplify the management of the intervals, the interval of the
-    // analysis that include the emotions (EA - Emotion Analysis) is used to
-    // get the number of analysis without emotions between one EA and another.
-    let numberOfCycles = 0;
-    let cyclesForEmotion = Math.floor(options.emotionsInterval / options.mainInterval);
-    let resultChunk: CollectedData[] = [];
+    let data: CollectedData[] = new Array<CollectedData>();
 
-    let collectorInterval: any = undefined;
+    setInterval(() => {
+        // Send to server and clear collected data
+        Collector.sendToServer(data)
+            .fail((data, status, error) => console.error(error));
+        data = new Array<CollectedData>();
+    }, options.sendInterval);
 
-    let collectionLoop = () => {
-        if (collectorInterval !== undefined) {
-            clearInterval(collectorInterval);
-            Collector.sendToServer(resultChunk)
-                .done(() => resultChunk = [])
-                .fail((data, status, error) => console.error(error));
+    chrome.runtime.onMessage.addListener(function (request: Message<keyof MessageEvents>, sender, response) {
+        if (request.event === 'data-collected') {
+            data.push(collect(userId, (<Message<'data-collected'>>request).data, options));
+        } else if (request.event === 'webcampermission') {
+            WebcamFacade.enableWebcam();
         }
-
-        collectorInterval = setInterval(async function () {
-            numberOfCycles++;
-            // If we have to send a snapshot, reset the counter
-            let hasToSendSnapshot = (numberOfCycles === cyclesForEmotion);
-            if (hasToSendSnapshot) numberOfCycles = 0;
-            resultChunk.push(await collector.getData(options, hasToSendSnapshot));
-        }, options.mainInterval);
-    };
-
-    collectionLoop();
-    setInterval(collectionLoop, options.sendInterval);
+    });
 }

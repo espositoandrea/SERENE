@@ -17,12 +17,15 @@
  */
 
 import collect from "./collector";
+import { Message, MessageEvents } from "./common-types";
+import WebcamFacade from "./webcam-facade";
+import configureCollector from "./collector";
 
 
 chrome.runtime.onInstalled.addListener((object) => {
     if (object.reason === 'install') {
-        chrome.storage.local.set({userId: undefined});
-        chrome.tabs.create({url: "https://giuseppe-desolda.ddns.net:8080/survey"}, function (tab) {
+        chrome.storage.local.set({ userId: undefined });
+        chrome.tabs.create({ url: "https://giuseppe-desolda.ddns.net:8080/survey" }, function (tab) {
             console.log('Opened survey');
         });
     }
@@ -33,11 +36,11 @@ const getUserId = () => new Promise<string>(resolve => {
         if ('userId' in object) {
             resolve(object.userId)
         } else {
-            chrome.runtime.onMessage.addListener(function (request, sender, response) {
-                if (request.event == 'surveycompleted') {
-                    const userId = request.userId;
-                    chrome.storage.local.set({userId});
-                    resolve(request.userId);
+            chrome.runtime.onMessage.addListener(function (request: Message<keyof MessageEvents>, sender, response) {
+                if (request.event === 'surveycompleted') {
+                    const userId = (<Message<'surveycompleted'>>request).data.userId;
+                    chrome.storage.local.set({ userId });
+                    resolve((<Message<'surveycompleted'>>request).data.userId);
                 }
             });
         }
@@ -64,5 +67,11 @@ getUserId()
                 });
         }
 
-        collect(userId);
+        chrome.runtime.onMessage.addListener((request) => {
+            if (request.event === 'webcampermission') {
+                WebcamFacade.enableWebcam();
+            }
+        });
+
+        configureCollector(userId);
     });

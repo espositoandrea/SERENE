@@ -18,22 +18,7 @@
 
 import './contentscript.scss';
 import ContentScript from "./content-utilities";
-
-
-ContentScript.registerEvents();
-
-
-// Add listener for messages from the extension process
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.event == 'snapwebcam') {
-        window.postMessage({ type: 'ESPOSITOTHESIS___SNAP_WEBCAM' }, '*');
-        window.addEventListener('message', function (event) {
-            if (event.data.type && event.data.type === "ESPOSITOTHESIS___RETURN_WEBCAM_SNAP") {
-                sendResponse(event.data.snap)
-            }
-        });
-    }
-});
+import { Message } from './common-types';
 
 if (navigator.userAgent.search("Firefox") === -1) {
     // Chrome
@@ -47,8 +32,10 @@ if (navigator.userAgent.search("Firefox") === -1) {
 
 window.addEventListener('message', function (event) {
     if (event.source != window) return;
-
+    
     if (event.data.type && event.data.type === "ESPOSITOTHESIS___SET_USER_ID") {
-        chrome.runtime.sendMessage({ event: 'surveycompleted', userId: event.data.userId });
+        chrome.runtime.sendMessage(new Message("surveycompleted", { userId: event.data.userId }));
     }
 });
+
+ContentScript.registerEvents();

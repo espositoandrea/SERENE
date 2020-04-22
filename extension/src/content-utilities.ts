@@ -1,24 +1,12 @@
-import { ScreenCoordinates } from './common-types';
-
-export type RawData = {
-    timestamp: number, ///< The timestamp
-    url: string, ///< The visited URL
-    mouse: { ///< Various data regarding the mouse
-        position: ScreenCoordinates, ///< The mouse position. p[0] is the X position, p[1] is the Y position.
-        buttons: Set<number> ///< The mouse buttons (as integer codes)
-    },
-    scroll: { ///< Various data about the scroll position
-        absolute: ScreenCoordinates ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
-        relative: ScreenCoordinates ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
-    },
-    width: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
-    keyboard: Set<string> ///< An array of keys that's currently pressed
-}
+import { ScreenCoordinates, Message, RawData } from './common-types';
+import WebcamFacade from './webcam-facade';
 
 export default class ContentScript {
-    private static readonly keyboard: RawData['keyboard'] = new Set<string>();
+    private static readonly keyboard: Set<string> = new Set<string>();
     private static readonly mousePosition: RawData['mouse']['position'] = new ScreenCoordinates();
-    private static readonly mouseButtons: RawData['mouse']['buttons'] = new Set<number>();
+    private static readonly mouseButtons: Set<number> = new Set<number>();
+    private static takeWebcamPhoto: boolean = false;
+    private static webcamPhoto: any;
 
     private static get relativeScroll(): RawData['scroll']['relative'] {
         const height = document.body.offsetHeight;
@@ -32,11 +20,13 @@ export default class ContentScript {
         return new ScreenCoordinates(relativeX, relativeY);
     }
 
-    public static sendCollectionRequest(event: keyof WindowEventMap) {
+
+    public static async sendCollectionRequest() {
         const objectToSend: RawData = {
-            keyboard: ContentScript.keyboard,
+            image: ContentScript.takeWebcamPhoto ? ContentScript.webcamPhoto : undefined,
+            keyboard: Array.from(ContentScript.keyboard),
             mouse: {
-                buttons: ContentScript.mouseButtons,
+                buttons: Array.from(ContentScript.mouseButtons),
                 position: ContentScript.mousePosition
             },
             scroll: {
@@ -47,28 +37,27 @@ export default class ContentScript {
             url: window.location.href,
             width: new ScreenCoordinates(window.innerWidth, window.outerHeight)
         }
-
-        console.log(objectToSend)
-
-        // chrome.runtime.sendMessage({ event: 'data-collected', data: objectToSend });
+        ContentScript.takeWebcamPhoto = false;
+        ContentScript.webcamPhoto = undefined;
+        chrome.runtime.sendMessage(new Message('data-collected', objectToSend));
     }
 
     public static registerEvents() {
         window.addEventListener('mousedown', (e: MouseEvent) => {
             ContentScript.mouseButtons.add(e.button);
-            ContentScript.sendCollectionRequest('mousedown')
+            ContentScript.sendCollectionRequest();
         });
         window.addEventListener('mouseup', (e: MouseEvent) => {
             ContentScript.mouseButtons.delete(e.button);
-            ContentScript.sendCollectionRequest('mouseup')
+            ContentScript.sendCollectionRequest();
         });
         window.addEventListener('mousemove', e => {
             ContentScript.mousePosition.set(e.clientX, e.clientY);
-            ContentScript.sendCollectionRequest('mousemove')
+            ContentScript.sendCollectionRequest();
         });
         window.addEventListener('keydown', (e: KeyboardEvent) => {
             ContentScript.keyboard.add(e.key);
-            ContentScript.sendCollectionRequest('keydown')
+            ContentScript.sendCollectionRequest();
         });
         window.addEventListener('keyup', (e: KeyboardEvent) => {
             if (!ContentScript.keyboard.delete(e.key)) {
@@ -76,17 +65,35 @@ export default class ContentScript {
                 // Example: the key '[' emits as '[' on press and 'è' on release on Chrome
                 ContentScript.keyboard.clear();
             }
-            ContentScript.sendCollectionRequest('keyup')
+            ContentScript.sendCollectionRequest();
         });
         window.addEventListener('scroll', (e: UIEvent) => {
             if (e.target == window) {
                 this.relativeScroll.set(window.pageXOffset, window.pageYOffset);
-                ContentScript.sendCollectionRequest('scroll')
+                ContentScript.sendCollectionRequest();
             }
         });
         window.addEventListener('resize', (e: UIEvent) => {
             if (e.target == window) {
-                ContentScript.sendCollectionRequest('resize')
+                ContentScript.sendCollectionRequest();
+            }
+        });
+        chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
+            if (request.event == 'snapwebcam') {
+                if (navigator.userAgent.search("Firefox") !== -1) {
+                    window.postMessage({ type: 'ESPOSITOTHESIS___SNAP_WEBCAM' }, '*');
+                    window.addEventListener('message', (event) => {
+                        if (event.data.type && event.data.type === "ESPOSITOTHESIS___RETURN_WEBCAM_SNAP") {
+                            ContentScript.takeWebcamPhoto = true;
+                            ContentScript.webcamPhoto = event.data.snap;
+                            ContentScript.sendCollectionRequest();
+                        }
+                    });
+                } else {
+                    ContentScript.takeWebcamPhoto = true;
+                    ContentScript.webcamPhoto = request.data;
+                    ContentScript.sendCollectionRequest();
+                }
             }
         });
     }
