@@ -17,29 +17,13 @@
  */
 
 import './contentscript.scss';
-import WebcamFacade from "./webcam-facade";
+import ContentScript from "./content-utilities";
 
 
-// Listen for mouse movements
-document.addEventListener('mousemove', function (e) {
-    let x = e.pageX;
-    let y = e.pageY;
-    chrome.runtime.sendMessage({ event: 'mousemove', mouse: { position: [x, y] } });
-});
+ContentScript.registerEvents();
 
-// Listen for mouse buttons' click
-['mousedown', 'mouseup'].forEach(ev => {
-    document.addEventListener(ev, (e: MouseEvent) => {
-        chrome.runtime.sendMessage({ event: ev, mouse: { button: e.button } });
-    });
-});
 
-// Listen for keyboard buttons's
-['keydown', 'keyup'].forEach(ev => {
-    document.addEventListener(ev, (e: KeyboardEvent) => {
-        chrome.runtime.sendMessage({ event: ev, keyboard: { key: e.key } });
-    });
-});
+// { w: e.target.outerWidth, h: e.target.outerHeight }
 
 function getScroll() {
     const height = document.body.offsetHeight;
@@ -63,11 +47,7 @@ function getWindowSize() {
 
 // Add listener for messages from the extension process
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.event == 'getscrolllocation') {
-        sendResponse(getScroll());
-    } else if (request.event == 'getwindowsize') {
-        sendResponse(getWindowSize());
-    } else if (request.event == 'snapwebcam') {
+    if (request.event == 'snapwebcam') {
         window.postMessage({ type: 'ESPOSITOTHESIS___SNAP_WEBCAM' }, '*');
         window.addEventListener('message', function (event) {
             if (event.data.type && event.data.type === "ESPOSITOTHESIS___RETURN_WEBCAM_SNAP") {

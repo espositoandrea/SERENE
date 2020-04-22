@@ -26,28 +26,28 @@ import { response } from "express";
  */
 export type CollectedData = {
     ui: string, ///< The user ID
-    t: number, ///< The timestamp
-    u: string, ///< The visited URL
-    m: { ///< Various data regarding the mouse
-        p: [number, number], ///< The mouse position. p[0] is the X position, p[1] is the Y position.
-        b: { ///< The mouse buttons
-            l: boolean, ///< Is the left button pressed?
-            m: boolean, ///< Is the middle button pressed?
-            r: boolean ///< Is the right button pressed?
+    timestamp: number, ///< The timestamp
+    url: string, ///< The visited URL
+    mouse: { ///< Various data regarding the mouse
+        position: [number, number], ///< The mouse position. p[0] is the X position, p[1] is the Y position.
+        buttons: { ///< The mouse buttons
+            left: boolean, ///< Is the left button pressed?
+            middle: boolean, ///< Is the middle button pressed?
+            right: boolean ///< Is the right button pressed?
         }
     },
-    s: { ///< Various data about the scroll position
-        a: [number, number] ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
-        r: [number, number] ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
+    scroll: { ///< Various data about the scroll position
+        absolute: [number, number] ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
+        relative: [number, number] ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
     },
-    w: [number, number], ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
-    k: { ///< An array of keys that's currently pressed
-        a: boolean, ///< Is a alphabetic key pressed?
-        n: boolean, ///< Is a numeric key pressed?
-        s: boolean, ///< Is a simbol key pressed?
-        f: boolean ///< Is a function key pressed?
+    width: [number, number], ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+    keyboard: { ///< An array of keys that's currently pressed
+        alpha: boolean, ///< Is a alphabetic key pressed?
+        numeric: boolean, ///< Is a numeric key pressed?
+        symbol: boolean, ///< Is a symbol key pressed?
+        function: boolean ///< Is a function key pressed?
     },
-    i: string, ///< The webcam snapshot as a data URI.
+    image: string, ///< The webcam snapshot as a data URI.
 }
 
 /**
@@ -117,7 +117,7 @@ export class Collector {
         this._areListenersRegistered = true;
     }
 
-    private static getKeyType(key: string) {
+    public static getKeyType(key: string) {
         key = key.toString().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
         // The following 'if's will fail if the key's length not equal to 1
         if (/^[a-zA-Z]$/i.test(key)) {
