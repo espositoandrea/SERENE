@@ -23,28 +23,6 @@ import ContentScript from "./content-utilities";
 ContentScript.registerEvents();
 
 
-// { w: e.target.outerWidth, h: e.target.outerHeight }
-
-function getScroll() {
-    const height = document.body.offsetHeight;
-    const width = document.body.offsetWidth;
-
-    let absoluteY = window.pageYOffset;
-    let absoluteX = window.pageXOffset;
-
-    let relativeY = 100 * (absoluteY + document.documentElement.clientHeight) / height;
-    let relativeX = 100 * (absoluteX + document.documentElement.clientWidth) / width;
-
-    return {
-        a: [absoluteX, absoluteY],
-        r: [relativeX, relativeY]
-    };
-}
-
-function getWindowSize() {
-    return [window.outerWidth, window.outerHeight];
-}
-
 // Add listener for messages from the extension process
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if (request.event == 'snapwebcam') {

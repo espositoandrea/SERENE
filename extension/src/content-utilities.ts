@@ -1,33 +1,51 @@
+import { ScreenCoordinates } from './common-types';
+
 export type RawData = {
     timestamp: number, ///< The timestamp
     url: string, ///< The visited URL
     mouse: { ///< Various data regarding the mouse
-        position: [number, number], ///< The mouse position. p[0] is the X position, p[1] is the Y position.
-        buttons: { ///< The mouse buttons
-            left: boolean, ///< Is the left button pressed?
-            middle: boolean, ///< Is the middle button pressed?
-            right: boolean ///< Is the right button pressed?
-        }
+        position: ScreenCoordinates, ///< The mouse position. p[0] is the X position, p[1] is the Y position.
+        buttons: Set<number> ///< The mouse buttons (as integer codes)
     },
     scroll: { ///< Various data about the scroll position
-        absolute: [number, number] ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
-        relative: [number, number] ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
+        absolute: ScreenCoordinates ///< The absolute scroll position. a[0] is the X position, a[1] is the Y position.
+        relative: ScreenCoordinates ///< The relative scroll position (from the bottom of the screen). r[0] is the X position, r[1] is the Y position.
     },
-    width: [number, number], ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
-    keyboard: string[] ///< An array of keys that's currently pressed
+    width: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+    keyboard: Set<string> ///< An array of keys that's currently pressed
 }
 
 export default class ContentScript {
-    private static readonly keyboard: Set<string> = new Set<string>();
+    private static readonly keyboard: RawData['keyboard'] = new Set<string>();
+    private static readonly mousePosition: RawData['mouse']['position'] = new ScreenCoordinates();
+    private static readonly mouseButtons: RawData['mouse']['buttons'] = new Set<number>();
+
+    private static get relativeScroll(): RawData['scroll']['relative'] {
+        const height = document.body.offsetHeight;
+        const width = document.body.offsetWidth;
+
+        let absoluteY = window.pageYOffset;
+        let absoluteX = window.pageXOffset;
+
+        let relativeY = 100 * (absoluteY + document.documentElement.clientHeight) / height;
+        let relativeX = 100 * (absoluteX + document.documentElement.clientWidth) / width;
+        return new ScreenCoordinates(relativeX, relativeY);
+    }
 
     public static sendCollectionRequest(event: keyof WindowEventMap) {
         const objectToSend: RawData = {
-            keyboard: null,
-            mouse: null,
-            scroll: null,
+            keyboard: ContentScript.keyboard,
+            mouse: {
+                buttons: ContentScript.mouseButtons,
+                position: ContentScript.mousePosition
+            },
+            scroll: {
+                absolute: new ScreenCoordinates(window.pageXOffset, window.pageYOffset),
+                relative: ContentScript.relativeScroll
+            },
             timestamp: Date.now(),
-            url: null,
-            width: null
+            url: window.location.href,
+            width: new ScreenCoordinates(window.innerWidth, window.outerHeight)
         }
 
         console.log(objectToSend)
@@ -37,19 +55,18 @@ export default class ContentScript {
 
     public static registerEvents() {
         window.addEventListener('mousedown', (e: MouseEvent) => {
-            e.button;
+            ContentScript.mouseButtons.add(e.button);
             ContentScript.sendCollectionRequest('mousedown')
         });
         window.addEventListener('mouseup', (e: MouseEvent) => {
-            e.button;
+            ContentScript.mouseButtons.delete(e.button);
             ContentScript.sendCollectionRequest('mouseup')
         });
         window.addEventListener('mousemove', e => {
-            let o = { x: e.clientX, y: e.clientY }
+            ContentScript.mousePosition.set(e.clientX, e.clientY);
             ContentScript.sendCollectionRequest('mousemove')
         });
         window.addEventListener('keydown', (e: KeyboardEvent) => {
-            e.key;
             ContentScript.keyboard.add(e.key);
             ContentScript.sendCollectionRequest('keydown')
         });
@@ -63,6 +80,7 @@ export default class ContentScript {
         });
         window.addEventListener('scroll', (e: UIEvent) => {
             if (e.target == window) {
+                this.relativeScroll.set(window.pageXOffset, window.pageYOffset);
                 ContentScript.sendCollectionRequest('scroll')
             }
         });
