@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { config } from 'dotenv';
+import { config } from "dotenv";
 config();
-import * as https from 'https';
-import * as http from 'http';
-import * as fs from 'fs';
+import * as https from "https";
+import * as http from "http";
+import * as fs from "fs";
 
-import app from './app';
+import app from "./app";
 
 const hasHTTPS = Boolean(process.env.HTTPS_CERT_KEY && process.env.HTTPS_CERT);
 const server = hasHTTPS ? https.createServer({
@@ -31,5 +31,5 @@ const server = hasHTTPS ? https.createServer({
 }, app) : http.createServer(app);
 
 server.listen(process.env.PORT, () => {
-    console.log(`Listening (HTTP${hasHTTPS ? 'S' : ''}) on port ${process.env.PORT}`);
+    console.log(`Listening (HTTP${hasHTTPS ? "S" : ""}) on port ${process.env.PORT}`);
 });

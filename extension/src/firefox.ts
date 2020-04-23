@@ -21,8 +21,8 @@ import WebcamFacade from "./webcam-facade";
 WebcamFacade.enableWebcam();
 
 
-browser.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
-    if (request.event == 'ESPOSITOTHESIS___SNAP_WEBCAM') {
+browser.runtime.onMessage.addListener(async (request) => {
+    if (request.event == "ESPOSITOTHESIS___SNAP_WEBCAM") {
         return { snap: await WebcamFacade.snapPhoto() };
     }
 });

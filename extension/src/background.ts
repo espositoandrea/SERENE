@@ -22,24 +22,24 @@ import configureCollector from "./collector";
 
 
 chrome.runtime.onInstalled.addListener((object) => {
-    if (object.reason === 'install') {
+    if (object.reason === "install") {
         chrome.storage.local.set({ userId: undefined });
         chrome.tabs.create({ url: "https://giuseppe-desolda.ddns.net:8080/survey" }, function (tab) {
-            console.log('Opened survey');
+            console.log("Opened survey on tab ", tab.id);
         });
     }
 });
 
-const getUserId = () => new Promise<string>(resolve => {
-    chrome.storage.local.get('userId', function (object) {
-        if ('userId' in object) {
-            resolve(object.userId)
+const getUserId: () => Promise<string> = () => new Promise<string>(resolve => {
+    chrome.storage.local.get("userId", function (object) {
+        if ("userId" in object) {
+            resolve(object.userId);
         } else {
-            chrome.runtime.onMessage.addListener(function (request: Message<keyof MessageEvents>, sender, response) {
-                if (request.event === 'surveycompleted') {
-                    const userId = (<Message<'surveycompleted'>>request).data.userId;
+            chrome.runtime.onMessage.addListener(function (request: Message<keyof MessageEvents>) {
+                if (request.event === "surveycompleted") {
+                    const userId = (request as Message<"surveycompleted">).data.userId;
                     chrome.storage.local.set({ userId });
-                    resolve((<Message<'surveycompleted'>>request).data.userId);
+                    resolve((request as Message<"surveycompleted">).data.userId);
                 }
             });
         }
@@ -52,23 +52,23 @@ getUserId()
             alert("Impossibile utilizzare l'estensione se non si è compilato il questionario.");
             return;
         }
-        if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getBrowserInfo) {
+        if (typeof browser !== "undefined" && browser.runtime && browser.runtime.getBrowserInfo) {
             browser.runtime.getBrowserInfo()
                 .then(info => {
                     if (info.name == "Firefox") {
                         browser.windows.create({
-                            url: browser.extension.getURL('assets/firefox-permissions.html'),
+                            url: browser.extension.getURL("assets/firefox-permissions.html"),
                             width: 600,
                             height: 400,
                             type: "popup"
                         })
-                        .then(w=>localStorage.setItem('popupId', w.id.toString()));
+                            .then(w => localStorage.setItem("popupId", w.id.toString()));
                     }
                 });
         }
 
         chrome.runtime.onMessage.addListener((request) => {
-            if (request.event === 'webcampermission') {
+            if (request.event === "webcampermission") {
                 WebcamFacade.enableWebcam();
             }
         });

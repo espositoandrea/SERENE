@@ -16,36 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as fs from 'fs';
-import * as shortid from 'shortid';
-import { spawn } from 'child_process';
+import * as fs from "fs";
+import * as shortid from "shortid";
+import { spawn } from "child_process";
 
 export type FinalData = {
-    ui: string, ///< The user ID
-    t: number, ///< The timestamp
-    u: string, ///< The visited URL
+    ui: string; ///< The user ID
+    t: number; ///< The timestamp
+    u: string; ///< The visited URL
     m: { ///< Various data regarding the mouse
-        p: [number, number], ///< The mouse position.
+        p: [number, number]; ///< The mouse position.
         b: { ///< The mouse buttons
-            l: boolean, ///< Is the left button pressed?
-            m: boolean, ///< Is the middle button pressed?
-            r: boolean, ///< Is the right button pressed?
-            [key: string]: boolean ///< Are other buttons pressed?
-        }
-    },
+            l: boolean; ///< Is the left button pressed?
+            m: boolean; ///< Is the middle button pressed?
+            r: boolean; ///< Is the right button pressed?
+            [key: string]: boolean; ///< Are other buttons pressed?
+        };
+    };
     s: { ///< Various data about the scroll position
-        a: [number, number] ///< The absolute scroll position.
-        r: [number, number] ///< The relative scroll position (from the bottom of the screen).
-    },
-    w: [number, number], ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+        a: [number, number]; ///< The absolute scroll position.
+        r: [number, number]; ///< The relative scroll position (from the bottom of the screen).
+    };
+    w: [number, number]; ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
     k: { ///< An array of keys that's currently pressed
-        a: boolean, ///< Is a alphabetic key pressed?
-        n: boolean, ///< Is a numeric key pressed?
-        s: boolean, ///< Is a symbol key pressed?
-        f: boolean ///< Is a function key pressed?
-    },
-    e?: { [key: string]: number }, ///< The emotion analysis results
-    i?: string, ///< The webcam snapshot as a data URI.
+        a: boolean; ///< Is a alphabetic key pressed?
+        n: boolean; ///< Is a numeric key pressed?
+        s: boolean; ///< Is a symbol key pressed?
+        f: boolean; ///< Is a function key pressed?
+    };
+    e?: { [key: string]: number }; ///< The emotion analysis results
+    i?: string; ///< The webcam snapshot as a data URI.
 }
 
 /**
@@ -74,7 +74,7 @@ export default class DataProcessor {
      * @returns {number} The value rounded to two decimal places.
      * @private
      */
-    static _roundValue(val: number) {
+    static _roundValue(val: number): number {
         return Math.round((val + Number.EPSILON) * 100) / 100;
     }
 
@@ -86,10 +86,10 @@ export default class DataProcessor {
      * analysis is completed. The returned parameter contains the modified data.
      * @private
      */
-    static _analyzeEmotions(collectedData) {
-        let data = new Array<FinalData>();
+    static _analyzeEmotions(collectedData): Promise<FinalData[]> {
+        const data = new Array<FinalData>();
         collectedData.forEach(e => {
-            let newElement: FinalData = {
+            const newElement: FinalData = {
                 i: e.image,
                 k: {
                     a: e.keyboard.alpha,
@@ -116,8 +116,8 @@ export default class DataProcessor {
             };
 
             Object.keys(e.mouse.buttons).forEach(k => {
-                if (k !== 'left' && k !== 'right' && k !== 'middle') {
-                    let newKey = k.substr(0, 1) + k.substr(k.length - 1, 1);
+                if (k !== "left" && k !== "right" && k !== "middle") {
+                    const newKey = k.substr(0, 1) + k.substr(k.length - 1, 1);
                     newElement.m.b[newKey] = e.mouse.buttons[k];
                 }
             });
@@ -125,26 +125,26 @@ export default class DataProcessor {
         });
 
         return new Promise<FinalData[]>(resolve => {
-            const fileName = 'temp/' + shortid.generate() + '.temp';
+            const fileName = "temp/" + shortid.generate() + ".temp";
             const file = fs.createWriteStream(fileName);
-            data.forEach(e => e.i && file.write(e.i + '\n'));
+            data.forEach(e => e.i && file.write(e.i + "\n"));
             file.end();
-            console.log('Created temp file: ', fileName);
+            console.log("Created temp file: ", fileName);
 
             try {
-                let analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ['--file', fileName], { stdio: ['pipe', 'pipe', 'pipe'] });
-                let out = '';
-                analysis.stdout.on('data', (chunk) => out += chunk.toString());
-                analysis.on("close", code => {
+                const analysis = spawn(process.env.EMOTIONS_EXECUTABLE, ["--file", fileName], { stdio: ["pipe", "pipe", "pipe"] });
+                let out = "";
+                analysis.stdout.on("data", (chunk) => out += chunk.toString());
+                analysis.on("close", () => {
                     if (out !== "") {
-                        let emotions = JSON.parse(out);
+                        const emotions = JSON.parse(out);
                         let j = 0;
                         for (let i = 0; i < data.length; i++) {
                             if (data[i].i) {
                                 data[i].e = {};
                                 if (emotions[j].emotions) {
                                     Object.entries(emotions[j].emotions).forEach(([key, value]: [string, number]) => {
-                                        let newKey = key === "surprise" ? "su" : key.substr(0, 1);
+                                        const newKey = key === "surprise" ? "su" : key.substr(0, 1);
                                         value = DataProcessor._roundValue(value);
                                         if (key === "valence" || key === "engagement" || value >= DataProcessor._minimumAcceptedValue) {
                                             data[i].e[newKey] = value;
@@ -191,7 +191,7 @@ export default class DataProcessor {
      * data have been processed. The promise's parameter holds the modified
      * data.
      */
-    static process(data) {
+    static process(data): Promise<FinalData[]> {
         if (!data) return;
         if (!Array.isArray(data)) data = [data];
 

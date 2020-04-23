@@ -16,30 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import * as Webcam from 'webcamjs';
+import * as Webcam from "webcamjs";
 
 /**
  * A facade singleton object to use the webcam.
  */
 export default class WebcamFacade {
-    private static isWebcamEnabled: boolean = false;
+    private static isWebcamEnabled = false;
 
     public static get isEnabled(): boolean {
         return WebcamFacade.isWebcamEnabled;
     }
 
-    public static enableWebcam() {
-        let webcamHolder = document.createElement('div');
-        webcamHolder.id = '__AESPOSITO_EXTENSION__webcam-holder';
+    public static enableWebcam(): void {
+        const webcamHolder = document.createElement("div");
+        webcamHolder.id = "__AESPOSITO_EXTENSION__webcam-holder";
         document.body.appendChild(webcamHolder);
+
+        /* eslint-disable */
         Webcam.set({
             width: 320,
             height: 240,
-            image_format: 'jpeg',
+            image_format: "jpeg",
             jpeg_quality: 90
         });
+        /* eslint-enable */
+
         Webcam.attach(webcamHolder.id);
-        Webcam.on('load', () => {
+        Webcam.on("load", () => {
             WebcamFacade.isWebcamEnabled = true;
         });
     }
@@ -51,8 +55,8 @@ export default class WebcamFacade {
     public static async snapPhoto(): Promise<string> {
         return new Promise<string>(resolve => {
             if (WebcamFacade.isWebcamEnabled) {
-                Webcam.snap(async data_uri => {
-                    resolve(await data_uri);
+                Webcam.snap(async dataUri => {
+                    resolve(await dataUri);
                 });
             }
         });

@@ -62,12 +62,12 @@ module.exports = {
                     Inventore ab, dolore vitae recusandae natus amet!</p>`,
     sections: [
         {
-            title: 'Anagrafica',
+            title: "Anagrafica",
             questions: [
                 {
-                    name: 'age',
-                    question: 'Età',
-                    type: 'number',
+                    name: "age",
+                    question: "Età",
+                    type: "number",
                     rules: {
                         min: 0,
                         step: 1,
@@ -75,19 +75,19 @@ module.exports = {
                     required: true,
                 },
                 {
-                    name: 'email',
-                    question: 'E-mail',
-                    type: 'email',
+                    name: "email",
+                    question: "E-mail",
+                    type: "email",
                     required: true,
-                    placeholder: 'youremail@email.com'
+                    placeholder: "youremail@email.com"
                 },
                 {
-                    name: 'sex',
-                    question: 'Sesso',
-                    type: 'choice',
+                    name: "sex",
+                    question: "Sesso",
+                    type: "choice",
                     required: true,
                     choices: [
-                        'Maschio', 'Femmina', 'Altro'
+                        "Maschio", "Femmina", "Altro"
                     ]
                 }
             ]
@@ -98,12 +98,12 @@ module.exports = {
                 {
                     question: [
                         {
-                            name: 'internet',
-                            question: 'Navigo su internet molto spesso',
+                            name: "internet",
+                            question: "Navigo su internet molto spesso",
                             required: true
                         },
                     ],
-                    type: 'likert',
+                    type: "likert",
                     required: true,
                 }
             ]

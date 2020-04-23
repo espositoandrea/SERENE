@@ -17,7 +17,7 @@
  */
 
 import * as _ from "lodash";
-import * as $ from 'jquery';
+import * as $ from "jquery";
 import WebcamFacade from "./webcam-facade";
 import { ScreenCoordinates, RawData, KeyboardKey, Message, MessageEvents } from "./common-types";
 
@@ -25,46 +25,46 @@ import { ScreenCoordinates, RawData, KeyboardKey, Message, MessageEvents } from 
  * The structure of the collected data.
  */
 export type CollectedData = {
-    userId: string, ///< The user ID
-    timestamp: number, ///< The timestamp
-    url: string, ///< The visited URL
+    userId: string; ///< The user ID
+    timestamp: number; ///< The timestamp
+    url: string; ///< The visited URL
     mouse: { ///< Various data regarding the mouse
-        position: ScreenCoordinates, ///< The mouse position.
+        position: ScreenCoordinates; ///< The mouse position.
         buttons: { ///< The mouse buttons
-            left: boolean, ///< Is the left button pressed?
-            middle: boolean, ///< Is the middle button pressed?
-            right: boolean, ///< Is the right button pressed?
-            [key: string]: boolean ///< Are other buttons pressed?
-        }
-    },
+            left: boolean; ///< Is the left button pressed?
+            middle: boolean; ///< Is the middle button pressed?
+            right: boolean; ///< Is the right button pressed?
+            [key: string]: boolean; ///< Are other buttons pressed?
+        };
+    };
     scroll: { ///< Various data about the scroll position
-        absolute: ScreenCoordinates ///< The absolute scroll position.
-        relative: ScreenCoordinates ///< The relative scroll position (from the bottom of the screen).
-    },
-    window: ScreenCoordinates, ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
+        absolute: ScreenCoordinates; ///< The absolute scroll position.
+        relative: ScreenCoordinates; ///< The relative scroll position (from the bottom of the screen).
+    };
+    window: ScreenCoordinates; ///< Various data about the browser's window. w[0] is the width, w[1] is the height.
     keyboard: { ///< An array of keys that's currently pressed
-        alpha: boolean, ///< Is a alphabetic key pressed?
-        numeric: boolean, ///< Is a numeric key pressed?
-        symbol: boolean, ///< Is a symbol key pressed?
-        function: boolean ///< Is a function key pressed?
-    },
-    image: string, ///< The webcam snapshot as a data URI.
+        alpha: boolean; ///< Is a alphabetic key pressed?
+        numeric: boolean; ///< Is a numeric key pressed?
+        symbol: boolean; ///< Is a symbol key pressed?
+        function: boolean; ///< Is a function key pressed?
+    };
+    image: string; ///< The webcam snapshot as a data URI.
 }
 
 /**
  * The available options for the data collection.
  */
 export type CollectionOptions = {
-    mainInterval?: number, // defaults to 100 ms
-    emotionsInterval?: number, // defaults to 100 ms
-    sendInterval?: number, // defaults to 5000 ms
+    mainInterval?: number; // defaults to 100 ms
+    emotionsInterval?: number; // defaults to 100 ms
+    sendInterval?: number; // defaults to 5000 ms
     url?: {
-        getProtocol?: boolean,
-        getDomain?: boolean,
-        getPath?: boolean,
-        getQuery?: boolean,
-        getAnchor?: boolean
-    }
+        getProtocol?: boolean;
+        getDomain?: boolean;
+        getPath?: boolean;
+        getQuery?: boolean;
+        getAnchor?: boolean;
+    };
 }
 
 /**
@@ -82,24 +82,24 @@ export class Collector {
         this.userId = userId;
     }
 
-    private static getUrl(url, urlOptions: CollectionOptions['url']): CollectedData['url'] | null {
+    private static getUrl(url, urlOptions: CollectionOptions["url"]): CollectedData["url"] | null {
         const regexResult = /^(.*?):\/\/([^/]*?)(?:\/|$)([^?]*?)(?:(?:\?|$)([^#]*?))?(?:#|$)(.*?)$/.exec(url);
 
         if (!regexResult) {
             return null;
         } else {
-            let outUrl = '';
-            urlOptions.getProtocol && (outUrl += regexResult[1] + '://');
-            urlOptions.getDomain && (outUrl += regexResult[2] + '/');
+            let outUrl = "";
+            urlOptions.getProtocol && (outUrl += regexResult[1] + "://");
+            urlOptions.getDomain && (outUrl += regexResult[2] + "/");
             urlOptions.getPath && (outUrl += regexResult[3]);
-            urlOptions.getQuery && regexResult[4] && (outUrl += '?' + regexResult[4]);
-            urlOptions.getAnchor && regexResult[5] && (outUrl += '#' + regexResult[5]);
+            urlOptions.getQuery && regexResult[4] && (outUrl += "?" + regexResult[4]);
+            urlOptions.getAnchor && regexResult[5] && (outUrl += "#" + regexResult[5]);
             return outUrl;
         }
     }
 
-    private static getKeyboardData(pressedKeys: Set<string>): CollectedData['keyboard'] {
-        let types = new Set<KeyboardKey.Types>([...pressedKeys].map(k => KeyboardKey.getType(k)));
+    private static getKeyboardData(pressedKeys: Set<string>): CollectedData["keyboard"] {
+        const types = new Set<KeyboardKey.Types>([...pressedKeys].map(k => KeyboardKey.getType(k)));
         return {
             alpha: types.has(KeyboardKey.Types.ALPHABETIC),
             function: types.has(KeyboardKey.Types.FUNCTION),
@@ -108,8 +108,8 @@ export class Collector {
         };
     }
 
-    private static getMouseButtons(buttons: Set<number>): CollectedData['mouse']['buttons'] {
-        let obj: CollectedData['mouse']['buttons'] = {
+    private static getMouseButtons(buttons: Set<number>): CollectedData["mouse"]["buttons"] {
+        const obj: CollectedData["mouse"]["buttons"] = {
             left: buttons.has(0),
             middle: buttons.has(1),
             right: buttons.has(2)
@@ -117,7 +117,7 @@ export class Collector {
 
         buttons.forEach(button => {
             if (button > 2) {
-                obj['button' + (button + 1)] = true;
+                obj["button" + (button + 1)] = true;
             }
         });
 
@@ -145,30 +145,30 @@ export class Collector {
  * Send a batch of data to the server.
  * @param data The data to be sent.
  */
-function sendToServer (data: CollectedData[]): JQuery.jqXHR {
+function sendToServer(data: CollectedData[]): JQuery.jqXHR {
     if (data.length == 0) return;
 
-    const URL = 'https://giuseppe-desolda.ddns.net:8080/data/store';
+    const URL = "https://giuseppe-desolda.ddns.net:8080/data/store";
     return $.post(URL, { data: JSON.stringify(data) });
 }
 
-function collect(userId: string, collectedData: RawData, options: CollectionOptions) {
+function collect(userId: string, collectedData: RawData, options: CollectionOptions): CollectedData {
     const collector = new Collector(userId);
     const finalData: CollectedData = collector.process(collectedData, options);
     return finalData;
 }
 
-function askForWebcamSnapshot() {
-    if (typeof browser !== 'undefined' && browser.runtime && browser.runtime.getBrowserInfo && localStorage.getItem('popupId')) {
-        browser.tabs.query({ windowId: parseInt(localStorage.getItem('popupId')) })
+function askForWebcamSnapshot(): void {
+    if (typeof browser !== "undefined" && browser.runtime && browser.runtime.getBrowserInfo && localStorage.getItem("popupId")) {
+        browser.tabs.query({ windowId: parseInt(localStorage.getItem("popupId")) })
             .then(tabs => {
                 if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
-                    browser.tabs.sendMessage(tabs[0].id, { event: 'ESPOSITOTHESIS___SNAP_WEBCAM' })
+                    browser.tabs.sendMessage(tabs[0].id, { event: "ESPOSITOTHESIS___SNAP_WEBCAM" })
                         .then(response => {
                             browser.tabs.query({ active: true, currentWindow: true })
                                 .then(tabs => {
                                     if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
-                                        browser.tabs.sendMessage(tabs[0].id, { event: 'snapwebcam', data: response.snap });
+                                        browser.tabs.sendMessage(tabs[0].id, { event: "snapwebcam", data: response.snap });
                                     }
                                 });
                         });
@@ -178,8 +178,8 @@ function askForWebcamSnapshot() {
     else {
         chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
             if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
-                let photo = (navigator.userAgent.search("Firefox") !== -1) ? undefined : await WebcamFacade.snapPhoto();
-                chrome.tabs.sendMessage(tabs[0].id, { event: 'snapwebcam', data: photo });
+                const photo = (navigator.userAgent.search("Firefox") !== -1) ? undefined : await WebcamFacade.snapPhoto();
+                chrome.tabs.sendMessage(tabs[0].id, { event: "snapwebcam", data: photo });
             }
         });
     }
@@ -222,10 +222,10 @@ export default function configureCollector(userId: string, options?: CollectionO
         data = new Array<CollectedData>();
     }, options.sendInterval);
 
-    chrome.runtime.onMessage.addListener(function (request: Message<keyof MessageEvents>, sender, response) {
-        if (request.event === 'data-collected') {
-            data.push(collect(userId, (<Message<'data-collected'>>request).data, options));
-        } else if (request.event === 'webcampermission') {
+    chrome.runtime.onMessage.addListener(function (request: Message<keyof MessageEvents>) {
+        if (request.event === "data-collected") {
+            data.push(collect(userId, (request as Message<"data-collected">).data, options));
+        } else if (request.event === "webcampermission") {
             WebcamFacade.enableWebcam();
         }
     });

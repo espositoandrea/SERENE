@@ -6,7 +6,8 @@
     "sourceMap": false,
     "types": [
       "node",
-      "@types/express"
+      "@types/express",
+      "@types/mongodb",
     ],
     "typeRoots": [
       "node_modules/@types"

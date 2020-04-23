@@ -1,27 +1,26 @@
-import { ScreenCoordinates, Message, RawData } from './common-types';
-import WebcamFacade from './webcam-facade';
+import { ScreenCoordinates, Message, RawData } from "./common-types";
 
 export default class ContentScript {
     private static readonly keyboard: Set<string> = new Set<string>();
-    private static readonly mousePosition: RawData['mouse']['position'] = new ScreenCoordinates();
+    private static readonly mousePosition: RawData["mouse"]["position"] = new ScreenCoordinates();
     private static readonly mouseButtons: Set<number> = new Set<number>();
-    private static takeWebcamPhoto: boolean = false;
-    private static webcamPhoto: any;
+    private static takeWebcamPhoto = false;
+    private static webcamPhoto: string;
 
-    private static get relativeScroll(): RawData['scroll']['relative'] {
+    private static get relativeScroll(): RawData["scroll"]["relative"] {
         const height = document.body.offsetHeight;
         const width = document.body.offsetWidth;
 
-        let absoluteY = window.pageYOffset;
-        let absoluteX = window.pageXOffset;
+        const absoluteY = window.pageYOffset;
+        const absoluteX = window.pageXOffset;
 
-        let relativeY = 100 * (absoluteY + document.documentElement.clientHeight) / height;
-        let relativeX = 100 * (absoluteX + document.documentElement.clientWidth) / width;
+        const relativeY = 100 * (absoluteY + document.documentElement.clientHeight) / height;
+        const relativeX = 100 * (absoluteX + document.documentElement.clientWidth) / width;
         return new ScreenCoordinates(relativeX, relativeY);
     }
 
 
-    public static async sendCollectionRequest() {
+    public static sendCollectionRequest(): void {
         const objectToSend: RawData = {
             image: ContentScript.takeWebcamPhoto ? ContentScript.webcamPhoto : undefined,
             keyboard: Array.from(ContentScript.keyboard),
@@ -36,30 +35,30 @@ export default class ContentScript {
             timestamp: Date.now(),
             url: window.location.href,
             window: new ScreenCoordinates(window.innerWidth, window.outerHeight)
-        }
+        };
         ContentScript.takeWebcamPhoto = false;
         ContentScript.webcamPhoto = undefined;
-        chrome.runtime.sendMessage(new Message('data-collected', objectToSend));
+        chrome.runtime.sendMessage(new Message("data-collected", objectToSend));
     }
 
-    public static registerEvents() {
-        window.addEventListener('mousedown', (e: MouseEvent) => {
+    public static registerEvents(): void {
+        window.addEventListener("mousedown", (e: MouseEvent) => {
             ContentScript.mouseButtons.add(e.button);
             ContentScript.sendCollectionRequest();
         });
-        window.addEventListener('mouseup', (e: MouseEvent) => {
+        window.addEventListener("mouseup", (e: MouseEvent) => {
             ContentScript.mouseButtons.delete(e.button);
             ContentScript.sendCollectionRequest();
         });
-        window.addEventListener('mousemove', e => {
+        window.addEventListener("mousemove", e => {
             ContentScript.mousePosition.set(e.clientX, e.clientY);
             ContentScript.sendCollectionRequest();
         });
-        window.addEventListener('keydown', (e: KeyboardEvent) => {
+        window.addEventListener("keydown", (e: KeyboardEvent) => {
             ContentScript.keyboard.add(e.key);
             ContentScript.sendCollectionRequest();
         });
-        window.addEventListener('keyup', (e: KeyboardEvent) => {
+        window.addEventListener("keyup", (e: KeyboardEvent) => {
             if (!ContentScript.keyboard.delete(e.key)) {
                 // Error fix: released a key that was pressed
                 // Example: the key '[' emits as '[' on press and 'è' on release on Chrome
@@ -67,19 +66,19 @@ export default class ContentScript {
             }
             ContentScript.sendCollectionRequest();
         });
-        window.addEventListener('scroll', (e: UIEvent) => {
+        window.addEventListener("scroll", (e: UIEvent) => {
             if (e.target == window) {
                 this.relativeScroll.set(window.pageXOffset, window.pageYOffset);
                 ContentScript.sendCollectionRequest();
             }
         });
-        window.addEventListener('resize', (e: UIEvent) => {
+        window.addEventListener("resize", (e: UIEvent) => {
             if (e.target == window) {
                 ContentScript.sendCollectionRequest();
             }
         });
-        chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-            if (request.event == 'snapwebcam') {
+        chrome.runtime.onMessage.addListener((request) => {
+            if (request.event == "snapwebcam") {
                 ContentScript.takeWebcamPhoto = true;
                 ContentScript.webcamPhoto = request.data;
                 ContentScript.sendCollectionRequest();
