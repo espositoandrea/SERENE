@@ -10,7 +10,7 @@
     "prebuild": "npm run clean",
     "prewatch": "npm run clean",
     "watch": "cross-env NODE_ENV=development webpack --config webpack.config.js -w",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "eslint src/**/*.ts"
   },
   "keywords": [],
   "author": {
@@ -25,6 +25,8 @@
     "@types/firefox-webext-browser": "^70.0.1",
     "@types/jquery": "^3.3.34",
     "@types/node": "^12.12.31",
+    "@typescript-eslint/eslint-plugin": "^2.29.0",
+    "@typescript-eslint/parser": "^2.29.0",
     "awesome-typescript-loader": "^5.2.1",
     "bestzip": "^2.1.5",
     "body-parser": "^1.19.0",
@@ -33,6 +35,7 @@
     "cross-env": "^7.0.2",
     "css-loader": "^3.4.2",
     "ejs-loader": "^0.3.5",
+    "eslint": "^6.8.0",
     "express": "^4.17.1",
     "file-loader": "^6.0.0",
     "html-loader": "^1.0.0",
