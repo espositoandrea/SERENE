@@ -13,6 +13,9 @@
       Supervisor<br>
       <a href="mailto:giuseppe.desolda@uniba.it">giuseppe.desolda@uniba.it</a>
    </p>
+   <p align="center">
+      <img alt="Test" src="https://github.com/espositoandrea/Bachelor-Thesis/workflows/Test/badge.svg" />
+   </p>
 
 ********
         
