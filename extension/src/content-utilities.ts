@@ -1,6 +1,7 @@
-import { ScreenCoordinates, Message, RawData } from "./common-types";
+import { ScreenCoordinates, Message, RawData, MessageEvents } from "./common-types";
 
 export default class ContentScript {
+    private static canSend = true;
     private static readonly keyboard: Set<string> = new Set<string>();
     private static readonly mousePosition: RawData["mouse"]["position"] = new ScreenCoordinates();
     private static readonly mouseButtons: Set<number> = new Set<number>();
@@ -21,6 +22,8 @@ export default class ContentScript {
 
 
     public static sendCollectionRequest(): void {
+        if (!ContentScript.canSend) return;
+
         const objectToSend: RawData = {
             image: ContentScript.takeWebcamPhoto ? ContentScript.webcamPhoto : undefined,
             keyboard: Array.from(ContentScript.keyboard),
@@ -77,11 +80,13 @@ export default class ContentScript {
                 ContentScript.sendCollectionRequest();
             }
         });
-        chrome.runtime.onMessage.addListener((request) => {
-            if (request.event == "snapwebcam") {
+        chrome.runtime.onMessage.addListener((request: Message<keyof MessageEvents>) => {
+            if (request.event === "snapwebcam") {
                 ContentScript.takeWebcamPhoto = true;
-                ContentScript.webcamPhoto = request.data;
+                ContentScript.webcamPhoto = (request as Message<"snapwebcam">).data;
                 ContentScript.sendCollectionRequest();
+            } else if (request.event === "browserfocuschange") {
+                ContentScript.canSend = (request as Message<"browserfocuschange">).data.inFocus;
             }
         });
     }

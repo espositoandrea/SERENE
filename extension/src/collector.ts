@@ -55,7 +55,7 @@ export type CollectedData = {
  * The available options for the data collection.
  */
 export type CollectionOptions = {
-    mainInterval?: number; // defaults to 100 ms
+    focusCheckInterval?: number; // defaults to 50 ms
     emotionsInterval?: number; // defaults to 100 ms
     sendInterval?: number; // defaults to 5000 ms
     url?: {
@@ -186,6 +186,23 @@ function askForWebcamSnapshot(): void {
 }
 
 
+let previouslyFocused = true;
+function checkBrowserFocus(): void {
+    chrome.windows.getCurrent(function (browser) {
+        if (browser.focused != previouslyFocused) {
+            previouslyFocused = browser.focused;
+
+            chrome.tabs.query({}, async (tabs) => {
+                if (tabs !== undefined && tabs[0] !== undefined && tabs[0].id !== undefined) {
+                    tabs.forEach(tab => {
+                        chrome.tabs.sendMessage(tab.id, new Message("browserfocuschange", { inFocus: previouslyFocused }));
+                    });
+                }
+            });
+        }
+    });
+}
+
 /**
  * A facade function that collects all the required data.
  *
@@ -197,7 +214,7 @@ export default function configureCollector(userId: string, options?: CollectionO
     if (!userId) return;
 
     const defaultCollectionOptions: CollectionOptions = {
-        mainInterval: 10,
+        focusCheckInterval: 50,
         emotionsInterval: 100,
         sendInterval: 5000,
         url: {
@@ -210,6 +227,9 @@ export default function configureCollector(userId: string, options?: CollectionO
     };
     options = _.merge(defaultCollectionOptions, options || {});
 
+    checkBrowserFocus();
+    setInterval(checkBrowserFocus, options.focusCheckInterval);
+
     askForWebcamSnapshot();
     setInterval(askForWebcamSnapshot, options.emotionsInterval);
 
@@ -217,8 +237,7 @@ export default function configureCollector(userId: string, options?: CollectionO
 
     setInterval(() => {
         // Send to server and clear collected data
-        sendToServer(data)
-            .fail((data, status, error) => console.error(error));
+        sendToServer(data).fail((data, status, error) => console.error(error));
         data = new Array<CollectedData>();
     }, options.sendInterval);
 

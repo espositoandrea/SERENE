@@ -33,6 +33,8 @@ export type MessageEvents = {
     readonly "data-collected": RawData;
     readonly "surveycompleted": { userId: string };
     readonly "webcampermission": null;
+    readonly "browserfocuschange": { inFocus: boolean };
+    readonly "snapwebcam": string;
 }
 
 export class Message<T extends keyof MessageEvents>{
