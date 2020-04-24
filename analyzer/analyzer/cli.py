@@ -15,11 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""This module defines the CLI of the tool.
+
+This module contains the definition of the Command Line Interface (CLI) of the
+tool and its entry point.
+"""
+
 import argparse
 import logging
 import time
 import coloredlogs
-from . import __version__, __author__, __prog__
+from . import __version__, __author__, __prog__, __disclaimer__
 from .data import CollectedData, User
 from .plotting import plot_mouse_on_common_websites
 
@@ -41,12 +47,7 @@ def main():
         "--version",
         help="output version information and exit",
         action='version',
-        version=f'%(prog)s (v{__version__}) Copyright (C) 2020 {__author__}\n\n'
-        'License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.\n'
-        'This program comes with ABSOLUTELY NO WARRANTY, to the extent permitted by law.\n'
-        'This is free software, and you are welcome to redistribute it\n'
-        'under certain conditions (see the License for more details).\n\n'
-        f'Written by {__author__}'
+        version=__disclaimer__
     )
     parser.add_argument(
         "-v", "--verbose",

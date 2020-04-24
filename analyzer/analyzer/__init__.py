@@ -22,6 +22,16 @@ __version__ = '1.0.0'
 __author__ = 'Andrea Esposito'
 __email__ = 'a.esposito39@studenti.uniba.it'
 __prog__ = 'analyzer'
+__disclaimer__ = f'''
+{__prog__} (v{__version__}) Copyright (C) 2020 {__author__}
+
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This program comes with ABSOLUTELY NO WARRANTY, to the extent permitted by law.
+This is free software, and you are welcome to redistribute it
+under certain conditions (see the License for more details).
+
+Written by {__author__}
+'''.strip()
 
 
 import logging

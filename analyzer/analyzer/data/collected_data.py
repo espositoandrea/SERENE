@@ -56,6 +56,9 @@ class CollectedData:
         The emotions value, fetched from Affectiva.
     """
 
+    # pylint: disable=too-many-instance-attributes
+    # All nine attributes are needed as defined by the data schema
+
     data_id: str
     user: User
     timestamp: int = None

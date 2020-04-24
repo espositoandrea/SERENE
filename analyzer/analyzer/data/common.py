@@ -109,7 +109,8 @@ class KeyboardInformation:
 
 @dataclasses.dataclass(frozen=True)
 class ScrollInformation:
-    """Encapsulates various information regarding the scroll state of the window.
+    """Encapsulates various information regarding the scroll state of the
+    window.
 
     Attributes
     ----------
