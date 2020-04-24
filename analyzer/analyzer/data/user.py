@@ -19,6 +19,7 @@
 """
 
 import logging
+import time
 import json
 import typing
 import dataclasses
@@ -78,10 +79,12 @@ class User:
         """
 
         logging.getLogger(__name__).debug(
-            'Loading the users from a JSON string.'
+            'Loading the users from a JSON string: START...'
         )
+        start_time = time.time()
 
         parsed = json.loads(data)
+
         users_list = []
         for obj in parsed:
             users_list.append(
@@ -91,5 +94,11 @@ class User:
                     sex=Sex.from_str(obj['sex'])
                 )
             )
+
+        logging.getLogger(__name__).debug(
+            '... END: Loaded the users from a JSON string. '
+            'Took %.3f seconds',
+            time.time() - start_time
+        )
 
         return users_list

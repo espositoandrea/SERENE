@@ -22,6 +22,7 @@ on various graph types.
 """
 
 import typing
+import time
 import re
 import logging
 import matplotlib.pyplot as plt
@@ -111,12 +112,14 @@ def plot_mouse_on_common_websites(collection: typing.List[CollectedData]) \
         'Plotting mouse positions in all the common websites: START...'
     )
 
-    common_urls = get_common_urls(collection)
+    start_time = time.time()
+
     new_collection = convert_collection(collection)
 
     j = 1
-    for url in common_urls:
-        fig, axs = plt.subplots(1, 2, sharex=False, sharey=False)
+    for url in get_common_urls(collection):
+        fig, axs = plt.subplots(1, len(new_collection),
+                                sharex=False, sharey=False)
         index = 0
         for user, data in new_collection.items():
             element_index = [e['url'] for e in data].index(url)
@@ -154,6 +157,8 @@ def plot_mouse_on_common_websites(collection: typing.List[CollectedData]) \
         j += 1
 
     logging.getLogger(__name__).info(
-        '...END: Plotted mouse positions in all the common websites'
+        '...END: Plotted mouse positions in all the common websites. '
+        'Took %.3f seconds',
+        time.time() - start_time
     )
     plt.show()

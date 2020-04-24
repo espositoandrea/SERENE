@@ -19,6 +19,7 @@
 """
 
 import logging
+import time
 import json
 import typing
 import dataclasses
@@ -93,14 +94,19 @@ class CollectedData:
             The list of users represented by the JSON array.
         """
 
+        logging.getLogger(__name__).debug(
+            'Loading the collected data from a JSON string: START...'
+        )
+        start_time = time.time()
+
         parsed = json.loads(data)
 
-        logging.getLogger(__name__).debug(
-            'Loading the collected data from a JSON string.'
-        )
         collected_data_list = []
         for obj in parsed:
-            current_user = [u for u in users if u.user_id == obj['ui']][0]
+            try:
+                current_user = [u for u in users if u.user_id == obj['ui']][0]
+            except IndexError:
+                current_user = User(obj['ui'])
 
             collected_data_list.append(
                 CollectedData(
@@ -126,5 +132,10 @@ class CollectedData:
                     )
                 )
             )
+        logging.getLogger(__name__).debug(
+            '... END: Loaded the collected data from a JSON string. '
+            'Took %.3f seconds',
+            time.time() - start_time
+        )
 
         return collected_data_list
