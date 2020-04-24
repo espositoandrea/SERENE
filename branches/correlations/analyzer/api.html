@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Introduction &mdash; Andrea Esposito&#39;s Bachelor&#39;s Degree Thesis  documentation</title>
+  <title>Code Documentation &mdash; Andrea Esposito&#39;s Bachelor&#39;s Degree Thesis  documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="The Data Processor" href="data-processor.html" />
-    <link rel="prev" title="The Browser Extension" href="../extension/index.html" /> 
+    <link rel="next" title="GNU Free Documentation License" href="../licenses.html" />
+    <link rel="prev" title="Quick Start" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,18 +97,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../extension/index.html">The Browser Extension</a></li>
 </ul>
 <p class="caption"><span class="caption-text">The Server</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Introduction</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#folder-structure">Folder Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="data-processor.html">The Data Processor</a></li>
-<li class="toctree-l1"><a class="reference internal" href="survey.html">The Survey</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../server/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server/data-processor.html">The Data Processor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../server/survey.html">The Survey</a></li>
 </ul>
 <p class="caption"><span class="caption-text">The Data Analyzer</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../analyzer/index.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analyzer/api.html">Code Documentation</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Quick Start</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Code Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-cli">Module: cli</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-data">Module: data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-plotting">Module: plotting</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">License</span></p>
 <ul>
@@ -159,13 +161,13 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Introduction</li>
+      <li>Code Documentation</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/server/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/analyzer/api.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -178,36 +180,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="introduction">
-<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="folder-structure">
-<h2>Folder Structure<a class="headerlink" href="#folder-structure" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">server/</span></code> folder contains all the source code of the developed server. Its
-structure is the following (all described folders are subfolders of
-<code class="docutils literal notranslate"><span class="pre">server/</span></code>).</p>
-<dl>
-<dt><code class="docutils literal notranslate"><span class="pre">views/</span></code></dt><dd><p>This folder contains all the views developed for the server.</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">views/layouts/</span></code></dt><dd><p>This folder contains the layouts used to define the views.</p>
-</dd>
-</dl>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">survey/</span></code></dt><dd><p>This folder contains all the required data for the survey.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">assets/</span></code></dt><dd><p>This folder contains all the static files that will be served without any
-modification.</p>
-<dl class="simple">
-<dt><code class="docutils literal notranslate"><span class="pre">assets/images/</span></code></dt><dd><p>A folder that contains all the images and illustrations used.</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">assets/js/</span></code></dt><dd><p>A folder that contains all the external JavaScript files (needed by the
-extension).</p>
-</dd>
-<dt><code class="docutils literal notranslate"><span class="pre">assets/style/</span></code></dt><dd><p>A folder that contains all the stylesheets of the server (written in
-<a class="reference external" href="https://sass-lang.com/">SASS</a>).</p>
-</dd>
-</dl>
-</dd>
-</dl>
+  <div class="section" id="code-documentation">
+<span id="python-code-doc"></span><h1>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-cli">
+<h2>Module: cli<a class="headerlink" href="#module-cli" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-data">
+<h2>Module: data<a class="headerlink" href="#module-data" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-plotting">
+<h2>Module: plotting<a class="headerlink" href="#module-plotting" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -219,10 +201,10 @@ extension).</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="data-processor.html" class="btn btn-neutral float-right" title="The Data Processor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../licenses.html" class="btn btn-neutral float-right" title="GNU Free Documentation License" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../extension/index.html" class="btn btn-neutral float-left" title="The Browser Extension" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Quick Start" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

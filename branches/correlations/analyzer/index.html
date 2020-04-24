@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Code Documentation" href="code.html" />
-    <link rel="prev" title="The Structure of the Repository" href="../index.html" /> 
+    <link rel="next" title="Code Documentation" href="api.html" />
+    <link rel="prev" title="The Survey" href="../server/survey.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,16 +88,9 @@
             
             
               <p class="caption"><span class="caption-text">The Emotions Tool</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#from-source-with-cmake">From source with CMake</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="code.html">Code Documentation</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../emotions-tool/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../emotions-tool/code.html">Code Documentation</a></li>
 </ul>
 <p class="caption"><span class="caption-text">The Browser Extension</span></p>
 <ul>
@@ -110,9 +103,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../server/survey.html">The Survey</a></li>
 </ul>
 <p class="caption"><span class="caption-text">The Data Analyzer</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../analyzer/index.html">Quick Start</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../analyzer/api.html">Code Documentation</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-command-line-interface">The Command Line Interface</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#positional-arguments">Positional Arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#optional-arguments">Optional Arguments</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-code-api">The Code API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">Code Documentation</a></li>
 </ul>
 <p class="caption"><span class="caption-text">License</span></p>
 <ul>
@@ -169,7 +174,7 @@
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/emotions-tool/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/analyzer/index.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -186,64 +191,72 @@
 <h1>Quick Start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>To use the tool, download its compiled binary from the repository and execute it
-from a console.</p>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>The tool has been tested on <strong>Ubuntu Xenial 16.04</strong>.</p>
-<p>The <a class="reference external" href="https://github.com/Affectiva/cpp-sdk-samples/releases">Affdex SDK</a> is only available on Windows and Ubuntu Xenial 16.04, so
-compatibility with other Operative Systems is not guaranteed.</p>
-</div>
-<div class="section" id="from-source-with-cmake">
-<h3>From source with CMake<a class="headerlink" href="#from-source-with-cmake" title="Permalink to this headline">¶</a></h3>
-<p>Clone and open the <a class="reference external" href="https://github.com/espositoandrea/Bachelor-Thesis">GitHub repository</a> in a console, using the following
-commands:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/espositoandrea/Bachelor-Thesis.git
-<span class="nb">cd</span> Bachelor-Thesis
-</pre></div>
-</div>
-<p>Open the directory containing the tool’s source code:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> emotions
-</pre></div>
-</div>
-<p>Finally, create and compile the CMakeProject:</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>mkdir bin
-<span class="nb">cd</span> bin
-cmake -G <span class="s2">&quot;CodeBlocks - Unix Makefiles&quot;</span> ..
-make
+<p>To install the tool, download the tool’s folder and execute the following
+commands (replace <code class="docutils literal notranslate"><span class="pre">/path/to/analyzer/</span></code> with the path to the downloaded
+folder).</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">How to install the tool</span><a class="headerlink" href="#id1" title="Permalink to this code">¶</a></div>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /path/to/analyzer
+python3 -m pip install .
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="admonition important">
-<p class="admonition-title">Important</p>
-<p>To use the tool you must have the <a class="reference external" href="https://github.com/Affectiva/cpp-sdk-samples/releases">Affdex SDK</a> installed on your
-machine. Then, you have to add <code class="docutils literal notranslate"><span class="pre">/path/to/affdex-sdk/lib</span></code> to the variable
-<code class="docutils literal notranslate"><span class="pre">$LD_LIBRARY_PATH</span></code> (on Ubuntu).</p>
-<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/path/to/affdex-sdk/lib/
+<div class="section" id="the-command-line-interface">
+<h3>The Command Line Interface<a class="headerlink" href="#the-command-line-interface" title="Permalink to this headline">¶</a></h3>
+<p>Once installed you can use this tool from your terminal using the command
+<code class="docutils literal notranslate"><span class="pre">analyzer</span></code>.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">The tool’s CLI</span><a class="headerlink" href="#id2" title="Permalink to this code">¶</a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">analyzer</span> <span class="p">[</span><span class="o">-</span><span class="n">h</span><span class="p">]</span> <span class="p">[</span><span class="o">--</span><span class="n">version</span><span class="p">]</span> <span class="p">[</span><span class="o">-</span><span class="n">v</span><span class="p">]</span> <span class="n">file</span> <span class="n">users</span>
 </pre></div>
 </div>
-<p>The tool will then search, in its folder, for the folder
-<code class="docutils literal notranslate"><span class="pre">lib/affdex-sdk/data/</span></code> (that has to contain the data used by Affdex).</p>
 </div>
-<p>The tool can be used through CLI (or executed by another script).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">emotions</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;...</span><span class="p">]</span> <span class="n">IMAGE</span><span class="o">...</span>
-<span class="o">./</span><span class="n">emotions</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">option</span><span class="o">&gt;...</span><span class="p">]</span> <span class="o">--</span><span class="n">file</span> <span class="n">FILE</span>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can execute the tool as a Python module, without installing it
+first. Download the tool’s folder and execute the following commands (replace
+<code class="docutils literal notranslate"><span class="pre">/path/to/analyzer/</span></code> with the path to the downloaded folder).</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">How to execute the tool as a Python module</span><a class="headerlink" href="#id3" title="Permalink to this code">¶</a></div>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> /path/to/analyzer
+python3 -m analyzer --help
 </pre></div>
 </div>
-<p>Where <code class="docutils literal notranslate"><span class="pre">IMAGE</span></code> is a <a class="reference internal" href="code.html#data-uri"><span class="std std-ref">data URI</span></a>. The available
-options are:</p>
-<dl class="option-list">
-<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
-<dd><p>Get the help message</p>
+</div>
+</div>
+<p>Process the JSON file</p>
+<div class="section" id="positional-arguments">
+<h4>Positional Arguments<a class="headerlink" href="#positional-arguments" title="Permalink to this headline">¶</a></h4>
+<dl class="simple">
+<dt>file</dt><dd><p>The file</p>
 </dd>
-<dt><kbd><span class="option">-f <var>FILE</var></span>, <span class="option">--file <var>FILE</var></span></kbd></dt>
-<dd><p>The file containing the images to be analyzed (as a data
-URI)</p>
+<dt>users</dt><dd><p>A JSON file containing the users</p>
 </dd>
 </dl>
+</div>
+<div class="section" id="optional-arguments">
+<h4>Optional Arguments<a class="headerlink" href="#optional-arguments" title="Permalink to this headline">¶</a></h4>
+<dl class="option-list">
+<dt><kbd><span class="option">-h</span>, <span class="option">--help</span></kbd></dt>
+<dd><p>show this help message and exit</p>
+</dd>
+<dt><kbd><span class="option">--version</span></kbd></dt>
+<dd><p>output version information and exit</p>
+</dd>
+<dt><kbd><span class="option">-v</span>, <span class="option">--verbose</span></kbd></dt>
+<dd><p>increase output verbosity</p>
+</dd>
+</dl>
+</div>
+</div>
+<div class="section" id="the-code-api">
+<h3>The Code API<a class="headerlink" href="#the-code-api" title="Permalink to this headline">¶</a></h3>
+<p>Once installed you can use the tool as a Python module. Read the
+<a class="reference internal" href="api.html#python-code-doc"><span class="std std-ref">code documentation</span></a> for more information on the API.</p>
+</div>
 </div>
 </div>
 
@@ -255,10 +268,10 @@ URI)</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="code.html" class="btn btn-neutral float-right" title="Code Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="api.html" class="btn btn-neutral float-right" title="Code Documentation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../index.html" class="btn btn-neutral float-left" title="The Structure of the Repository" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../server/survey.html" class="btn btn-neutral float-left" title="The Survey" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
