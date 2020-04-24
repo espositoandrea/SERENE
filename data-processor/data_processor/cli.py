@@ -17,14 +17,14 @@
 
 import argparse
 import logging
-import re
-import matplotlib.pyplot as plt
 from . import __version__, __author__
-from .user import User
-from .data import CollectedData
+from .data import CollectedData, User
+from .plotting import plot_mouse_on_common_websites
 
 
 def main():
+    """The main entry point.
+    """
     parser = argparse.ArgumentParser(
         description='Process the JSON file',
         prog='data-processor',
@@ -78,63 +78,4 @@ def main():
     logger.info('Loaded %(number)d interaction objects',
                 number=len(collection))
 
-    new_collection = {}
-    for document in collection:
-        if document.user not in new_collection:
-            new_collection[document.user] = []
-        if (len(new_collection[document.user]) == 0
-                or document.url != new_collection[document.user][-1]['url']):
-            new_collection[document.user].append({
-                'url': document.url,
-                'positions': [list(document.mouse.position)],
-                'window': list(document.window)
-            })
-        else:
-            new_collection[document.user][-1]['positions'].append(
-                list(document.mouse.position))
-
-    temp = {}
-    for user in new_collection:
-        if user not in temp:
-            temp[user] = set()
-        for element in new_collection[user]:
-            temp[user].add(element['url'])
-    common_urls = None
-    for user in temp:
-        if common_urls is None:
-            common_urls = temp[user]
-            continue
-        common_urls = common_urls.intersection(temp[user])
-
-    j = 1
-    for url in common_urls:
-        fig, axs = plt.subplots(1, 2, sharex=False, sharey=False)
-        index = 0
-        for user in new_collection:
-            url_list = [e['url'] for e in new_collection[user]]
-            element_indes = url_list.index(url)
-            window_size = new_collection[user][element_indes]['window']
-
-            axs[index].set_aspect('equal')  # window_size[1] / window_size[0]
-            axs[index].set_xlim([0, window_size[0]])
-            axs[index].set_ylim([window_size[1], 0])
-            axs[index].set_xticklabels([])
-            axs[index].set_yticklabels([])
-
-            mouse_positions = new_collection[user][element_indes]['positions']
-            x_vals = [p[0] for p in mouse_positions]
-            y_vals = [p[1] for p in mouse_positions]
-
-            axs[index].plot(x_vals, y_vals, '-r')
-            axs[index].plot(x_vals, y_vals, '.b')
-
-            url_to_print = re.match(r"https?://(.*?)/", url)[1]
-            axs[index].set_title(user.user_id)
-
-            fig.suptitle(url_to_print)
-
-            index += 1
-        plt.figure(j)
-        j += 1
-
-    plt.show()
+    plot_mouse_on_common_websites(collection)

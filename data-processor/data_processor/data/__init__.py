@@ -15,9 +15,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""The tool to process the collected data.
+"""A module to deal with the data stored on the server.
+
+This module is a collection of classes, functions, etc to deal with the
+collected data that's stored on the server.
+
+Examples
+--------
+
+.. code-block:: python
+   :caption: How to create an object from a JSON.
+
+   from data_processor.user import User
+   from data_processor.data import CollectedData
+   user_list = YOUR_USER_LIST
+   json_string = "[YOUR_OBJECT]"
+   CollectedData.from_json(user_list, json_string)
+   # [CollectedData(...), ...]
 """
 
-__version__ = '1.0.0'
-__author__ = 'Andrea Esposito'
-__email__ = 'a.esposito39@studenti.uniba.it'
+from .common import *
+from .collected_data import CollectedData
+from .user import User

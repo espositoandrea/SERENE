@@ -15,106 +15,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""A module to deal with the data stored on the server.
-
-This module is a collection of classes, functions, etc to deal with the
-collected data that's stored on the server.
-
-See Also
---------
-
-data_processor.data : The ``user`` module is required to use the classes
-    defined in this module.
-
-Examples
---------
-
-.. code-block:: python
-   :caption: How to create an object from a JSON.
-
-   from data_processor.user import User
-   from data_processor.data import CollectedData
-   user_list = YOUR_USER_LIST
-   json_string = "[YOUR_OBJECT]"
-   CollectedData.from_json(user_list, json_string)
-   # [CollectedData(...), ...]
-"""
-
 import json
 import typing
 import dataclasses
 import dotmap
 
 from .user import User
-
-
-class ScreenCoordinates(typing.NamedTuple):
-    x: int
-    y: int
-
-
-@dataclasses.dataclass(frozen=True)
-class KeyboardInformation:
-    """Encapsulates various information regarding the keyboard's state.
-
-    Attributes
-    ----------
-    alpha: bool
-        Is an alphabetic key pressed?
-    numeric: bool
-        Is a numeric key pressed?
-    symbol: bool
-        Is a symbol key pressed?
-    function: bool
-        Is a function key pressed?
-    """
-
-    alpha: bool
-    numeric: bool
-    symbol: bool
-    function: bool
-
-
-@dataclasses.dataclass(frozen=True)
-class ScrollInformation:
-    """Encapsulates various information regarding the scroll state of the window.
-
-    Attributes
-    ----------
-    absolute : ScreenCoordinates
-        The absolute scroll position.
-    relative : ScreenCoordinates
-        The relative scroll position (from the bottom right of the screen).
-    """
-
-    relative: ScreenCoordinates
-    absolute: ScreenCoordinates
-
-
-@dataclasses.dataclass(frozen=True)
-class MouseInformation:
-    """Encapsulates various data regarding the mouse.
-
-    Attributes
-    ----------
-    position : ScreenCoordinates
-        The mouse position
-    buttons : DotMap [str, bool]
-        The mouse buttons. The keys are the following.
-
-        l
-            Is the left button pressed?
-        m
-            Is the left button pressed?
-        r
-            Is the left button pressed?
-        bN
-            Is the button `N` (:math:`N \\in \\mathbb{N}, N \\geq 4`) pressed?
-    """
-
-    position: ScreenCoordinates
-    buttons: dotmap.DotMap
-
+from .common import KeyboardInformation, MouseInformation, ScreenCoordinates, ScrollInformation
 
 @dataclasses.dataclass(frozen=True)
 class CollectedData:

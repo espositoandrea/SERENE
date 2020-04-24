@@ -16,51 +16,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import json
-import enum
 import typing
 import dataclasses
-
-
-class Sex(enum.Enum):
-    """A sex enumerator.
-
-    An enumerator of all the valid sex values.
-    """
-    MALE = 'male'
-    FEMALE = 'female'
-    OTHER = 'other'
-
-    @staticmethod
-    def from_str(label: str) -> 'Sex':
-        """Get a sex from a string.
-
-        This method can be used to convert a 'natural' string value to a sex.
-
-        Parameters
-        ----------
-        label : {'maschio', 'femmina', 'altro'}
-            The string to be converted.
-
-        Returns
-        -------
-        Sex
-            The sex value associated to `label`.
-
-        Raises
-        ------
-        NotImplementedError
-            Raised if the label can't be converted.
-        """
-
-        label = label.lower()
-        if label == 'maschio':
-            return Sex.MALE
-        if label == 'femmina':
-            return Sex.FEMALE
-        if label == 'altro':
-            return Sex.OTHER
-
-        raise NotImplementedError('Invalid Sex string')
+from .common import Sex
 
 
 @dataclasses.dataclass(frozen=True)
