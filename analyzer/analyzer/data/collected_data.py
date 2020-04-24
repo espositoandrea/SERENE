@@ -15,13 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import json
 import typing
 import dataclasses
 import dotmap
-
 from .user import User
 from .common import KeyboardInformation, MouseInformation, ScreenCoordinates, ScrollInformation
+
 
 @dataclasses.dataclass(frozen=True)
 class CollectedData:
@@ -82,6 +83,10 @@ class CollectedData:
         """
 
         parsed = json.loads(data)
+
+        logging.getLogger(__name__).debug(
+            'Loading the collected data from a JSON string.'
+        )
         collected_data_list = []
         for obj in parsed:
             current_user = [u for u in users if u.user_id == obj['ui']][0]

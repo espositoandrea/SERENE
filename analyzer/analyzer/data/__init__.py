@@ -34,6 +34,10 @@ Examples
    # [CollectedData(...), ...]
 """
 
-from .common import *
-from .collected_data import CollectedData
+import logging
 from .user import User
+from .collected_data import CollectedData
+from .common import *
+
+
+logging.getLogger(__name__).addHandler(logging.NullHandler())

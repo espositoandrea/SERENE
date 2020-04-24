@@ -17,6 +17,8 @@
 
 import argparse
 import logging
+import time
+import coloredlogs
 from . import __version__, __author__, __prog__
 from .data import CollectedData, User
 from .plotting import plot_mouse_on_common_websites
@@ -53,29 +55,23 @@ def main():
     )
     args = parser.parse_args()
 
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.DEBUG if args.verbose else logging.WARNING)
-    # create console handler and set level to debug
-    console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.DEBUG)
+    logger = logging.getLogger('analyzer')
+    coloredlogs.install(
+        level='DEBUG' if args.verbose else 'WARNING',
+        logger=logger
+    )
 
-    # create formatter
-    formatter = logging.Formatter(
-        '%(levelname)s - %(asctime)s - %(name)s - %(message)s')
-
-    # add formatter to console_handler
-    console_handler.setFormatter(formatter)
-
-    # add console_handler to logger
-    logger.addHandler(console_handler)
+    start_time = time.time()
+    logger.info('Start of execution')
 
     with open(args.users, 'r') as file:
         users = set(User.from_json(file.read()))
-    logger.info('Loaded %(number)d users', number=len(users))
+    logger.info('Loaded %d users', len(users))
 
     with open(args.file, 'r') as file:
         collection = CollectedData.from_json(users, file.read())
-    logger.info('Loaded %(number)d interaction objects',
-                number=len(collection))
+    logger.info('Loaded %d interaction objects', len(collection))
 
     plot_mouse_on_common_websites(collection)
+
+    logger.info('End of execution after %.3f seconds', time.time() - start_time)

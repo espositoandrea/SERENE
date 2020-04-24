@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import logging
 import json
 import typing
 import dataclasses
@@ -71,6 +72,10 @@ class User:
         list [User]
             The list of users represented by the JSON array.
         """
+
+        logging.getLogger(__name__).debug(
+            'Loading the users from a JSON string.'
+        )
 
         parsed = json.loads(data)
         users_list = []

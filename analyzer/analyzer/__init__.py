@@ -22,3 +22,8 @@ __version__ = '1.0.0'
 __author__ = 'Andrea Esposito'
 __email__ = 'a.esposito39@studenti.uniba.it'
 __prog__ = 'analyzer'
+
+
+import logging
+
+logging.getLogger(__name__).addHandler(logging.NullHandler())

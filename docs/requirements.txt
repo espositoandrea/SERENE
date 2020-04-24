@@ -1,4 +1,4 @@
 sphinx==2.4.4
-sphinx_rtd_theme
-sphinx-js
+sphinx_rtd_theme==0.4.3
+sphinx-js==2.8
 breathe==4.14.2

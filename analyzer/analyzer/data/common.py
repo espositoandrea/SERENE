@@ -62,6 +62,7 @@ class Sex(enum.Enum):
 
         raise NotImplementedError('Invalid Sex string')
 
+
 class ScreenCoordinates(typing.NamedTuple):
     """Represents a pair of screen coordinates.
 

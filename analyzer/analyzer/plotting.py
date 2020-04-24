@@ -17,8 +17,12 @@
 
 import typing
 import re
+import logging
 import matplotlib.pyplot as plt
 from .data import CollectedData
+
+
+logging.getLogger(__name__).addHandler(logging.NullHandler())
 
 
 def get_common_urls(collection: typing.List[CollectedData]) -> typing.Set[str]:
@@ -60,6 +64,9 @@ def plot_mouse_on_common_websites(collection: typing.List[CollectedData]) -> Non
     collection : list [CollectedData]
         The collected data.
     """
+
+    logging.getLogger(__name__).info('Plotting mouse positions in all the common websites: START...')
+
     new_collection = {}
     for document in collection:
         if document.user not in new_collection:
@@ -93,6 +100,13 @@ def plot_mouse_on_common_websites(collection: typing.List[CollectedData]) -> Non
             axs[index].set_yticklabels([])
 
             mouse_positions = new_collection[user][element_indes]['positions']
+
+            # The mouse positions are assumed to start from (0, 0). For this reason,
+            # all the (0, 0) positions at the start of the list.
+            logging.getLogger(__name__).debug('Cleaning mouse position list of user %s', user)
+            while len(mouse_positions) > 0 and mouse_positions[0] == [0, 0]:
+                mouse_positions.pop(0)
+            
             x_vals = [p[0] for p in mouse_positions]
             y_vals = [p[1] for p in mouse_positions]
 
@@ -108,4 +122,6 @@ def plot_mouse_on_common_websites(collection: typing.List[CollectedData]) -> Non
         plt.figure(j)
         j += 1
 
+    logging.getLogger(__name__).info('...END: Plotted mouse positions in all the common websites')
     plt.show()
+
