@@ -42,6 +42,19 @@
 
 .. raw:: latex
 
+   \part{The Data Processor}
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: The Data Processor
+
+   data-processor/index
+   data-processor/api
+
+
+.. raw:: latex
+
    \part{License}
 
 .. toctree::

@@ -17,11 +17,25 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12.x'
+      - name: Setup Python 3.8
+        uses: actions/setup-python@v1
+        with:
+            python-version: '3.8'
+      - name: Cache pip
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('data-processor/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
       - name: Install Dependencies
         run: |
           cd extension && npm i && cd ..
           cd server && npm i && cd ..
+          cd data-processor && pip install -r requirements.txt && cd ..
       - name: Execute tests
         run: |
           cd extension && npm test && cd ..
           cd server && npm test && cd ..
+          cd data-processor && pylint --rcfile=.pylintrc data_processor/ && cd ..
