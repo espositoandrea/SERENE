@@ -20,7 +20,7 @@
 project = "Andrea Esposito's Bachelor's Degree Thesis"
 copyright = '2020, Andrea Esposito'
 author = 'Andrea Esposito'
-version = 'development'
+version = 'latest'
 
 
 # -- General configuration ---------------------------------------------------

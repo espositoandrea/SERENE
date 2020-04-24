@@ -2,8 +2,8 @@ name: Build Documents
 
 on:
   push:
-    branches:
-      - master
+    branches-ignore:
+      - gh-pages
 
 jobs:
   build:
@@ -18,11 +18,22 @@ jobs:
         uses: actions/setup-python@v1
         with:
             python-version: '3.8'
+      - name: Cache pip
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('docs/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       - name: Install Dependencies
         run: |
           cd docs
           npm i -g jsdoc typedoc typescript
-          pip install sphinx==2.4.4 sphinx_rtd_theme
           pip install -r requirements.txt
       - name: Setup Directory
         run: |
@@ -49,20 +60,29 @@ jobs:
       #     root_file: Thesis.tex
       - name: Commit documentation changes
         run: |
+          if [ "${{ steps.extract_branch.outputs.branch }}" = "master" ]; then 
+            VERSION=latest
+            FOLDER=.
+          else
+            VERSION="${{ steps.extract_branch.outputs.branch }}"
+            FOLDER="branches/${{ steps.extract_branch.outputs.branch }}"
+          fi
+
           git clone https://espositoandrea:${{ secrets.GITHUB_TOKEN }}@github.com/espositoandrea/Bachelor-Thesis.git --branch gh-pages --single-branch gh-pages
-          if [ -d "gh-pages/_pdf" ]; then rm -rf gh-pages/_pdf/; fi
-          mkdir -p gh-pages/_pdf/
-          cp docs/_build/_pdf/*.pdf gh-pages/_pdf/
+          
+          if [ -d "gh-pages/$FOLDER/_pdf" ]; then rm -rf gh-pages/$FOLDER/_pdf/; fi
+          mkdir -p gh-pages/$FOLDER/_pdf/
+          cp docs/_build/_pdf/*.pdf gh-pages/$FOLDER/_pdf/
           rm -fr docs/_build/_pdf/
-          # cp thesis/src/*.pdf gh-pages/_pdf/
-          cp -r docs/_build/* gh-pages/
+          
+          # cp thesis/src/*.pdf gh-pages/$FOLDER/_pdf/
+          cp -r docs/_build/* gh-pages/$FOLDER/
+
           cd gh-pages
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add .
           git commit -m "Update documentation" -a || true
-          # The above command will fail if no changes were present, so we ignore
-          # that.
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
