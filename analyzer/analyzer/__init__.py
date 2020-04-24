@@ -1,4 +1,4 @@
-# This file is part of 'data-processor', the tool used to process the information
+# This file is part of 'analyzer', the tool used to process the information
 # collected for Andrea Esposito's Thesis.
 # Copyright (C) 2020  Andrea Esposito
 #
@@ -15,11 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""The main entry point of the module.
+"""The tool to process the collected data.
 """
 
-from .cli import main
-
-
-if __name__ == '__main__':
-    main()
+__version__ = '1.0.0'
+__author__ = 'Andrea Esposito'
+__email__ = 'a.esposito39@studenti.uniba.it'
+__prog__ = 'analyzer'

@@ -42,15 +42,15 @@
 
 .. raw:: latex
 
-   \part{The Data Processor}
+   \part{The Data Analyzer}
 
 .. toctree::
    :hidden:
    :maxdepth: 2
-   :caption: The Data Processor
+   :caption: The Data Analyzer
 
-   data-processor/index
-   data-processor/api
+   analyzer/index
+   analyzer/api
 
 
 .. raw:: latex

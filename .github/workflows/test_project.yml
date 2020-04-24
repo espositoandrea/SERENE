@@ -25,7 +25,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('data-processor/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('analyzer/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
@@ -33,9 +33,9 @@ jobs:
         run: |
           cd extension && npm i && cd ..
           cd server && npm i && cd ..
-          cd data-processor && pip install -r requirements.txt && cd ..
+          cd analyzer && make init && cd ..
       - name: Execute tests
         run: |
           cd extension && npm test && cd ..
           cd server && npm test && cd ..
-          cd data-processor && pylint --exit-zero --rcfile=.pylintrc data_processor/ && cd ..
+          cd analyzer && make test && cd ..

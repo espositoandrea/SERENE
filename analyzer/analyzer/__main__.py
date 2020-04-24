@@ -1,6 +1,4 @@
-#!/usr/bin/env python3
-
-# This file is part of 'data-processor', the tool used to process the information
+# This file is part of 'analyzer', the tool used to process the information
 # collected for Andrea Esposito's Thesis.
 # Copyright (C) 2020  Andrea Esposito
 #
@@ -17,22 +15,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from setuptools import setup
-import data_processor
+"""The main entry point of the module.
+"""
 
-setup(
-    name='data-processor',
-    version=data_processor.__version__,
-    description='Process the data collected by the extension',
-    author=data_processor.__author__,
-    author_email=data_processor.__email__,
-    packages=['data_processor'],
-    install_requires=[
-        'matplotlib'
-    ],
-    entry_points={
-        'console_scripts': [
-            'data-processor=data_processor.cli:main'
-        ]
-    }
-)
+from .cli import main
+
+
+if __name__ == '__main__':
+    main()

@@ -1,4 +1,4 @@
-# This file is part of 'data-processor', the tool used to process the information
+# This file is part of 'analyzer', the tool used to process the information
 # collected for Andrea Esposito's Thesis.
 # Copyright (C) 2020  Andrea Esposito
 #
@@ -17,7 +17,7 @@
 
 import argparse
 import logging
-from . import __version__, __author__
+from . import __version__, __author__, __prog__
 from .data import CollectedData, User
 from .plotting import plot_mouse_on_common_websites
 
@@ -27,7 +27,7 @@ def main():
     """
     parser = argparse.ArgumentParser(
         description='Process the JSON file',
-        prog='data-processor',
+        prog=__prog__,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument('file', help='The file')

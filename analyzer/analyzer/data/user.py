@@ -1,4 +1,4 @@
-# This file is part of 'data-processor', the tool used to process the information
+# This file is part of 'analyzer', the tool used to process the information
 # collected for Andrea Esposito's Thesis.
 # Copyright (C) 2020  Andrea Esposito
 #
