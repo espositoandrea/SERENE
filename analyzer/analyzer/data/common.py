@@ -15,6 +15,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""A collection of classes and types used by other data modules.
+
+See Also
+--------
+analyzer.data.collected_data : This module uses the classes defined here.
+analyzer.data.user : This module uses the classes defined here.
+"""
+
 import enum
 import dataclasses
 import typing

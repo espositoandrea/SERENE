@@ -15,13 +15,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""A data module to work with interaction data.
+"""
+
 import logging
 import json
 import typing
 import dataclasses
 import dotmap
 from .user import User
-from .common import KeyboardInformation, MouseInformation, ScreenCoordinates, ScrollInformation
+from .common import KeyboardInformation, MouseInformation, \
+    ScreenCoordinates, ScrollInformation
 
 
 @dataclasses.dataclass(frozen=True)
@@ -66,13 +70,17 @@ class CollectedData:
         return isinstance(obj, CollectedData) and self.data_id == obj.data_id
 
     @staticmethod
-    def from_json(users: typing.Set[User], data: str) -> typing.List['CollectedData']:
+    def from_json(users: typing.Set[User], data: str) \
+            -> typing.List['CollectedData']:
         """Create a list of data from a JSON string.
 
-        This method can be used to generate a list of data starting from a JSON string.
+        This method can be used to generate a list of data starting from a JSON
+        string.
 
         Parameters
         ----------
+        users : set [User]
+            The set of users that generated this data.
         data : str
             The JSON string. It must represent a valid JSON array.
 

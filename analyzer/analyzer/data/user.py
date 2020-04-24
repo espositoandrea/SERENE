@@ -15,6 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+"""A data module to work with users.
+"""
+
 import logging
 import json
 import typing
@@ -60,7 +63,8 @@ class User:
     def from_json(data: str) -> typing.List['User']:
         """Create a list of users from a JSON string.
 
-        This method can be used to generate a list of users starting from a JSON string.
+        This method can be used to generate a list of users starting from a
+        JSON string.
 
         Parameters
         ----------

@@ -26,11 +26,11 @@ Examples
 .. code-block:: python
    :caption: How to create an object from a JSON.
 
-   from data_processor.user import User
-   from data_processor.data import CollectedData
-   user_list = YOUR_USER_LIST
+   from data_processor.data import CollectedData, User
+   user_string = "[YOUR_USER_LIST]"
+   user_set = set(User.from_json(user_string))
    json_string = "[YOUR_OBJECT]"
-   CollectedData.from_json(user_list, json_string)
+   CollectedData.from_json(user_set, json_string)
    # [CollectedData(...), ...]
 """
 

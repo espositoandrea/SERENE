@@ -36,7 +36,7 @@ Once installed you can use this tool from your terminal using the command
       :caption: How to execute the tool as a Python module
 
       cd /path/to/analyzer
-      python3 -m data_processor --help
+      python3 -m analyzer --help
 
 
 Process the JSON file
