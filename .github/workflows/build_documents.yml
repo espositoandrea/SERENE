@@ -46,8 +46,8 @@ jobs:
       - name: Build Sphinx Documentation
         run: |
           cd docs
-          sphinx-build -b html . _build
-          sphinx-build -b latex . _build/_pdf
+          sphinx-build -b html . _build -D version="${{ steps.extract_branch.outputs.branch }}"
+          sphinx-build -b latex . _build/_pdf -D version="${{ steps.extract_branch.outputs.branch }}"
       - name: Build Documentation
         uses: xu-cheng/latex-action@master
         with:
