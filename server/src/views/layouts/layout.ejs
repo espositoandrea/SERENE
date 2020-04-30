@@ -7,50 +7,23 @@
     <title><%= htmlWebpackPlugin.options.title %> | Andrea Esposito's Bachelor's Thesis</title>
 
     <%= htmlWebpackPlugin.tags.headTags %>
-    <link rel="stylesheet" href="/assets/style/style.css"/>
-    <link rel="icon" href="/assets/images/icon.ico"/>
+    <link rel="icon" href="/assets/images/icon.ico" />
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-            crossorigin="anonymous"></script>
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-            crossorigin="anonymous"></script>
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-            integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-            crossorigin="anonymous"></script>
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.1/dist/jquery.validate.js"></script>
+    <script src="https://kit.fontawesome.com/25f92f4258.js" crossorigin="anonymous"></script>
+    
+    <link rel="stylesheet" href="/assets/style/style.css?<%= Date.now() %>" />
 </head>
 
 <body class="bg-primary">
     <main class="container bg-light my-5 p-3 rounded">
-        <header class="text-center mb-4">
-            <img src="https://www.unidformazione.com/wp-content/uploads/2017/05/logo-uniba.JPG-2.png"
-                alt="Logo Università degli Studi di Bari" style="width: 240px;" class="img-responsive mb-3" />
-            <h1 class="border-bottom p-2 mb-3">Automatic Detection of Usability Smells Through the Analysis of
-                Interaction Logs</h1>
-            <p class="h5 mb-4">Bachelor&rsquo;s Degree in &ldquo;Computer Science and Digital Communication&rdquo;</p>
-            <div class="authors row px-0 mx-0 px-md-5 mx-md-5" itemprop="author">
-                <div class="col author" itemscope="" itemtype="https://schema.org/Person">
-                    <div>
-                        <span itemprop="givenName">Andrea</span> <span itemprop="familyName">Esposito</span>
-                        (<span itemprop="identifier">677021</span>)
-                    </div>
-                    <small>Autore</small>
-                    <div><a href="mailto:a.esposito39@studenti.uniba.it"
-                            itemprop="email">a.esposito39@studenti.uniba.it</a></div>
-                </div>
-                <div class="col author" itemscope="" itemtype="https://schema.org/Person">
-                    <div>
-                        <span itemprop="honorificPrefix">Prof.</span>
-                        <span itemprop="givenName">Giuseppe</span> <span itemprop="familyName">Desolda</span>
-                    </div>
-                    <small>Relatore</small>
-                    <div><a href="mailto:giuseppe.desolda@uniba.it" itemprop="email">giuseppe.desolda@uniba.it</a></div>
-                </div>
-            </div>
-            <hr>
-        </header>
-
         <%= body %>
     </main>
 

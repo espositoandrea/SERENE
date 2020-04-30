@@ -20,6 +20,38 @@ $primary: #003c71;
 
 @import "~bootstrap/scss/bootstrap.scss";
 
+.thesis-title {
+    font-variant: small-caps;
+    text-transform: capitalize;
+}
+
+.justify-content-space-evenly {
+    justify-content: space-evenly !important;
+}
+
+.custom-control-bottom {
+    padding-bottom: 24px;
+    padding-left: 0;
+    margin-left: 16px;
+    margin-right: 0;
+    & .custom-control-label::before,
+    & .custom-control-label::after {
+        bottom: -1.25rem !important;
+        top: unset;
+        left: 50% !important;
+        transform: translate(-50%, 0);
+    }
+}
+
+a[target="_blank"]::after {
+    font-weight: 900;
+    font-family: "Font Awesome 5 Free", fantasy;
+    font-size: xx-small;
+    content: "\F35D";
+    vertical-align: super;
+    margin-left: 0.5em;
+}
+
 #sections-container .tab {
     display: none;
 }
@@ -29,7 +61,7 @@ $primary: #003c71;
 }
 div#webcam-video-container::after {
     content: "";
-    background: url('/assets/images/video-mask.svg');
+    background: url("/assets/images/video-mask.svg");
     position: absolute;
     top: 0;
     left: 0;

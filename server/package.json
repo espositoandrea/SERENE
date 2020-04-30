@@ -24,7 +24,7 @@
     "email": "a.esposito39@studenti.uniba.it",
     "url": "https://espositoandrea.github.io/"
   },
-  "license": "GNU GPL V3",
+  "license": "GPL-3.0-or-later",
   "dependencies": {},
   "devDependencies": {
     "@types/express": "^4.17.6",
