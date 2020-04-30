@@ -20,6 +20,7 @@
   },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
+    "@popperjs/core": "^2.4.0",
     "@types/chrome": "0.0.102",
     "@types/express": "^4.17.3",
     "@types/firefox-webext-browser": "^70.0.1",

@@ -24,5 +24,9 @@ WebcamFacade.enableWebcam();
 browser.runtime.onMessage.addListener(async (request) => {
     if (request.event == "ESPOSITOTHESIS___SNAP_WEBCAM") {
         return { snap: await WebcamFacade.snapPhoto() };
+    } else if (request.event == "ESPOSITOTHESIS___STOP_WEBCAM") {
+        WebcamFacade.stopWebcam();
+    } else if (request.event == "ESPOSITOTHESIS___ENABLE_WEBCAM") {
+        WebcamFacade.enableWebcam();
     }
 });

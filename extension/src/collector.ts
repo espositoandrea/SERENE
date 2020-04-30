@@ -203,6 +203,28 @@ function checkBrowserFocus(): void {
     });
 }
 
+let opened = false;
+
+function setUpSwitchFirefoxWebcamListener() {
+    if (typeof browser !== "undefined" && browser.runtime && browser.runtime.onMessage && localStorage.getItem("popupId")) {
+        browser.runtime.onMessage.addListener((request) => {
+            if (request.event == "firefoxstopwebcam") {
+                browser.windows.remove(parseInt(localStorage.getItem("popupId")));
+                opened = false;
+            } else if (request.event == "firefoxstartwebcam" && !opened) {
+                opened = true;
+                browser.windows.create({
+                    url: browser.extension.getURL("assets/firefox-permissions.html"),
+                    width: 600,
+                    height: 400,
+                    type: "normal"
+                })
+                    .then(w => localStorage.setItem("popupId", w.id.toString()));
+            }
+        });
+    }
+}
+
 /**
  * A facade function that collects all the required data.
  *
@@ -226,6 +248,8 @@ export default function configureCollector(userId: string, options?: CollectionO
         }
     };
     options = _.merge(defaultCollectionOptions, options || {});
+
+    setUpSwitchFirefoxWebcamListener();
 
     checkBrowserFocus();
     setInterval(checkBrowserFocus, options.focusCheckInterval);

@@ -1,7 +1,10 @@
 import { ScreenCoordinates, Message, RawData, MessageEvents } from "./common-types";
+import WebcamFacade from "./webcam-facade";
 
 export default class ContentScript {
     private static canSend = true;
+    private static isEnabled = true;
+    private static hasRegisteredEvents = false;
     private static readonly keyboard: Set<string> = new Set<string>();
     private static readonly mousePosition: RawData["mouse"]["position"] = new ScreenCoordinates();
     private static readonly mouseButtons: Set<number> = new Set<number>();
@@ -20,9 +23,36 @@ export default class ContentScript {
         return new ScreenCoordinates(relativeX, relativeY);
     }
 
+    public static enableWebcam() {
+        if (navigator.userAgent.search("Firefox") === -1) {
+            // Chrome
+            const iframe = document.createElement("iframe");
+            iframe.id = "ESPOSITO_THESIS_WEBCAM_IFRAME"
+            iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
+            iframe.style.display = "none";
+            iframe.setAttribute("allow", "camera");
+            document.body.appendChild(iframe);
+            chrome.runtime.sendMessage({ event: "webcampermission" });
+        } else {
+            browser.runtime.sendMessage({ event: "firefoxstartwebcam" });
+        }
+    }
+
+    public static stopWebcam() {
+        console.warn("STOP WEBCAM")
+        if (navigator.userAgent.search("Firefox") === -1) {
+            // Chrome
+            const iframe = document.getElementById("ESPOSITO_THESIS_WEBCAM_IFRAME");
+            iframe.parentElement.removeChild(iframe);
+        } else {
+            browser.runtime.sendMessage({ event: "firefoxstopwebcam" });
+        }
+
+        ContentScript.isEnabled = false;
+    }
 
     public static sendCollectionRequest(): void {
-        if (!ContentScript.canSend) return;
+        if (!ContentScript.isEnabled || !ContentScript.canSend) return;
 
         const objectToSend: RawData = {
             image: ContentScript.takeWebcamPhoto ? ContentScript.webcamPhoto : undefined,
@@ -45,49 +75,73 @@ export default class ContentScript {
     }
 
     public static registerEvents(): void {
-        window.addEventListener("mousedown", (e: MouseEvent) => {
-            ContentScript.mouseButtons.add(e.button);
-            ContentScript.sendCollectionRequest();
-        });
-        window.addEventListener("mouseup", (e: MouseEvent) => {
-            ContentScript.mouseButtons.delete(e.button);
-            ContentScript.sendCollectionRequest();
-        });
-        window.addEventListener("mousemove", e => {
-            ContentScript.mousePosition.set(e.clientX, e.clientY);
-            ContentScript.sendCollectionRequest();
-        });
-        window.addEventListener("keydown", (e: KeyboardEvent) => {
-            ContentScript.keyboard.add(e.key);
-            ContentScript.sendCollectionRequest();
-        });
-        window.addEventListener("keyup", (e: KeyboardEvent) => {
-            if (!ContentScript.keyboard.delete(e.key)) {
-                // Error fix: released a key that was pressed
-                // Example: the key '[' emits as '[' on press and 'è' on release on Chrome
-                ContentScript.keyboard.clear();
+        chrome.storage.local.get((items) => {
+            console.warn("NOW", items)
+            if (!items.isExtensionActive) {
+                ContentScript.isEnabled = false;
+                return;
+            } else {
+                ContentScript.isEnabled = true;
             }
-            ContentScript.sendCollectionRequest();
-        });
-        window.addEventListener("scroll", (e: UIEvent) => {
-            if (e.target == window) {
-                this.relativeScroll.set(window.pageXOffset, window.pageYOffset);
+            // if (ContentScript.hasRegisteredEvents) return;
+
+            ContentScript.hasRegisteredEvents = true;
+            ContentScript.enableWebcam();
+            window.addEventListener("mousedown", (e: MouseEvent) => {
+                ContentScript.mouseButtons.add(e.button);
                 ContentScript.sendCollectionRequest();
-            }
-        });
-        window.addEventListener("resize", (e: UIEvent) => {
-            if (e.target == window) {
+            });
+            window.addEventListener("mouseup", (e: MouseEvent) => {
+                ContentScript.mouseButtons.delete(e.button);
                 ContentScript.sendCollectionRequest();
-            }
-        });
-        chrome.runtime.onMessage.addListener((request: Message<keyof MessageEvents>) => {
-            if (request.event === "snapwebcam") {
-                ContentScript.takeWebcamPhoto = true;
-                ContentScript.webcamPhoto = (request as Message<"snapwebcam">).data;
+            });
+            window.addEventListener("mousemove", e => {
+                ContentScript.mousePosition.set(e.clientX, e.clientY);
                 ContentScript.sendCollectionRequest();
-            } else if (request.event === "browserfocuschange") {
-                ContentScript.canSend = (request as Message<"browserfocuschange">).data.inFocus;
-            }
+            });
+            window.addEventListener("keydown", (e: KeyboardEvent) => {
+                ContentScript.keyboard.add(e.key);
+                ContentScript.sendCollectionRequest();
+            });
+            window.addEventListener("keyup", (e: KeyboardEvent) => {
+                if (!ContentScript.keyboard.delete(e.key)) {
+                    // Error fix: released a key that was pressed
+                    // Example: the key '[' emits as '[' on press and 'è' on release on Chrome
+                    ContentScript.keyboard.clear();
+                }
+                ContentScript.sendCollectionRequest();
+            });
+            window.addEventListener("scroll", (e: UIEvent) => {
+                if (e.target == window) {
+                    this.relativeScroll.set(window.pageXOffset, window.pageYOffset);
+                    ContentScript.sendCollectionRequest();
+                }
+            });
+            window.addEventListener("resize", (e: UIEvent) => {
+                if (e.target == window) {
+                    ContentScript.sendCollectionRequest();
+                }
+            });
+            chrome.runtime.onMessage.addListener((request: Message<keyof MessageEvents>) => {
+                if (request.event === "snapwebcam") {
+                    ContentScript.takeWebcamPhoto = true;
+                    ContentScript.webcamPhoto = (request as Message<"snapwebcam">).data;
+                    ContentScript.sendCollectionRequest();
+                } else if (request.event === "browserfocuschange") {
+                    ContentScript.canSend = (request as Message<"browserfocuschange">).data.inFocus;
+                }
+                //  else if (request.event === "enabledisableextension") {
+                // ContentScript.isEnabled = (request as Message<"enabledisableextension">).data.enabled;
+                // if (ContentScript.isEnabled) {
+                // if (!ContentScript.hasRegisteredEvents) {
+                // ContentScript.registerEvents();
+                // }
+                // ContentScript.enableWebcam();
+                // } else {
+                // ContentScript.stopWebcam();
+                // }
+                // }
+            });
         });
     }
 }

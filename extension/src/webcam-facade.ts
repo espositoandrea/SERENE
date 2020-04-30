@@ -23,15 +23,19 @@ import * as Webcam from "webcamjs";
  */
 export default class WebcamFacade {
     private static isWebcamEnabled = false;
+    private static readonly WEBCAM_CONTAINER_ID = "__AESPOSITO_EXTENSION__webcam-holder";
 
     public static get isEnabled(): boolean {
         return WebcamFacade.isWebcamEnabled;
     }
 
     public static enableWebcam(): void {
-        const webcamHolder = document.createElement("div");
-        webcamHolder.id = "__AESPOSITO_EXTENSION__webcam-holder";
-        document.body.appendChild(webcamHolder);
+        let webcamHolder = document.getElementById(WebcamFacade.WEBCAM_CONTAINER_ID);
+        if (!webcamHolder) {
+            webcamHolder = document.createElement("div");
+            webcamHolder.id = "__AESPOSITO_EXTENSION__webcam-holder";
+            document.body.appendChild(webcamHolder);
+        }
 
         /* eslint-disable */
         Webcam.set({
@@ -46,6 +50,13 @@ export default class WebcamFacade {
         Webcam.on("load", () => {
             WebcamFacade.isWebcamEnabled = true;
         });
+    }
+
+    public static stopWebcam(): void {
+        Webcam.reset();
+        let webcamHolder = document.getElementById(WebcamFacade.WEBCAM_CONTAINER_ID);
+        webcamHolder.innerHTML = '';
+        WebcamFacade.isWebcamEnabled = false;
     }
 
     /**

@@ -17,9 +17,9 @@
  */
 
 import { Message, MessageEvents } from "./common-types";
-import WebcamFacade from "./webcam-facade";
 import configureCollector from "./collector";
 
+chrome.storage.local.set({ isExtensionActive: true });
 
 chrome.runtime.onInstalled.addListener((object) => {
     if (object.reason === "install") {
@@ -60,18 +60,12 @@ getUserId()
                             url: browser.extension.getURL("assets/firefox-permissions.html"),
                             width: 600,
                             height: 400,
-                            type: "popup"
+                            type: "normal"
                         })
                             .then(w => localStorage.setItem("popupId", w.id.toString()));
                     }
                 });
         }
-
-        chrome.runtime.onMessage.addListener((request) => {
-            if (request.event === "webcampermission") {
-                WebcamFacade.enableWebcam();
-            }
-        });
 
         configureCollector(userId);
     });
