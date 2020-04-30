@@ -19,13 +19,13 @@
 import { Message } from "./common-types";
 
 chrome.storage.local.get(function (items) {
-    const activeAtStart = items.hasOwnProperty("isExtensionActive") && items["isExtensionActive"];
+    const activeAtStart = items.isExtensionActive;
     const extensionSwitch = document.getElementById("extension-switch") as HTMLInputElement;
     const currentStateSpan: HTMLSpanElement = document.getElementById("extension-state");
     currentStateSpan.innerHTML = activeAtStart ? "attiva" : "disattiva";
     extensionSwitch.checked = activeAtStart;
 
-    extensionSwitch.addEventListener('click', function () {
+    extensionSwitch.addEventListener("click", function () {
         const active = this.checked;
         chrome.storage.local.set({ isExtensionActive: active });
 
@@ -39,5 +39,5 @@ chrome.storage.local.get(function (items) {
 
         currentStateSpan.innerHTML = active ? "attiva" : "disattiva";
     });
-})
+});
 

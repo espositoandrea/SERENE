@@ -1,5 +1,4 @@
 import { ScreenCoordinates, Message, RawData, MessageEvents } from "./common-types";
-import WebcamFacade from "./webcam-facade";
 
 export default class ContentScript {
     private static canSend = true;
@@ -23,11 +22,11 @@ export default class ContentScript {
         return new ScreenCoordinates(relativeX, relativeY);
     }
 
-    public static enableWebcam() {
+    public static enableWebcam(): void {
         if (navigator.userAgent.search("Firefox") === -1) {
             // Chrome
             const iframe = document.createElement("iframe");
-            iframe.id = "ESPOSITO_THESIS_WEBCAM_IFRAME"
+            iframe.id = "ESPOSITO_THESIS_WEBCAM_IFRAME";
             iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
             iframe.style.display = "none";
             iframe.setAttribute("allow", "camera");
@@ -38,8 +37,8 @@ export default class ContentScript {
         }
     }
 
-    public static stopWebcam() {
-        console.warn("STOP WEBCAM")
+    public static stopWebcam(): void {
+        console.warn("STOP WEBCAM");
         if (navigator.userAgent.search("Firefox") === -1) {
             // Chrome
             const iframe = document.getElementById("ESPOSITO_THESIS_WEBCAM_IFRAME");
@@ -76,7 +75,7 @@ export default class ContentScript {
 
     public static registerEvents(): void {
         chrome.storage.local.get((items) => {
-            console.warn("NOW", items)
+            console.warn("NOW", items);
             if (!items.isExtensionActive) {
                 ContentScript.isEnabled = false;
                 return;

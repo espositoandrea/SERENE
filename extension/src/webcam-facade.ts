@@ -54,8 +54,8 @@ export default class WebcamFacade {
 
     public static stopWebcam(): void {
         Webcam.reset();
-        let webcamHolder = document.getElementById(WebcamFacade.WEBCAM_CONTAINER_ID);
-        webcamHolder.innerHTML = '';
+        const webcamHolder = document.getElementById(WebcamFacade.WEBCAM_CONTAINER_ID);
+        webcamHolder.innerHTML = "";
         WebcamFacade.isWebcamEnabled = false;
     }
 

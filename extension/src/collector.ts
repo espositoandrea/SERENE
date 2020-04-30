@@ -204,8 +204,7 @@ function checkBrowserFocus(): void {
 }
 
 let opened = false;
-
-function setUpSwitchFirefoxWebcamListener() {
+function setUpSwitchFirefoxWebcamListener(): void {
     if (typeof browser !== "undefined" && browser.runtime && browser.runtime.onMessage && localStorage.getItem("popupId")) {
         browser.runtime.onMessage.addListener((request) => {
             if (request.event == "firefoxstopwebcam") {

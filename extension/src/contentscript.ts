@@ -32,7 +32,7 @@ window.addEventListener("message", function (event) {
 
 chrome.runtime.onMessage.addListener((request: Message<keyof MessageEvents>) => {
     if (request.event === "enabledisableextension") {
-        let isEnabled = (request as Message<"enabledisableextension">).data.enabled;
+        const isEnabled = (request as Message<"enabledisableextension">).data.enabled;
         if (isEnabled) {
             ContentScript.enableWebcam();
             ContentScript.registerEvents();
