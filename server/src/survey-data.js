@@ -71,8 +71,7 @@ module.exports = {
             è pubblicato su
             <a href="https://github.com/espositoandrea/Bachelor-Thesis" target="_blank"
                rel="noopener noreferrer">
-                <span class="fab fa-github" aria-hidden="true"></span> GitHub
-            </a>.
+                <span class="fab fa-github" aria-hidden="true"></span> GitHub</a>.
         </p>
         <p>
             Inoltre, per una maggiore garanzia, tutti i dati raccolti sono disponibili
