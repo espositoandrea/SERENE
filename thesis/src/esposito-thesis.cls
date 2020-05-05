@@ -3,7 +3,7 @@
 
 \LoadClass[a4paper,twoside,openright,11pt]{book}
 
-\RequirePackage[inner=3.5cm, outer=2.5cm]{geometry}
+\RequirePackage[inner=3.5cm, outer=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
 \RequirePackage{amssymb}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[table,xcdraw]{xcolor}
@@ -24,6 +24,14 @@
 
 \RequirePackage{lettrine}
 \setcounter{DefaultLines}{3}
+
+\RequirePackage{translations}
+\DeclareTranslationFallback{author}{Author}
+\DeclareTranslation{English}{author}{Author}
+\DeclareTranslation{Italian}{author}{Autore}
+\DeclareTranslationFallback{supervisor}{Supervisor}
+\DeclareTranslation{English}{supervisor}{Supervisor}
+\DeclareTranslation{Italian}{supervisor}{Relatore}
 
 \RequirePackage{hyperref}
 
@@ -53,7 +61,7 @@
 	\newcommand\feline@chm[1][4cm]{%
 		\sbox\feline@chapter{\feline@chapter@marker[#1]}%
 		\makebox[0pt][l]{%
-			\makebox[1cm][r]{\usebox\feline@chapter}%
+			\makebox[0cm][r]{\usebox\feline@chapter}%
 		}%
 	}%
 	\titleformat{\chapter}[display]{\normalfont}{\hfill\feline@chm[2.5cm]}{0pt}{\flushright\huge\bfseries\scshape\color{UniBlue}{#1}}[\vspace*{2ex}]%
@@ -85,7 +93,7 @@
 	\begin{center}
 		\includegraphics[width=7cm]{UniBa}\\[1cm]
 		\vspace*{\fill}
-		\textsc{\@degreetype{} in}\\
+		\textsc{\@degreetype{}}\\
 		\textsc{\large\color{UniBlue} \@course}\\[5mm]
 		\rule[0.5ex]{\linewidth}{1pt}\\[\baselineskip]
 		{\huge \textsc{\@title}\\[4mm]}
@@ -93,13 +101,13 @@
 		\vspace{1cm}
 		\begin{minipage}[t]{0.5\textwidth}
 			\begin{flushleft} \large
-				\emph{Author:}\\
+				\emph{\GetTranslation{author}:}\\
 				{\color{UniBlue} \@author~({\small 677021})}
 			\end{flushleft}
 		\end{minipage}%
 		\begin{minipage}[t]{0.5\textwidth}
 			\begin{flushright} \large
-				\emph{Supervisor:} \\
+				\emph{\GetTranslation{supervisor}:} \\
 				{\color{UniBlue} \@supervisor}
 			\end{flushright}
 		\end{minipage}\\
