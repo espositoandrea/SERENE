@@ -25,24 +25,26 @@ export default class ContentScript {
     public static enableWebcam(): void {
         if (navigator.userAgent.search("Firefox") === -1) {
             // Chrome
-            const iframe = document.createElement("iframe");
-            iframe.id = "ESPOSITO_THESIS_WEBCAM_IFRAME";
-            iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
-            iframe.style.display = "none";
-            iframe.setAttribute("allow", "camera");
-            document.body.appendChild(iframe);
-            chrome.runtime.sendMessage({ event: "webcampermission" });
+            if (!document.getElementById("ESPOSITO_THESIS_WEBCAM_IFRAME")) {
+                const iframe = document.createElement("iframe");
+                iframe.id = "ESPOSITO_THESIS_WEBCAM_IFRAME";
+                iframe.src = chrome.extension.getURL("assets/permissions-requester.html");
+                iframe.style.display = "none";
+                iframe.setAttribute("allow", "camera");
+                document.body.appendChild(iframe);
+                chrome.runtime.sendMessage(new Message("webcampermission"));
+            }
         } else {
             browser.runtime.sendMessage({ event: "firefoxstartwebcam" });
         }
     }
 
     public static stopWebcam(): void {
-        console.warn("STOP WEBCAM");
         if (navigator.userAgent.search("Firefox") === -1) {
             // Chrome
             const iframe = document.getElementById("ESPOSITO_THESIS_WEBCAM_IFRAME");
-            iframe.parentElement.removeChild(iframe);
+            if (iframe) iframe.parentElement.removeChild(iframe);
+            chrome.runtime.sendMessage(new Message("stopwebcampermission"));
         } else {
             browser.runtime.sendMessage({ event: "firefoxstopwebcam" });
         }

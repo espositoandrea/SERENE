@@ -36,6 +36,7 @@ export type MessageEvents = {
     readonly "browserfocuschange": { inFocus: boolean };
     readonly "enabledisableextension": { enabled: boolean };
     readonly "snapwebcam": string;
+    readonly "stopwebcampermission": null;
 }
 
 export class Message<T extends keyof MessageEvents>{
