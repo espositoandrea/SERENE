@@ -100,7 +100,11 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="data-processor.html">The Data Processor</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">The Survey</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The Survey</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rationale">Rationale</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-schema">The Schema</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">License</span></p>
 <ul>
@@ -172,6 +176,21 @@
             
   <div class="section" id="the-survey">
 <h1>The Survey<a class="headerlink" href="#the-survey" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="rationale">
+<h2>Rationale<a class="headerlink" href="#rationale" title="Permalink to this headline">¶</a></h2>
+<p>To avoid the continuos editing of a verbose HTML file, the survey structure has
+been parametrized. This allows to edit freely the survey without editing the
+HTML file, and for this reason assures a consistent look to all the survey’s
+questions.</p>
+<p>For this, a basic schema of the survey data has been defined. Note that this
+schema is in no way enforced: there’s no checking of your data and any
+properties not defined in this schema won’t raise any error but will be ignored.
+On the other side, any defined and required property that’s not defined in the
+configuration object could block the HTML generation or (in the worst case)
+generate a wrong HTML structure.</p>
+</div>
+<div class="section" id="the-schema">
+<h2>The Schema<a class="headerlink" href="#the-schema" title="Permalink to this headline">¶</a></h2>
 <p>The survey is generated using the exported object defined in the module
 <code class="docutils literal notranslate"><span class="pre">survey-data.js</span></code>. Here is documented the structure of that object.</p>
 <dl class="class">
@@ -212,7 +231,7 @@
 <li><p><strong>type</strong> (<em>string</em>) – The type of question.</p></li>
 <li><p><strong>rules</strong> (<em>Object</em>) – Various additional rules. Can be any HTML attribute accepted by the current input type.</p></li>
 <li><p><strong>placeholder</strong> (<em>string</em>) – The input placeholder.</p></li>
-<li><p><strong>choices</strong> (<em>Array.&lt;string&gt;</em>) – A list of choices. Used only if type is ‘choice’.</p></li>
+<li><p><strong>choices</strong> (<em>Array.&lt;ChoiceDescription&gt;|number</em>) – A list of choices. Used only if type is ‘choice’ or ‘radios’. If it’s a number n, it’s used to generate n ChoiceDescription objects having {label: i, value: i}, con 1 &lt;= i &lt;= n.</p></li>
 <li><p><strong>question</strong> (<em>string|Array.&lt;BasicQuestion&gt;</em>) – If it’s a string, the same as BasicQuestion.question. If an array of BasicQuestion, a list of questions used if type is ‘likert’.</p></li>
 </ul>
 </dd>
@@ -234,6 +253,21 @@
 </dl>
 </dd></dl>
 
+<dl class="class">
+<dt id="ChoiceDescription">
+<em class="property">class </em><code class="sig-name descname">ChoiceDescription</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ChoiceDescription" title="Permalink to this definition">¶</a></dt>
+<dd><p>A description of a Question choice.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Arguments</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>label</strong> (<em>string</em>) – The label of the choice. This will be seen by the user.</p></li>
+<li><p><strong>value</strong> (<em>any</em>) – The value of the choice. This will be sent to the server.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 </div>
 
 
