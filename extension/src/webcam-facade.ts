@@ -30,10 +30,12 @@ export default class WebcamFacade {
     }
 
     public static enableWebcam(): void {
+        if(WebcamFacade.isWebcamEnabled) return;
+
         let webcamHolder = document.getElementById(WebcamFacade.WEBCAM_CONTAINER_ID);
         if (!webcamHolder) {
             webcamHolder = document.createElement("div");
-            webcamHolder.id = "__AESPOSITO_EXTENSION__webcam-holder";
+            webcamHolder.id = WebcamFacade.WEBCAM_CONTAINER_ID;
             document.body.appendChild(webcamHolder);
         }
 
@@ -53,6 +55,8 @@ export default class WebcamFacade {
     }
 
     public static stopWebcam(): void {
+        if(!WebcamFacade.isWebcamEnabled) return;
+
         Webcam.reset();
         const webcamHolder = document.getElementById(WebcamFacade.WEBCAM_CONTAINER_ID);
         webcamHolder.innerHTML = "";
