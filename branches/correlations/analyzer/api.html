@@ -470,6 +470,13 @@ string.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="analyzer.data.Gender">
+<em class="property">class </em><code class="sig-prename descclassname">analyzer.data.</code><code class="sig-name descname">Gender</code><a class="headerlink" href="#analyzer.data.Gender" title="Permalink to this definition">¶</a></dt>
+<dd><p>A gender enumerator.</p>
+<p>An enumerator of all the valid gender values.</p>
+</dd></dl>
+
+<dl class="class">
 <dt id="analyzer.data.KeyboardInformation">
 <em class="property">class </em><code class="sig-prename descclassname">analyzer.data.</code><code class="sig-name descname">KeyboardInformation</code><span class="sig-paren">(</span><em class="sig-param">alpha: bool</em>, <em class="sig-param">numeric: bool</em>, <em class="sig-param">symbol: bool</em>, <em class="sig-param">function: bool</em><span class="sig-paren">)</span><a class="headerlink" href="#analyzer.data.KeyboardInformation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Encapsulates various information regarding the keyboard’s state.</p>
@@ -651,15 +658,8 @@ window.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="analyzer.data.Sex">
-<em class="property">class </em><code class="sig-prename descclassname">analyzer.data.</code><code class="sig-name descname">Sex</code><a class="headerlink" href="#analyzer.data.Sex" title="Permalink to this definition">¶</a></dt>
-<dd><p>A sex enumerator.</p>
-<p>An enumerator of all the valid sex values.</p>
-</dd></dl>
-
-<dl class="class">
 <dt id="analyzer.data.User">
-<em class="property">class </em><code class="sig-prename descclassname">analyzer.data.</code><code class="sig-name descname">User</code><span class="sig-paren">(</span><em class="sig-param">user_id: str</em>, <em class="sig-param">age: int = None</em>, <em class="sig-param">sex: analyzer.data.common.Sex = None</em><span class="sig-paren">)</span><a class="headerlink" href="#analyzer.data.User" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">analyzer.data.</code><code class="sig-name descname">User</code><span class="sig-paren">(</span><em class="sig-param">user_id: str</em>, <em class="sig-param">age: int = None</em>, <em class="sig-param">gender: analyzer.data.common.Gender = None</em>, <em class="sig-param">internet: int = None</em><span class="sig-paren">)</span><a class="headerlink" href="#analyzer.data.User" title="Permalink to this definition">¶</a></dt>
 <dd><p>A user.</p>
 <p>This class represents a user as seen
 for this study.</p>
@@ -686,12 +686,23 @@ for this study.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="analyzer.data.User.sex">
-<code class="sig-name descname">sex</code><a class="headerlink" href="#analyzer.data.User.sex" title="Permalink to this definition">¶</a></dt>
-<dd><p>The user’s sex.</p>
+<dt id="analyzer.data.User.gender">
+<code class="sig-name descname">gender</code><a class="headerlink" href="#analyzer.data.User.gender" title="Permalink to this definition">¶</a></dt>
+<dd><p>The user’s gender.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#analyzer.data.Sex" title="analyzer.data.Sex">Sex</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="#analyzer.data.Gender" title="analyzer.data.Gender">Gender</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="analyzer.data.User.internet">
+<code class="sig-name descname">internet</code><a class="headerlink" href="#analyzer.data.User.internet" title="Permalink to this definition">¶</a></dt>
+<dd><p>The average time the user spend a day on the internet.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
