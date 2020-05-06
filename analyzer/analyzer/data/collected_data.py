@@ -176,6 +176,10 @@ class CollectedData:
             'id': list(),
             'timestamp': list(),
             'url': list(),
+            # User data
+            'user.gender' : list(),
+            'user.age': list(),
+            'user.internet':list(),
             # Window data
             'window.x': list(),
             'window.y': list(),
@@ -211,6 +215,11 @@ class CollectedData:
             df_data['id'].append(obj.data_id)
             df_data['timestamp'].append(obj.timestamp)
             df_data['url'].append(obj.url)
+
+            # Add user data
+            df_data['user.gender'].append(obj.user.gender)
+            df_data['user.age'].append(obj.user.age)
+            df_data['user.internet'].append(obj.user.internet)
 
             # Add window data
             df_data['window.x'].append(obj.window.x)

@@ -23,37 +23,38 @@ analyzer.data.collected_data : This module uses the classes defined here.
 analyzer.data.user : This module uses the classes defined here.
 """
 
+import re
 import enum
 import dataclasses
 import typing
 import dotmap
-import re
 
 
-class Sex(enum.Enum):
-    """A sex enumerator.
+class Gender(enum.Enum):
+    """A gender enumerator.
 
-    An enumerator of all the valid sex values.
+    An enumerator of all the valid gender values.
     """
+
     MALE = 'male'
     FEMALE = 'female'
     OTHER = 'other'
 
     @staticmethod
-    def from_str(label: str) -> 'Sex':
-        """Get a sex from a string.
+    def from_str(label: str) -> 'Gender':
+        """Get a gender from a string.
 
-        This method can be used to convert a 'natural' string value to a sex.
+        This method can be used to convert a 'natural' string value to a gender.
 
         Parameters
         ----------
-        label : {'maschio', 'femmina', 'altro'}
+        label : {'maschio', 'm', 'femmina', 'm', 'altro', 'a'}
             The string to be converted.
 
         Returns
         -------
-        Sex
-            The sex value associated to `label`.
+        Gender
+            The gender value associated to `label`.
 
         Raises
         ------
@@ -63,13 +64,13 @@ class Sex(enum.Enum):
 
         label = label.lower()
         if label == 'maschio' or label == 'm':
-            return Sex.MALE
+            return Gender.MALE
         if label == 'femmina' or label == 'f':
-            return Sex.FEMALE
+            return Gender.FEMALE
         if label == 'altro' or label == 'a':
-            return Sex.OTHER
+            return Gender.OTHER
 
-        raise NotImplementedError('Invalid Sex string')
+        raise NotImplementedError('Invalid Gender string')
 
 
 class ScreenCoordinates(typing.NamedTuple):
@@ -82,6 +83,7 @@ class ScreenCoordinates(typing.NamedTuple):
     y : int
         The coordinate on the y axis.
     """
+
     x: int
     y: int
 
@@ -115,6 +117,7 @@ class Emotions:
     ----------
     .. [1] Affectiva, http://affectiva.com/
     """
+
     joy: float = None
     fear: float = None
     disgust: float = None

@@ -23,7 +23,7 @@ import time
 import json
 import typing
 import dataclasses
-from .common import Sex
+from .common import Gender
 
 
 @dataclasses.dataclass(frozen=True)
@@ -39,13 +39,16 @@ class User:
         The user's ID.
     age : int
         The user's age.
-    sex : Sex
-        The user's sex.
+    gender : Gender
+        The user's gender.
+    internet : int
+        The average time the user spend a day on the internet.
     """
 
     user_id: str
     age: int = None
-    sex: Sex = None
+    gender: Gender = None
+    internet: int = None
 
     def __eq__(self, obj):
         return isinstance(obj, User) and self.user_id == obj.user_id
@@ -91,7 +94,8 @@ class User:
                 User(
                     user_id=obj['_id']['$oid'],
                     age=obj['age'],
-                    sex=Sex.from_str(obj['sex'])
+                    gender=Gender.from_str(obj['gender']),
+                    internet=obj['internet']
                 )
             )
 

@@ -74,8 +74,9 @@ def main():
     logger.info('Loaded %d interaction objects', len(collection))
 
     data = CollectedData.to_dataframe(collection)
-    with open('data.html', 'w') as f:
-        data.to_html(f)
+    # with open('data.html', 'w') as f:
+    #     data.to_html(f)
+    data.to_excel('output.xlsx')
 
     plot_mouse_on_common_websites(collection)
 
