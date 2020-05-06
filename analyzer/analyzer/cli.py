@@ -59,7 +59,8 @@ def main():
     logger = logging.getLogger('analyzer')
     coloredlogs.install(
         level='DEBUG' if args.verbose else 'WARNING',
-        logger=logger
+        logger=logger,
+        fmt="[%(levelname)s] %(asctime)s (%(name)s) %(msg)s"
     )
 
     start_time = time.time()
