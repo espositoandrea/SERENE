@@ -27,6 +27,7 @@ import enum
 import dataclasses
 import typing
 import dotmap
+import re
 
 
 class Sex(enum.Enum):
@@ -61,11 +62,11 @@ class Sex(enum.Enum):
         """
 
         label = label.lower()
-        if label == 'maschio':
+        if label == 'maschio' or label == 'm':
             return Sex.MALE
-        if label == 'femmina':
+        if label == 'femmina' or label == 'f':
             return Sex.FEMALE
-        if label == 'altro':
+        if label == 'altro' or label == 'a':
             return Sex.OTHER
 
         raise NotImplementedError('Invalid Sex string')
@@ -83,6 +84,46 @@ class ScreenCoordinates(typing.NamedTuple):
     """
     x: int
     y: int
+
+
+@dataclasses.dataclass(frozen=True)
+class Emotions:
+    """Encapsulates all the information extracted by Affectiva [1]_.
+
+    Attributes
+    ----------
+    joy : float
+        The joy value. May be `None` if no value was registered.
+    fear : float
+        The fear value. May be `None` if no value was registered.
+    disgust : float
+        The disgust value. May be `None` if no value was registered.
+    sadness : float
+        The sadness value. May be `None` if no value was registered.
+    anger : float
+        The anger value. May be `None` if no value was registered.
+    surprise : float
+        The surprise value. May be `None` if no value was registered.
+    contempt : float
+        The contempt value. May be `None` if no value was registered.
+    valence : float
+        The valence value. May be `None` if no value was registered.
+    engagement : float
+        The engagement value. May be `None` if no value was registered.
+
+    References
+    ----------
+    .. [1] Affectiva, http://affectiva.com/
+    """
+    joy: float = None
+    fear: float = None
+    disgust: float = None
+    sadness: float = None
+    anger: float = None
+    surprise: float = None
+    contempt: float = None
+    valence: float = None
+    engagement: float = None
 
 
 @dataclasses.dataclass(frozen=True)
@@ -138,12 +179,41 @@ class MouseInformation:
         l
             Is the left button pressed?
         m
-            Is the left button pressed?
+            Is the middle button pressed?
         r
-            Is the left button pressed?
+            Is the right button pressed?
         bN
             Is the button `N` (:math:`N \\in \\mathbb{N}, N \\geq 4`) pressed?
     """
 
     position: ScreenCoordinates
     buttons: dotmap.DotMap
+
+    def buttons_list(self) -> typing.List[int]:
+        """Convert the mouse button objets to a list.
+
+        This function converts the data on the mouse buttons to a list of ID.
+        The ID are assigned as in the HTML's MouseEvent [1]_.
+
+        Returns
+        -------
+        list [int]
+            A list of mouse buttons' IDs.
+
+        References
+        ----------
+        .. [1] MDN: HTML's MouseEvent,
+           https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+           (visited on 6 May 2020)
+        """
+        final = list()
+        for btn in self.buttons:
+            if btn == 'l' and self.buttons[btn]:
+                final.append(0)
+            elif btn == 'm' and self.buttons[btn]:
+                final.append(1)
+            elif btn == 'r' and self.buttons[btn]:
+                final.append(2)
+            elif re.match(r'^b\d+?$', btn) and self.buttons[btn]:
+                final.append(int(btn[1:]) - 1)
+        return final

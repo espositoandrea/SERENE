@@ -73,6 +73,10 @@ def main():
         collection = CollectedData.from_json(users, file.read())
     logger.info('Loaded %d interaction objects', len(collection))
 
+    data = CollectedData.to_dataframe(collection)
+    with open('data.html', 'w') as f:
+        data.to_html(f)
+
     plot_mouse_on_common_websites(collection)
 
     logger.info('End of execution after %.3f seconds', time.time() - start_time)
