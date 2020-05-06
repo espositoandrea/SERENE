@@ -19,24 +19,35 @@
 /**
  * @typedef {Object} BasicQuestion
  * A basic question of the survey. This class contains all the required field of a question.
+ * 
  * @property {string} question - The question that will be asked to the user.
  * @property {string} name - The name of the GET/POST parameter.
  * @property {boolean} required - Wether or not the input is required.
  */
 
 /**
+ * @typedef {Object} ChoiceDescription
+ * A description of a Question choice.
+ * 
+ * @property {string} label - The label of the choice. This will be seen by the user.
+ * @property {any} value - The value of the choice. This will be sent to the server.
+ */
+
+/**
  * @typedef {BasicQuestion} Question 
  * A question of the survey. @extends BasicQuestion.
+ * 
  * @property {string} [type] - The type of question.
  * @property {Object} [rules] - Various additional rules. Can be any HTML attribute accepted by the current input type.
  * @property {string} [placeholder] - The input placeholder.
- * @property {{label: string, value: any}[]|number} [choices] - A list of choices. Used only if type is 'choice' or 'radios'. If it's a number n, it's used to generate n object {label: i, value: i}, con 1 <= i <= n.
+ * @property {ChoiceDescription[]|number} [choices] - A list of choices. Used only if type is 'choice' or 'radios'. If it's a number n, it's used to generate n ChoiceDescription objects having {label: i, value: i}, con 1 <= i <= n.
  * @property {string|BasicQuestion[]} question - If it's a string, the same as BasicQuestion.question. If an array of BasicQuestion, a list of questions used if type is 'likert'.
  */
 
 /**
  * @typedef {Object} Section
  * A section of the survey.
+ * 
  * @property {string} [title] - The section's title.
  * @property {Question[]} questions - The section's questions.
  */
@@ -44,6 +55,7 @@
 /**
  * @typedef {Object} Survey
  * The survey configuration object.
+ * 
  * @property {string} introduction - The introduction to the survey. Treated as raw HTML.
  * @property {Section[]} sections - The survey's sections.
  */
