@@ -19,7 +19,7 @@
 """
 
 import logging
-import time
+import csv
 import json
 import typing
 import dataclasses
@@ -29,6 +29,82 @@ import dotmap
 from .user import User
 from .common import KeyboardInformation, MouseInformation, \
     ScreenCoordinates, ScrollInformation, Emotions
+
+
+class CollectedDataSeries:
+    """A series of collected data.
+
+    This class represents a series of collected data and provides useful methods.
+
+    Attributes
+    ----------
+    series : pandas.Series
+        The data series
+    """
+
+    def __init__(self, data: typing.List['CollectedData']):
+        """Initialize a new series.
+
+        Parameters
+        ----------
+        data : list [CollectedData]
+            The data
+        """
+
+        self.series = sorted(data, key=lambda obj: obj.timestamp)
+
+    def __len__(self):
+        return len(self.series)
+
+    def split_by_seconds(self) -> typing.List[typing.List['CollectedData']]:
+        start_time = self.series[0].timestamp
+        # The timestamps are in milliseconds: to get it in seconds, the last
+        # three digits must be 0, so we divide and then multiply by 1000.
+        start_seconds = int(int(start_time / 1000) * 1000)
+        split_list = [list()]
+        for obj in self.series:
+            if obj.timestamp >= start_seconds + 1000:
+                start_seconds = int(int(obj.timestamp / 1000) * 1000)
+                split_list.append(list())
+            split_list[-1].append(obj)
+
+        return split_list
+
+    @property
+    def clicks_per_seconds(self):
+        # TODO: Change to be per-user
+        split_list = self.split_by_seconds()
+        final = dict()
+        for piece in split_list:
+            current_timestamp = int(int(piece[0].timestamp / 1000) * 1000)
+            final[current_timestamp] = {'left': 0, 'right': 0, 'middle': 0, 'others': 0}
+            for obj in piece:
+                final[current_timestamp]['left'] += int(obj.mouse.buttons.l)
+                final[current_timestamp]['middle'] += int(obj.mouse.buttons.m)
+                final[current_timestamp]['right'] += int(obj.mouse.buttons.r)
+                final[current_timestamp]['others'] += sum(i >= 3 for i in obj.mouse.buttons_list())
+            final[current_timestamp]['total'] = sum(final[current_timestamp].values())
+
+        return final
+
+    def to_csv(self, file_name):
+        """Convert a list of CollectedData to a DataFrame.
+
+        This function converts a list of CollectedData to a pandas DataFrame.
+
+        Returns
+        -------
+        pandas.DataFrame
+            The data converted into a DataFrame
+        """
+
+        with open(file_name, 'w') as file:
+            writer = csv.DictWriter(file, delimiter=',', quotechar='"',
+                                    quoting=csv.QUOTE_MINIMAL,
+                                    fieldnames=self.series[0].to_dict().keys())
+            writer.writeheader()
+            for obj in self.series:
+                writer.writerow(obj.to_dict())
 
 
 @dataclasses.dataclass(frozen=True)
@@ -75,6 +151,46 @@ class CollectedData:
     def __eq__(self, obj):
         return isinstance(obj, CollectedData) and self.data_id == obj.data_id
 
+    def to_dict(self):
+        return {
+            # Basic data
+            'id': self.data_id,
+            'timestamp': self.timestamp,
+            'url': self.url,
+            # User data
+            'user.gender': self.user.gender,
+            'user.age': self.user.age,
+            'user.internet': self.user.internet,
+            # Window data
+            'window.x': self.window.x,
+            'window.y': self.window.y,
+            # Mouse data
+            'mouse.position.x': self.mouse.position.x,
+            'mouse.position.y': self.mouse.position.y,
+            'mouse.buttons': self.mouse.buttons_list(),
+            # Scroll data
+            'scroll.absolute.x': self.scroll.absolute.x,
+            'scroll.absolute.y': self.scroll.absolute.y,
+            'scroll.relative.x': self.scroll.relative.x,
+            'scroll.relative.y': self.scroll.relative.y,
+            # Keyboard data
+            'keyboard.alpha': self.keyboard.alpha,
+            'keyboard.numeric': self.keyboard.numeric,
+            'keyboard.symbol': self.keyboard.symbol,
+            'keyboard.function': self.keyboard.function,
+            # Emotions data
+            'emotions.exist': self.emotions is not None,
+            'emotions.joy': getattr(self.emotions, 'joy', None),
+            'emotions.fear': getattr(self.emotions, 'fear', None),
+            'emotions.disgust': getattr(self.emotions, 'disgust', None),
+            'emotions.sadness': getattr(self.emotions, 'sadness', None),
+            'emotions.anger': getattr(self.emotions, 'anger', None),
+            'emotions.surprise': getattr(self.emotions, 'surprise', None),
+            'emotions.contempt': getattr(self.emotions, 'contempt', None),
+            'emotions.valence': getattr(self.emotions, 'valence', None),
+            'emotions.engagement': getattr(self.emotions, 'engagement', None),
+        }
+
     @staticmethod
     def from_json(users: typing.Set[User], data: str) \
             -> typing.List['CollectedData']:
@@ -97,18 +213,27 @@ class CollectedData:
         """
 
         logging.getLogger(__name__).debug(
-            'Loading the collected data from a JSON string: START...'
+            'Loading the collected data from a JSON string...'
         )
-        start_time = time.time()
-
         parsed = json.loads(data)
 
         collected_data_list = []
-        for obj in parsed:
+        for index, obj in enumerate(parsed, start=1):
+            logging.getLogger(__name__).debug(
+                'Loading object %d of %d',
+                index,
+                len(parsed)
+            )
             try:
                 current_user = [u for u in users if u.user_id == obj['ui']][0]
             except IndexError:
-                current_user = User(obj['ui'])
+                logging.getLogger(__name__).warning(
+                    "The user with id '%s' doesn't exist. A new empty user will be created.",
+                    obj['ui']
+                )
+                new_user = User(obj['ui'])
+                users.add(new_user)
+                current_user = new_user
 
             emotions = Emotions(
                 joy=obj.get('e').get('j', None),
@@ -146,128 +271,5 @@ class CollectedData:
                     )
                 )
             )
-        logging.getLogger(__name__).debug(
-            '... END: Loaded the collected data from a JSON string. '
-            'Took %.3f seconds',
-            time.time() - start_time
-        )
 
         return collected_data_list
-
-    @staticmethod
-    def to_dataframe(data: typing.List["CollectedData"]):
-        """Convert a list of CollectedData to a DataFrame.
-
-        This function converts a list of CollectedData to a pandas DataFrame.
-
-        Parameters
-        ----------
-        data : list [CollectedData]
-            The list of data to be converted.
-
-        Returns
-        -------
-
-        pandas.DataFrame
-            The data converted into a DataFrame
-        """
-        df_data = {
-            # Basic data
-            'id': list(),
-            'timestamp': list(),
-            'url': list(),
-            # User data
-            'user.gender' : list(),
-            'user.age': list(),
-            'user.internet':list(),
-            # Window data
-            'window.x': list(),
-            'window.y': list(),
-            # Mouse data
-            'mouse.position.x': list(),
-            'mouse.position.y': list(),
-            'mouse.buttons': list(),
-            # Scroll data
-            'scroll.absolute.x': list(),
-            'scroll.absolute.y': list(),
-            'scroll.relative.x': list(),
-            'scroll.relative.y': list(),
-            # Keyboard data
-            'keyboard.alpha': list(),
-            'keyboard.numeric': list(),
-            'keyboard.symbol': list(),
-            'keyboard.function': list(),
-            # Emotions data
-            'emotions.exist': list(),
-            'emotions.joy': list(),
-            'emotions.fear': list(),
-            'emotions.disgust': list(),
-            'emotions.sadness': list(),
-            'emotions.anger': list(),
-            'emotions.surprise': list(),
-            'emotions.contempt': list(),
-            'emotions.valence': list(),
-            'emotions.engagement': list(),
-        }
-
-        for obj in data[700:2000]:
-            # Add basic data
-            df_data['id'].append(obj.data_id)
-            df_data['timestamp'].append(obj.timestamp)
-            df_data['url'].append(obj.url)
-
-            # Add user data
-            df_data['user.gender'].append(obj.user.gender)
-            df_data['user.age'].append(obj.user.age)
-            df_data['user.internet'].append(obj.user.internet)
-
-            # Add window data
-            df_data['window.x'].append(obj.window.x)
-            df_data['window.y'].append(obj.window.y)
-
-            # Add mouse data
-            df_data['mouse.position.x'].append(obj.mouse.position.x)
-            df_data['mouse.position.y'].append(obj.mouse.position.x)
-            df_data['mouse.buttons'].append(
-                ','.join(str(b) for b in obj.mouse.buttons_list())
-            )
-
-            # Add scroll data
-            df_data['scroll.absolute.x'].append(obj.scroll.absolute.x)
-            df_data['scroll.absolute.y'].append(obj.scroll.absolute.y)
-            df_data['scroll.relative.x'].append(obj.scroll.relative.x)
-            df_data['scroll.relative.y'].append(obj.scroll.relative.y)
-
-            # Add keyboard data
-            df_data['keyboard.alpha'].append(obj.keyboard.alpha)
-            df_data['keyboard.numeric'].append(obj.keyboard.numeric)
-            df_data['keyboard.symbol'].append(obj.keyboard.symbol)
-            df_data['keyboard.function'].append(obj.keyboard.function)
-
-            # Add emotions data
-            if obj.emotions is not None:
-                df_data['emotions.exist'].append(True)
-                df_data['emotions.joy'].append(obj.emotions.joy)
-                df_data['emotions.fear'].append(obj.emotions.fear)
-                df_data['emotions.disgust'].append(obj.emotions.disgust)
-                df_data['emotions.sadness'].append(obj.emotions.sadness)
-                df_data['emotions.anger'].append(obj.emotions.anger)
-                df_data['emotions.surprise'].append(obj.emotions.surprise)
-                df_data['emotions.contempt'].append(obj.emotions.contempt)
-                df_data['emotions.valence'].append(obj.emotions.valence)
-                df_data['emotions.engagement'].append(obj.emotions.engagement)
-            else:
-                df_data['emotions.exist'].append(False)
-                df_data['emotions.joy'].append(None)
-                df_data['emotions.fear'].append(None)
-                df_data['emotions.disgust'].append(None)
-                df_data['emotions.sadness'].append(None)
-                df_data['emotions.anger'].append(None)
-                df_data['emotions.surprise'].append(None)
-                df_data['emotions.contempt'].append(None)
-                df_data['emotions.valence'].append(None)
-                df_data['emotions.engagement'].append(None)
-
-        data_frame = pd.DataFrame(df_data)
-        data_frame.fillna(value=np.nan, inplace=True)
-        return data_frame

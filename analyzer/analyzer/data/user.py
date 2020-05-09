@@ -82,7 +82,7 @@ class User:
         """
 
         logging.getLogger(__name__).debug(
-            'Loading the users from a JSON string: START...'
+            'Loading the users from a JSON string...'
         )
         start_time = time.time()
 
@@ -98,11 +98,5 @@ class User:
                     internet=obj['internet']
                 )
             )
-
-        logging.getLogger(__name__).debug(
-            '... END: Loaded the users from a JSON string. '
-            'Took %.3f seconds',
-            time.time() - start_time
-        )
 
         return users_list

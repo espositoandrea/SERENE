@@ -1,0 +1,26 @@
+[
+  {
+    "_id": {
+      "$oid": "5ea18ca785dffb5712068595"
+    },
+    "age": "37",
+    "gender": "m",
+    "internet": "4"
+  },
+  {
+    "_id": {
+      "$oid": "5ea1b63385dffb57120720c3"
+    },
+    "age": "36",
+    "gender": "m",
+    "internet": "4"
+  },
+  {
+    "_id": {
+      "$oid": "5ea1cd4185dffb571207576a"
+    },
+    "age": "20",
+    "gender": "m",
+    "internet": "5"
+  }
+]

@@ -23,11 +23,43 @@ tool and its entry point.
 
 import argparse
 import logging
+import typing
 import time
 import coloredlogs
 from . import __version__, __author__, __prog__, __disclaimer__
-from .data import CollectedData, User
+from .data import CollectedData, User, CollectedDataSeries
 from .plotting import plot_mouse_on_common_websites
+
+
+def phase(msg: str, *args, **kwargs):
+    def decorator(f):
+        def wrapper(*fargs, **fkargs):
+            start_time = time.time()
+            result = f(*fargs, **fkargs)
+            logging.getLogger(kwargs.get('module', 'analyzer')).info(
+                msg.format(len=len(result)) + ' after %.3f seconds',
+                *args,
+                time.time() - start_time
+            )
+            return result
+
+        return wrapper
+
+    return decorator
+
+
+@phase('Loaded {len} users')
+def load_users(file_name: str):
+    with open(file_name, 'r') as file:
+        users = set(User.from_json(file.read()))
+    return users
+
+
+@phase('Loaded {len} interaction objects')
+def load_data(file_name: str, users: typing.Set['User']):
+    with open(file_name, 'r') as file:
+        collection = CollectedDataSeries(CollectedData.from_json(users, file.read()))
+    return collection
 
 
 def main():
@@ -38,7 +70,10 @@ def main():
         prog=__prog__,
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
-    parser.add_argument('file', help='The file')
+    parser.add_argument(
+        'interactions',
+        help='A JSON file containing the interactions'
+    )
     parser.add_argument(
         'users',
         help='A JSON file containing the users'
@@ -58,27 +93,24 @@ def main():
 
     logger = logging.getLogger('analyzer')
     coloredlogs.install(
-        level='DEBUG' if args.verbose else 'WARNING',
+        level='DEBUG' if args.verbose else 'INFO',
         logger=logger,
-        fmt="[%(levelname)s] %(asctime)s (%(name)s) %(msg)s"
+        fmt="[%(levelname)s] %(asctime)s (%(name)s) %(message)s"
     )
 
     start_time = time.time()
     logger.info('Start of execution')
 
-    with open(args.users, 'r') as file:
-        users = set(User.from_json(file.read()))
-    logger.info('Loaded %d users', len(users))
+    users = load_users(args.users)
+    collection = load_data(args.interactions, users)
 
-    with open(args.file, 'r') as file:
-        collection = CollectedData.from_json(users, file.read())
-    logger.info('Loaded %d interaction objects', len(collection))
+    collection.to_csv('output.csv')
 
-    data = CollectedData.to_dataframe(collection)
+    # data = collection.to_dataframe()
     # with open('data.html', 'w') as f:
     #     data.to_html(f)
-    data.to_excel('output.xlsx')
+    # data.to_excel('output.xlsx')
 
-    plot_mouse_on_common_websites(collection)
+    # plot_mouse_on_common_websites(collection)
 
     logger.info('End of execution after %.3f seconds', time.time() - start_time)

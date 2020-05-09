@@ -36,7 +36,7 @@ Examples
 
 import logging
 from .user import User
-from .collected_data import CollectedData
+from .collected_data import CollectedData, CollectedDataSeries
 from .common import *
 
 
