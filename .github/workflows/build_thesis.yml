@@ -1,0 +1,23 @@
+name: Build Thesis
+
+on:
+  push:
+    branches:
+      - thesis
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Build Thesis
+        uses: xu-cheng/latex-action@master
+        with:
+          working_directory: thesis/src/
+          root_file: Thesis.tex
+          args: -pdf -file-line-error -interaction=nonstopmode -shell-escape
+      - name: Upload Thesis as build artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: thesis
+          path: thesis/src/Thesis.pdf
