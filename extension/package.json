@@ -1,14 +1,14 @@
 {
   "name": "browserextension",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dist": "npm run build && bestzip dist/extension.zip dist/**",
+    "dist": "yarn build && bestzip dist/extension.zip dist/**",
     "build": "cross-env NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rimraf dist && cpy manifest.json dist && cpy src/assets/* dist/assets",
-    "prebuild": "npm run clean",
-    "prewatch": "npm run clean",
+    "prebuild": "yarn clean",
+    "prewatch": "yarn clean",
     "watch": "cross-env NODE_ENV=development webpack --config webpack.config.js -w",
     "test": "eslint src/**/*.ts"
   },

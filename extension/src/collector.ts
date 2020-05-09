@@ -269,6 +269,8 @@ export default function configureCollector(userId: string, options?: CollectionO
             data.push(collect(userId, (request as Message<"data-collected">).data, options));
         } else if (request.event === "webcampermission") {
             WebcamFacade.enableWebcam();
+        } else if (request.event === "stopwebcampermission") {
+            WebcamFacade.stopWebcam();
         }
     });
 }
