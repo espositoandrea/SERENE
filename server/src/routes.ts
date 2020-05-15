@@ -81,7 +81,7 @@ export default function router(db: Db): Router {
             .toArray()
             .then(arr => response.json(arr));
     });
-    apiRouter.get("/interactions/:skip?-:limit?", function (request, response) {
+    apiRouter.get("/interactions/:skip-:limit", function (request, response) {
         db.collection("interactions")
             .find()
             .skip(parseInt(request.params.skip) || 0)
@@ -91,8 +91,7 @@ export default function router(db: Db): Router {
     });
     apiRouter.get("/user/:id", function (request, response) {
         db.collection("users")
-            .find(new ObjectID(request.params.id))
-            .toArray()
+            .findOne(new ObjectID(request.params.id))
             .then(arr => response.json(arr));
     });
     apiRouter.get("/user/:id/interactions", function (request, response) {
@@ -113,8 +112,7 @@ export default function router(db: Db): Router {
     });
     apiRouter.get("/interaction/:id", function (request, response) {
         db.collection("interactions")
-            .find(new ObjectID(request.params.id))
-            .toArray()
+            .findOne(new ObjectID(request.params.id))
             .then(arr => response.json(arr));
     });
 
