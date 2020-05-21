@@ -750,3 +750,50 @@ APIs
    :param limit: The number of interactions to return
    :param id: The id of the user
    :statuscode 200: No error
+
+Websites
+--------
+
+Index
+*****
+
+* :http:get:`/api/websites`
+
+APIs
+****
+
+.. http:get:: /api/websites
+
+   Get all the visited websites and the number of visits received.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      GET /api/websites HTTP/1.1
+      HOST: giuseppe-desolda.ddns.net:8080
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json; charset=utf-8
+
+      [
+         {
+            "count": 876,
+            "url": "https://zoom.us/",
+            "category": "UNKNOWN"
+         },
+         {
+            "count": 1502,
+            "url": "https://wwwapd.ict.uniba.it/",
+            "category": "Università/Università di Bari"
+         },
+         {
+            "count": 796,
+            "url": "https://www.zamzar.com/",
+            "category": "Data Formats/Conversion"
+         }
+      ]

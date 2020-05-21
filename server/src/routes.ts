@@ -19,7 +19,8 @@
 import { Router } from "express";
 import DataProcessor from "./data-processor";
 import * as path from "path";
-import { Db, ObjectID } from "mongodb";
+import { Db } from "mongodb";
+import apiRouter from "./api-routes";
 
 export default function router(db: Db): Router {
     const router = Router();
@@ -60,63 +61,7 @@ export default function router(db: Db): Router {
         });
     });
 
-    const apiRouter = Router();
-    apiRouter.get("/users", function (request, response) {
-        db.collection("users")
-            .find()
-            .toArray()
-            .then(arr => response.json(arr));
-    });
-    apiRouter.get("/users/:skip-:limit", function (request, response) {
-        db.collection("users")
-            .find()
-            .skip(parseInt(request.params.skip) || 0)
-            .limit(parseInt(request.params.limit) || 0)
-            .toArray()
-            .then(arr => response.json(arr));
-    });
-    apiRouter.get("/interactions", function (request, response) {
-        db.collection("interactions")
-            .find()
-            .toArray()
-            .then(arr => response.json(arr));
-    });
-    apiRouter.get("/interactions/:skip-:limit", function (request, response) {
-        db.collection("interactions")
-            .find()
-            .skip(parseInt(request.params.skip) || 0)
-            .limit(parseInt(request.params.limit) || 0)
-            .toArray()
-            .then(arr => response.json(arr));
-    });
-    apiRouter.get("/user/:id", function (request, response) {
-        db.collection("users")
-            .findOne(new ObjectID(request.params.id))
-            .then(arr => response.json(arr));
-    });
-    apiRouter.get("/user/:id/interactions", function (request, response) {
-        db.collection("interactions")
-            .find({ ui: request.params.id })
-            .skip(parseInt(request.params.skip) || 0)
-            .limit(parseInt(request.params.limit) || 0)
-            .toArray()
-            .then(arr => response.json(arr));
-    });
-    apiRouter.get("/user/:id/interactions/:skip-:limit", function (request, response) {
-        db.collection("interactions")
-            .find({ ui: request.params.id })
-            .skip(parseInt(request.params.skip) || 0)
-            .limit(parseInt(request.params.limit) || 0)
-            .toArray()
-            .then(arr => response.json(arr));
-    });
-    apiRouter.get("/interaction/:id", function (request, response) {
-        db.collection("interactions")
-            .findOne(new ObjectID(request.params.id))
-            .then(arr => response.json(arr));
-    });
-
-    router.use("/api", apiRouter);
+    router.use("/api", apiRouter(db));
 
     return router;
 }
