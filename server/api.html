@@ -110,6 +110,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#id2">APIs</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#websites">Websites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">APIs</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="data-processor.html">The Data Processor</a></li>
@@ -980,6 +985,52 @@ id <cite>id</cite>.</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="websites">
+<h2>Websites<a class="headerlink" href="#websites" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Index<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="#get--api-websites" title="GET /api/websites"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/websites</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>APIs<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<dl class="get">
+<dt id="get--api-websites">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/websites</code><a class="headerlink" href="#get--api-websites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the visited websites and the number of visits received.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/websites</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">876</span><span class="p">,</span>
+      <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://zoom.us/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;UNKNOWN&quot;</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1502</span><span class="p">,</span>
+      <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://wwwapd.ict.uniba.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Università/Università di Bari&quot;</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">796</span><span class="p">,</span>
+      <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.zamzar.com/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Data Formats/Conversion&quot;</span>
+   <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </div>
