@@ -63,8 +63,6 @@ export default function router(db: Db): Router {
     apiRouter.get("/user/:id/interactions", function (request, response) {
         db.collection("interactions")
             .find({ ui: request.params.id })
-            .skip(parseInt(request.params.skip) || 0)
-            .limit(parseInt(request.params.limit) || 0)
             .toArray()
             .then(arr => response.json(arr));
     });
