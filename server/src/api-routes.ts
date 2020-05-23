@@ -19,6 +19,8 @@
 import { Router } from "express";
 import { Db, ObjectID } from "mongodb";
 
+const limit = 1;
+
 export default function router(db: Db): Router {
     const apiRouter = Router();
 
@@ -45,9 +47,79 @@ export default function router(db: Db): Router {
             .then(arr => response.json(arr));
     });
 
+    apiRouter.get("/interactions/count", function (request, response) {
+        db.collection("interactions")
+            .countDocuments()
+            .then(arr => response.json(arr));
+    });
+
     apiRouter.get("/interactions/:skip-:limit", function (request, response) {
         db.collection("interactions")
             .find()
+            .skip(parseInt(request.params.skip) || 0)
+            .limit(parseInt(request.params.limit) || 0)
+            .toArray()
+            .then(arr => response.json(arr));
+    });
+
+    apiRouter.get("/interactions/filtered", function (request, response) {
+        db.collection("interactions")
+            .find({
+                $or: [
+                    { e: { $exists: false } },
+                    { "e.e": { $gte: limit } },
+                    { "e.j": { $gte: limit } },
+                    { "e.f": { $gte: limit } },
+                    { "e.d": { $gte: limit } },
+                    { "e.s": { $gte: limit } },
+                    { "e.a": { $gte: limit } },
+                    { "e.su": { $gte: limit } },
+                    { "e.c": { $gte: limit } },
+                    { "e.v": { $gte: limit } },
+                    { "e.e": { $gte: limit } },
+                ]
+            })
+            .toArray()
+            .then(arr => response.json(arr));
+    });
+
+    apiRouter.get("/interactions/filtered/count", function (request, response) {
+        db.collection("interactions")
+            .countDocuments({
+                $or: [
+                    { e: { $exists: false } },
+                    { "e.e": { $gte: limit } },
+                    { "e.j": { $gte: limit } },
+                    { "e.f": { $gte: limit } },
+                    { "e.d": { $gte: limit } },
+                    { "e.s": { $gte: limit } },
+                    { "e.a": { $gte: limit } },
+                    { "e.su": { $gte: limit } },
+                    { "e.c": { $gte: limit } },
+                    { "e.v": { $gte: limit } },
+                    { "e.e": { $gte: limit } },
+                ]
+            })
+            .then(arr => response.json(arr));
+    });
+
+    apiRouter.get("/interactions/filtered/:skip-:limit", function (request, response) {
+        db.collection("interactions")
+            .find({
+                $or: [
+                    { e: { $exists: false } },
+                    { "e.e": { $gte: limit } },
+                    { "e.j": { $gte: limit } },
+                    { "e.f": { $gte: limit } },
+                    { "e.d": { $gte: limit } },
+                    { "e.s": { $gte: limit } },
+                    { "e.a": { $gte: limit } },
+                    { "e.su": { $gte: limit } },
+                    { "e.c": { $gte: limit } },
+                    { "e.v": { $gte: limit } },
+                    { "e.e": { $gte: limit } },
+                ]
+            })
             .skip(parseInt(request.params.skip) || 0)
             .limit(parseInt(request.params.limit) || 0)
             .toArray()
@@ -67,9 +139,84 @@ export default function router(db: Db): Router {
             .then(arr => response.json(arr));
     });
 
+    apiRouter.get("/user/:id/interactions/count", function (request, response) {
+        db.collection("interactions")
+            .countDocuments({
+                ui: request.params.id
+            })
+            .then(arr => response.json(arr));
+    });
+
     apiRouter.get("/user/:id/interactions/:skip-:limit", function (request, response) {
         db.collection("interactions")
             .find({ ui: request.params.id })
+            .skip(parseInt(request.params.skip) || 0)
+            .limit(parseInt(request.params.limit) || 0)
+            .toArray()
+            .then(arr => response.json(arr));
+    });
+
+    apiRouter.get("/user/:id/interactions/filtered", function (request, response) {
+        db.collection("interactions")
+            .find({
+                ui: request.params.id,
+                $or: [
+                    { e: { $exists: false } },
+                    { "e.e": { $gte: limit } },
+                    { "e.j": { $gte: limit } },
+                    { "e.f": { $gte: limit } },
+                    { "e.d": { $gte: limit } },
+                    { "e.s": { $gte: limit } },
+                    { "e.a": { $gte: limit } },
+                    { "e.su": { $gte: limit } },
+                    { "e.c": { $gte: limit } },
+                    { "e.v": { $gte: limit } },
+                    { "e.e": { $gte: limit } },
+                ]
+            })
+            .toArray()
+            .then(arr => response.json(arr));
+    });
+
+    apiRouter.get("/user/:id/interactions/filtered/count", function (request, response) {
+        db.collection("interactions")
+            .countDocuments({
+                ui: request.params.id,
+                $or: [
+                    { e: { $exists: false } },
+                    { "e.e": { $gte: limit } },
+                    { "e.j": { $gte: limit } },
+                    { "e.f": { $gte: limit } },
+                    { "e.d": { $gte: limit } },
+                    { "e.s": { $gte: limit } },
+                    { "e.a": { $gte: limit } },
+                    { "e.su": { $gte: limit } },
+                    { "e.c": { $gte: limit } },
+                    { "e.v": { $gte: limit } },
+                    { "e.e": { $gte: limit } },
+                ]
+            })
+            .then(arr => response.json(arr));
+    });
+
+    apiRouter.get("/user/:id/interactions/filtered/:skip-:limit", function (request, response) {
+        db.collection("interactions")
+            .find({
+                ui: request.params.id,
+                $or: [
+                    { e: { $exists: false } },
+                    { "e.e": { $gte: limit } },
+                    { "e.j": { $gte: limit } },
+                    { "e.f": { $gte: limit } },
+                    { "e.d": { $gte: limit } },
+                    { "e.s": { $gte: limit } },
+                    { "e.a": { $gte: limit } },
+                    { "e.su": { $gte: limit } },
+                    { "e.c": { $gte: limit } },
+                    { "e.v": { $gte: limit } },
+                    { "e.e": { $gte: limit } },
+                ]
+            })
             .skip(parseInt(request.params.skip) || 0)
             .limit(parseInt(request.params.limit) || 0)
             .toArray()
