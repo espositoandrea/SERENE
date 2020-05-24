@@ -48,7 +48,11 @@ export default function router(db: Db): Router {
     });
 
     router.post("/survey/store", (request, response) => {
-        const userData = request.body;
+        const userData = {
+            age: parseInt(request.body.age),
+            gender: request.body.gender,
+            internet: parseInt(request.body.internet)
+        };
 
         db.collection("users").insertOne(userData, (err, result) => {
             if (err) {
