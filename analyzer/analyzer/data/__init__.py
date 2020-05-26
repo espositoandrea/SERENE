@@ -1,43 +1,20 @@
-# This file is part of 'analyzer', the tool used to process the information
-# collected for Andrea Esposito's Thesis.
-# Copyright (C) 2020  Andrea Esposito
+#  This file is part of 'analyzer', the tool used to process the information
+#  collected for Andrea Esposito's Thesis.
+#  Copyright (C) 2020  Andrea Esposito
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+#  This program is free software: you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation, either version 3 of the License, or
+#  (at your option) any later version.
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
 #
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#  You should have received a copy of the GNU General Public License
+#  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-"""A module to deal with the data stored on the server.
-
-This module is a collection of classes, functions, etc to deal with the
-collected data that's stored on the server.
-
-Examples
---------
-
-.. code-block:: python
-   :caption: How to create an object from a JSON.
-
-   from data_processor.data import CollectedData, User
-   user_string = "[YOUR_USER_LIST]"
-   user_set = set(User.from_json(user_string))
-   json_string = "[YOUR_OBJECT]"
-   CollectedData.from_json(user_set, json_string)
-   # [CollectedData(...), ...]
-"""
-
-import logging
-from .user import User
-from .collected_data import CollectedData, CollectedDataSeries
-from .common import *
-
-
-logging.getLogger(__name__).addHandler(logging.NullHandler())
+from .user import User, load_users
+from .website import Website, load_websites
+from .interaction import Interaction, load_interactions
