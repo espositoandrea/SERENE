@@ -35,7 +35,7 @@ jobs:
           cd docs
           npm i -g jsdoc typedoc typescript
           pip install -r requirements.txt
-          pip install -r ../analyzer/requirements.txt
+          cd ../analyzer/ && make init
       - name: Setup Directory
         run: |
           cd docs && mkdir doxygen

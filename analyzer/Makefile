@@ -1,6 +1,6 @@
 init:
-    python3 -m pip install pipenv
-	pipenv install
+	python3 -m pip install pipenv
+	pipenv install --dev
 
 lint:
 	pipenv run pylint --rcfile=.pylintrc analyzer -f colorized --exit-zero
