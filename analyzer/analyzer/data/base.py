@@ -41,7 +41,7 @@ class KeyboardData:
 
 @dataclasses.dataclass
 class Speed2D:
-    speed: float
+    total: float
     x: float
     y: float
 
@@ -59,3 +59,4 @@ class MouseData:
     position: ScreenCoordinates
     clicks: Clicks
     speed: Speed2D = None
+    acceleration: Speed2D = None

@@ -57,12 +57,24 @@ def speed(pos0: ScreenCoordinates, pos1: ScreenCoordinates, time: int) -> Speed2
     y_speed = y_dist / time
     tot_speed = math.sqrt((x_speed ** 2) + (y_speed ** 2))
 
-    return Speed2D(speed=tot_speed, x=x_speed, y=y_speed)
+    return Speed2D(total=tot_speed, x=x_speed, y=y_speed)
+
+
+def acceleration(v0: Speed2D, v1: Speed2D, time: int) -> Speed2D:
+    v_x = v1.x - v0.x
+    v_y = v1.y - v0.y
+
+    x_acc = v_x / time
+    y_acc = v_y / time
+    tot_acc = math.sqrt((x_acc ** 2) + (y_acc ** 2))
+
+    return Speed2D(total=tot_acc, x=x_acc, y=y_acc)
 
 
 # The speed is in pixels per millisecond
 def interactions_set_speed(interactions: List[Interaction]):
     interactions[0].mouse.speed = Speed2D(0, 0, 0)
+    interactions[0].mouse.acceleration = Speed2D(0, 0, 0)
     helper = interactions[0].url
 
     for i, obj in enumerate(interactions):
@@ -76,6 +88,7 @@ def interactions_set_speed(interactions: List[Interaction]):
             # the previous object's speed
             if obj.timestamp == prev.timestamp:
                 obj.mouse.speed = copy(prev.mouse.speed)
+                obj.mouse.acceleration = copy(prev.mouse.acceleration)
                 continue
 
             obj.mouse.speed = speed(
@@ -83,8 +96,14 @@ def interactions_set_speed(interactions: List[Interaction]):
                 obj.mouse.position,
                 obj.timestamp - prev.timestamp
             )
+            obj.mouse.acceleration = acceleration(
+                prev.mouse.speed,
+                obj.mouse.speed,
+                obj.timestamp - prev.timestamp
+            )
         else:
             obj.mouse.speed = Speed2D(0, 0, 0)
+            obj.mouse.acceleration = Speed2D(0, 0, 0)
             helper = obj.url
 
 
@@ -94,7 +113,7 @@ def average_speed(interactions: List[Interaction]) -> Tuple[BasicStats, BasicSta
     y_speed = []
 
     for obj in interactions:
-        tot_speed.append(obj.mouse.speed.speed)
+        tot_speed.append(obj.mouse.speed.total)
         x_speed.append(obj.mouse.speed.x)
         y_speed.append(obj.mouse.speed.y)
 

@@ -59,9 +59,12 @@ class Interaction:
             "mouse.clicks.right": self.mouse.clicks.right,
             "mouse.clicks.middle": self.mouse.clicks.middle,
             "mouse.clicks.others": self.mouse.clicks.others,
-            "mouse.speed": self.mouse.speed.speed,
+            "mouse.speed": self.mouse.speed.total,
             "mouse.speed.x": self.mouse.speed.x,
             "mouse.speed.y": self.mouse.speed.y,
+            "mouse.acceleration": self.mouse.acceleration.total,
+            "mouse.acceleration.x": self.mouse.acceleration.x,
+            "mouse.acceleration.y": self.mouse.acceleration.y,
             # Scroll
             "scroll.absolute.x": self.scroll.absolute.x,
             "scroll.absolute.y": self.scroll.absolute.y,
