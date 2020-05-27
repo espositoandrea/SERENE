@@ -86,27 +86,42 @@ def plot_user_basic_info(users: Dict[str, User]) -> plt.Figure:
 
 
 def plot_websites_categories(websites: Dict[str, Website]) -> plt.Figure:
-    categories = {'OTHERS': 0}
+    categories = dict()
     for w in websites.values():
         cat = w.category.split('/')[0]
         if cat not in categories:
             categories[cat] = 0
         categories[cat] += w.count
 
-    for cat in list(categories):
-        if cat == 'OTHERS':
-            continue
-        if categories[cat] / sum(categories.values()) < 0.01:
-            categories['OTHERS'] += categories[cat]
-            del categories[cat]
-    # print(sizes)
-    fig1, ax_category = plt.subplots(nrows=1, ncols=1, figsize=(10, 5))
+    fig1, (ax_category, ax_category_small) = plt.subplots(nrows=1, ncols=2, figsize=(15, 5))
 
-    # Ages
-    ax_category.pie(categories.values(), labels=categories.keys(), autopct='%1.1f%%')
+    # With Unknown
+    filtered = {'OTHERS': 0}
+    for cat in categories:
+        if categories[cat] / sum(categories.values()) < 0.01:
+            filtered['OTHERS'] += categories[cat]
+        else:
+            filtered[cat] = categories[cat]
+    ax_category.pie(filtered.values(), labels=filtered.keys(), autopct='%1.1f%%')
     ax_category.title.set_text("Websites categories")
     ax_category.axis('equal')
-    ax_category.legend(categories.keys())
+    ax_category.legend(filtered.keys())
+
+    # Others
+    for key in filtered:
+        if key == 'OTHERS':
+            continue
+        del categories[key]
+    filtered = {'OTHERS': 0}
+    for cat in categories:
+        if categories[cat] / sum(categories.values()) < 0.02:
+            filtered['OTHERS'] += categories[cat]
+        else:
+            filtered[cat] = categories[cat]
+    ax_category_small.pie(filtered.values(), labels=filtered.keys(), autopct='%1.1f%%')
+    ax_category_small.title.set_text("Websites categories in 'others'")
+    ax_category_small.axis('equal')
+    # ax_category_small.legend(filtered.keys())
 
     fig1.tight_layout()
     return fig1
