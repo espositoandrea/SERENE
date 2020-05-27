@@ -15,16 +15,12 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import matplotlib.pyplot as plt
 import argparse
 import datetime
 import logging
 import math
 import os
-import io
 import time
-import base64
-import urllib.parse
 
 import coloredlogs
 import pymongo
@@ -34,6 +30,7 @@ from analyzer.features import average_speed, clicks_statistics, keyboard_statist
     interactions_set_speed, interactions_set_website_categories, scrolls_per_milliseconds, \
     mouse_movements_per_milliseconds, average_idle_time, average_events_time
 from . import __prog__, __disclaimer__
+from . import plotting
 from .data import *
 from .interval import interactions_split_intervals, interactions_from_range, flatten_range
 from .report import Report
@@ -97,34 +94,8 @@ def main():
         users = dict(list(users.items())[0:2])
 
     Report.table([u.to_dict() for u in users.values()], caption='Loaded users', id_col='_id')
-    age_map = {
-        0: '<= 18',
-        1: '[18, 29]',
-        2: '[30, 39]',
-        3: '[40, 49]',
-        4: '[50, 59]',
-        5: '>= 60'
-    }
-    ages = [u.age for u in users.values()]
-    sizes = [ages.count(i) for i in age_map]
-    age_map = [v for k, v in age_map.items() if sizes[k] > 0]
-    sizes = [u for u in sizes if u > 0]
-    # print(sizes)
-    fig1, ax = plt.subplots(nrows=1, ncols=3)
-    ax[0].pie(sizes, labels=age_map, autopct='%1.1f%%')
-    ax[0].title.set_text("Age")
-    ax[0].axis('equal')
-    ax[1].pie([[u.gender for u in users.values()].count('m'), [u.gender for u in users.values()].count('f')], labels=['m', 'f'], autopct='%1.1f%%')
-    ax[1].title.set_text("Gender")
-    ax[1].axis('equal')
-    internet = [u.internet for u in users.values()]
-    ax[2].grid(True, axis='y', linestyle='dashed', linewidth=.5)
-    ax[2].bar(range(0,25), [internet.count(i) for i in range(0, 25)])
-    ax[2].set_xticks(range(0,25))
-    f = io.StringIO()
-    fig1.tight_layout()
-    fig1.savefig(f, format='svg')
-    Report.image('data:image/svg+xml;utf8,' + urllib.parse.quote(f.getvalue().replace('\n', '').replace('\r', '')), caption="Users details")
+
+    Report.figure(plotting.plot_to_data_uri(plotting.plot_user_basic_info(users)), caption="Users details")
 
     Report.section("Load the Websites")
     start_time = time.time()
@@ -132,6 +103,7 @@ def main():
     Report.text(
         f"Loaded {len(websites)} websites from {source_description} in {round(time.time() - start_time, 3)} seconds.")
     Report.table([w.to_dict() for w in list(websites.values())[0:5]], caption="The first loaded websites", id_col='url')
+    Report.figure(plotting.plot_to_data_uri(plotting.plot_websites_categories(websites)), caption="Website categories")
 
     start_time = time.time()
     Report.section("Process the Data")

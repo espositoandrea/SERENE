@@ -35,7 +35,7 @@ class Report:
         return Report.__heading(title, 6)
 
     @staticmethod
-    def image(source: str, caption: str = None):
+    def figure(source: str, caption: str = None):
         figure = ET.SubElement(Report.__current_report, 'figure', {'class': 'figure text-center w-100'})
         if caption:
             figcaption = ET.SubElement(figure, 'figcaption', {'class': 'figure-caption'})
