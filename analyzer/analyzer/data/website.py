@@ -18,18 +18,27 @@
 import dataclasses
 import logging
 import urllib.parse
+from typing import Optional, Dict, Union
 
+import pymongo.database as db
 import requests
 
 
 @dataclasses.dataclass
 class Website:
-    url: urllib.parse.ParseResult
+    url: Optional[urllib.parse.ParseResult]
     count: int = 0
     category: str = 'UNKNOWN'
 
+    def to_dict(self) -> Dict[str, Union[int, str]]:
+        return {
+            'url': self.url.geturl() if self.url else None,
+            'count': int(self.count),
+            'category': self.category
+        }
 
-def load_websites(mongodb=None):
+
+def load_websites(mongodb: db.Database = None):
     logger = logging.getLogger(__name__)
 
     if mongodb:
@@ -46,6 +55,6 @@ def load_websites(mongodb=None):
     websites = {}
     for website in db_content:
         websites[website['url'].geturl()] = Website(**website)
-    
+
     logger.info("Done. Loaded %d websites", len(websites))
     return websites

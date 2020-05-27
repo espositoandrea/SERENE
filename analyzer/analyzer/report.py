@@ -1,5 +1,6 @@
 import datetime
 import xml.etree.ElementTree as ET
+from typing import Dict, Any, List
 
 import requests
 
@@ -22,9 +23,54 @@ class Report:
         return Report.__heading(title, 3)
 
     @staticmethod
-    def paragraph(text: str):
+    def subsubsection(title: str):
+        return Report.__heading(title, 4)
+
+    @staticmethod
+    def paragraph(title: str):
+        return Report.__heading(title, 5)
+
+    @staticmethod
+    def subparagraph(title: str):
+        return Report.__heading(title, 6)
+
+    @staticmethod
+    def image(source: str, caption: str = None):
+        figure = ET.SubElement(Report.__current_report, 'figure', {'class': 'figure text-center w-100'})
+        if caption:
+            figcaption = ET.SubElement(figure, 'figcaption', {'class': 'figure-caption'})
+            figcaption.text = caption
+        img = ET.SubElement(figure, 'img', {'src': source, 'class': 'figure-img img-fluid', 'alt': caption})
+        return figure
+
+    @staticmethod
+    def table(data: List[Dict[str, Any]], caption: str = None, id_col: str = None):
+        div = ET.SubElement(Report.__current_report, 'div', {'class': 'table-responsive'})
+        table = ET.SubElement(div, 'table', {'class': 'table table-striped'})
+
+        if caption:
+            caption_element = ET.SubElement(table, 'caption')
+            caption_element.text = caption
+
+        thead = ET.SubElement(table, 'thead')
+        tr = ET.SubElement(thead, 'tr')
+        for key in data[0]:
+            th = ET.SubElement(tr, 'th', {'scope': 'col'})
+            th.text = key
+        tbody = ET.SubElement(table, 'tbody')
+        for obj in data:
+            tr = ET.SubElement(tbody, 'tr')
+            for key in obj:
+                td = ET.SubElement(tr, 'td') if key != id_col else ET.SubElement(tr, 'th', {'scope': 'row'})
+                td.text = str(obj[key])
+
+        return div
+
+    @staticmethod
+    def text(text: str = None):
         node = ET.SubElement(Report.__current_report, "p")
-        node.text = text
+        if text:
+            node.text = text
         return node
 
     @staticmethod
@@ -46,7 +92,7 @@ class Report:
         style = ET.SubElement(head, 'style')
         style.text = requests.get("https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css").text
         style.text += r'''body {
-                counter-reset: h2counter h3counter h4counter h5counter h6counter;
+                counter-reset: h2counter h3counter h4counter h5counter h6counter tableCounter figureCounter;
             }
             h1 {
                 counter-reset: h2counter h3counter h4counter h5counter h6counter;
@@ -82,7 +128,24 @@ class Report:
             h6:before {
                 content: counter(h2counter) "." counter(h3counter) "." counter(h4counter) "." counter(h5counter) "." counter(h6counter) ".\0000a0\0000a0";
                 counter-increment: h6counter;
-            }'''
+            }
+            caption {
+                caption-side: top !important;
+                text-align: center;
+                counter-increment: tableCounter;
+            }
+            caption:before{
+                font-weight: bold;
+                content: "Table " counter(tableCounter) ".\0000a0\0000a0";
+            }
+            figcaption {
+                counter-increment: figureCounter;
+            }
+            figcaption:before{
+                font-weight: bold;
+                content: "Figure " counter(figureCounter) ".\0000a0\0000a0";
+            }
+            '''
         body = ET.SubElement(html, 'body', {'class': 'container'})
         body.append(Report.__header())
         body.append(Report.__current_report)

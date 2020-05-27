@@ -15,8 +15,16 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .base import Speed2D, ScreenCoordinates, MouseData, KeyboardData, ScrollData
-from .emotions import Emotions
-from .interaction import Interaction, load_interactions
-from .user import User, load_users
-from .website import Website, load_websites
+# Types
+from .base import BasicStats, RateStats
+from .clicks import Clicks
+from .keyboard import Keyboard
+from .websites import VisitedWebsites
+
+# Functions
+from .speed import interactions_set_speed, average_speed
+from .clicks import clicks_statistics, number_of_clicks
+from .keyboard import keyboard_statistics, number_of_keys
+from .websites import interactions_set_website_categories, visited_websites, websites_statistics
+from .variation import average_events_time, average_idle_time, get_changed_features, mouse_movements_per_milliseconds, \
+    scrolls_per_milliseconds

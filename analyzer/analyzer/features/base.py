@@ -15,8 +15,17 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .base import Speed2D, ScreenCoordinates, MouseData, KeyboardData, ScrollData
-from .emotions import Emotions
-from .interaction import Interaction, load_interactions
-from .user import User, load_users
-from .website import Website, load_websites
+import dataclasses
+
+
+@dataclasses.dataclass
+class BasicStats:
+    sum: float
+    avg: float
+    std: float
+
+
+@dataclasses.dataclass
+class RateStats:
+    rate: float
+    total: float

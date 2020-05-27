@@ -19,7 +19,9 @@ import logging
 import math
 import os
 import re
+from typing import List, Dict, Any
 
+import pymongo.database as db
 import requests
 
 from .base import *
@@ -40,9 +42,52 @@ class Interaction:
     keyboard: KeyboardData
     # Emotions
     emotions: Emotions
+    url_category: str = None
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "_id": self._id,
+            "user_id": self.user_id,
+            "timestamp": self.timestamp,
+            "url": self.url,
+            "url.category": self.url_category,
+            # Mouse
+            "mouse.position.x": self.mouse.position.x,
+            "mouse.position.y": self.mouse.position.y,
+            "mouse.clicks": self.mouse.clicks.any,
+            "mouse.clicks.left": self.mouse.clicks.left,
+            "mouse.clicks.right": self.mouse.clicks.right,
+            "mouse.clicks.middle": self.mouse.clicks.middle,
+            "mouse.clicks.others": self.mouse.clicks.others,
+            "mouse.speed": self.mouse.speed.speed,
+            "mouse.speed.x": self.mouse.speed.x,
+            "mouse.speed.y": self.mouse.speed.y,
+            # Scroll
+            "scroll.absolute.x": self.scroll.absolute.x,
+            "scroll.absolute.y": self.scroll.absolute.y,
+            "scroll.relative.x": self.scroll.relative.x,
+            "scroll.relative.y": self.scroll.relative.y,
+            # Keyboard
+            "keyboard": self.keyboard.any,
+            "keyboard.alpha": self.keyboard.alpha,
+            "keyboard.numeric": self.keyboard.numeric,
+            "keyboard.function": self.keyboard.function,
+            "keyboard.symbol": self.keyboard.symbol,
+            # Emotions
+            "emotions.exists": self.emotions.exists,
+            "emotions.joy": self.emotions.joy,
+            "emotions.fear": self.emotions.fear,
+            "emotions.disgust": self.emotions.disgust,
+            "emotions.sadness": self.emotions.sadness,
+            "emotions.anger": self.emotions.anger,
+            "emotions.surprise": self.emotions.surprise,
+            "emotions.contempt": self.emotions.contempt,
+            "emotions.valence": self.emotions.valence,
+            "emotions.engagement": self.emotions.engagement
+        }
 
 
-def load_interactions(mongodb=None, user=None):
+def load_interactions(mongodb: db.Database = None, user: str = None) -> List[Interaction]:
     def convert_object(to_convert: dict) -> Interaction:
         # noinspection PyArgumentList
         return Interaction(

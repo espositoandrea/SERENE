@@ -18,7 +18,9 @@
 import dataclasses
 import logging
 
+import pymongo.database as db
 import requests
+from typing import Dict, Union
 
 
 @dataclasses.dataclass(frozen=True)
@@ -28,8 +30,16 @@ class User:
     internet: int
     gender: str
 
+    def to_dict(self) -> Dict[str, Union[int, str]]:
+        return {
+            '_id': self._id,
+            'age': self.age,
+            'internet': self.internet,
+            'gender': self.gender
+        }
 
-def load_users(mongodb=None):
+
+def load_users(mongodb: db.Database = None):
     logger = logging.getLogger(__name__)
 
     if mongodb:
