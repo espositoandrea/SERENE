@@ -16,6 +16,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import logging
+import math
 import os
 import re
 
@@ -85,13 +86,16 @@ def load_interactions(mongodb=None, user=None):
             )
         )
 
+    logger = logging.getLogger(__name__)
+    is_test_mode = os.getenv('TESTING_MODE', 'False') == 'True'
     testing_limit = 20000
+
     timestamps = dict()
     if mongodb:
-        logging.info(f"Loading interactions from database...")
+        logger.info("Loading interactions from database...")
         interactions = mongodb['interactions'].find() if user is None else mongodb['interactions'].find({'ui': user})
-        logging.info(f"Got {interactions.count()} objects")
-        if os.getenv('TESTING_MODE', 'False') == 'True':
+        logger.info("Got %d objects", interactions.count())
+        if is_test_mode:
             interactions.limit(testing_limit)
 
         interactions = [convert_object(obj) for obj in interactions]
@@ -104,16 +108,28 @@ def load_interactions(mongodb=None, user=None):
         api_url = "https://giuseppe-desolda.ddns.net:8080/api/interactions/filtered/{}-{}" if user is None else "https://giuseppe-desolda.ddns.net:8080/api/user/" + user + "/interactions/filtered/{}-{}"
         current_base = 0
         skip = 10000
+
+        number_of_objects = int(requests.get(api_url[0:-5] + 'count', verify=False).text)
+        expected_iterations = math.ceil(
+            number_of_objects / skip) if not is_test_mode or number_of_objects < testing_limit else math.ceil(
+            testing_limit / skip)
+
+        if number_of_objects == 0:
+            logger.warning("No data to load")
+            return []
+
         interactions = list()
         while True:
-            if os.getenv('TESTING_MODE', 'False') == 'True' and current_base > testing_limit:
+            if is_test_mode and current_base >= testing_limit:
                 break
 
-            logging.info(f"Loading interactions (iteration {round(current_base / skip) + 1})...")
+            logger.info("Loading interactions from web APIs (iteration %d of %d)...", round(current_base / skip) + 1,
+                        expected_iterations)
             db_content = requests.get(api_url.format(current_base, skip), verify=False).json()
 
             if not db_content:
-                logging.info(f"Loaded interactions (iteration {round(current_base / skip) + 1}): empty")
+                logger.info("Loaded interactions from web APIs (iteration %d of %d): empty",
+                            round(current_base / skip) + 1, expected_iterations)
                 break
 
             current = list()
@@ -128,12 +144,14 @@ def load_interactions(mongodb=None, user=None):
                 current.append(convert_object(obj))
             interactions.extend(current)
             current_base += skip
-            logging.info(f"Loaded interactions (iteration {round(current_base / skip)})")
+            logger.info("Loaded interactions from web APIs (iteration %d of %d)", round(current_base / skip),
+                        expected_iterations)
 
-    logging.info(f"Done. Loaded {len(interactions)} interactions")
+    logger.info("Done. Loaded %d interactions", len(interactions))
+
     # Remove duplicate timestamps
-    logging.info("Removing duplicate timestamps from interactions")
-    for timestamp, ids in timestamps.items():
+    logger.info("Removing duplicate timestamps from interactions")
+    for ids in timestamps.values():
         if len(ids) <= 1:
             continue
 
@@ -145,6 +163,6 @@ def load_interactions(mongodb=None, user=None):
             to_remove = not_emotions
 
         interactions = list(filter(lambda obj: obj not in to_remove, interactions))
-    logging.info(f"Done. New number of interactions: {len(interactions)}")
+    logger.info("Done. New number of interactions: %d", len(interactions))
 
     return interactions

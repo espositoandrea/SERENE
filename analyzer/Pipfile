@@ -9,6 +9,7 @@ pylint = "*"
 [packages]
 requests = "*"
 pymongo = "*"
+coloredlogs = "*"
 
 [requires]
 python_version = "3.8"

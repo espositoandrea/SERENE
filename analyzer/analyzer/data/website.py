@@ -16,6 +16,7 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import dataclasses
+import logging
 import urllib.parse
 
 import requests
@@ -29,16 +30,22 @@ class Website:
 
 
 def load_websites(mongodb=None):
+    logger = logging.getLogger(__name__)
+
     if mongodb:
-        db_content = [w for w in mongodb['websites'].find()]
+        logger.info("Loading websites from database...")
+        db_content = list(mongodb['websites'].find())
         for w in db_content:
             w['url'] = urllib.parse.urlparse(str(w['_id']))
             del w['_id']
     else:
+        logger.info("Loading websites from web APIs...")
         db_content = requests.get("https://giuseppe-desolda.ddns.net:8080/api/websites", verify=False).json()
         for w in db_content:
             w['url'] = urllib.parse.urlparse(w['url'])
     websites = {}
     for website in db_content:
         websites[website['url'].geturl()] = Website(**website)
+    
+    logger.info("Done. Loaded %d websites", len(websites))
     return websites

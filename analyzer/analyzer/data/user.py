@@ -30,13 +30,16 @@ class User:
 
 
 def load_users(mongodb=None):
-    logging.info("Loading users...")
+    logger = logging.getLogger(__name__)
+
     if mongodb:
-        users = [u for u in mongodb['users'].find()]
+        logger.info("Loading users from database...")
+        users = list(mongodb['users'].find())
         for user in users:
             user['_id'] = str(user['_id'])
     else:
+        logger.info("Loading users from web APIs...")
         users = requests.get("https://giuseppe-desolda.ddns.net:8080/api/users", verify=False).json()
     users = {user['_id']: User(**user) for user in users}
-    logging.info(f"Done. Loaded {len(users)} users")
+    logger.info("Done. Loaded %d users", len(users))
     return users
