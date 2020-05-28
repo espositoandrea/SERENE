@@ -16,6 +16,10 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 """The tool to process the collected data.
+
+A tool to process the interaction data collected for Andrea Esposito's Bachelor
+Thesis. The main goal of the tool is to extract new features and exporting the
+entire dataset in a set of data frames.
 """
 
 __version__: str = '1.0.0'

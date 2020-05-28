@@ -18,6 +18,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 from setuptools import setup, find_packages
+
 import analyzer
 
 setup(
@@ -28,7 +29,11 @@ setup(
     author_email=analyzer.__email__,
     packages=find_packages(),
     install_requires=[
-        'matplotlib'
+        'matplotlib',
+        'coloredlogs',
+        'numpy',
+        'pymongo',
+        'requests'
     ],
     entry_points={
         'console_scripts': [
