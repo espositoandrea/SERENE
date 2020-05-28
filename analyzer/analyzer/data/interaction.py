@@ -29,7 +29,7 @@ from .emotions import Emotions
 
 
 @dataclasses.dataclass
-class Interaction:
+class Interaction(BaseObject):
     _id: str
     user_id: str
     timestamp: int

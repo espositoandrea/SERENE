@@ -22,9 +22,11 @@ import pymongo.database as db
 import requests
 from typing import Dict, Union
 
+from analyzer.data.base import BaseObject
+
 
 @dataclasses.dataclass(frozen=True)
-class User:
+class User(BaseObject):
     _id: str
     age: int
     internet: int

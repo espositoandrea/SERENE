@@ -19,6 +19,12 @@ import dataclasses
 
 
 @dataclasses.dataclass
+class BaseObject:
+    def to_dict(self):
+        pass
+
+
+@dataclasses.dataclass
 class ScreenCoordinates:
     x: int
     y: int

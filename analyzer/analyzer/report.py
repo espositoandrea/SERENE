@@ -31,6 +31,17 @@ class Report:
         return Report.__heading(title, 5)
 
     @staticmethod
+    def code(content: str, inline: bool = True, parent: ET.Element = None) -> ET.Element:
+        if inline:
+            code = ET.SubElement(Report.__current_report if not parent else parent, 'pre')
+            real_code = ET.SubElement(code, 'code')
+            real_code.text = content
+        else:
+            code = ET.SubElement(Report.__current_report if not parent else parent, 'code')
+            code.text = content
+        return code
+
+    @staticmethod
     def subparagraph(title: str):
         return Report.__heading(title, 6)
 

@@ -23,9 +23,11 @@ from typing import Optional, Dict, Union
 import pymongo.database as db
 import requests
 
+from analyzer.data.base import BaseObject
+
 
 @dataclasses.dataclass
-class Website:
+class Website(BaseObject):
     url: Optional[urllib.parse.ParseResult]
     count: int = 0
     category: str = 'UNKNOWN'

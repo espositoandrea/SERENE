@@ -21,6 +21,8 @@ import logging
 import math
 import os
 import time
+import shutil
+import zipfile
 
 import coloredlogs
 import pymongo
@@ -35,6 +37,7 @@ from . import plotting
 from .data import *
 from .interval import interactions_split_intervals, interactions_from_range, flatten_range
 from .report import Report
+from . import utilities
 
 
 def set_up_args() -> argparse.Namespace:
@@ -51,7 +54,7 @@ def set_up_args() -> argparse.Namespace:
              "If it's not available, the web API will be used."
     )
     parser.add_argument(
-        "--version",
+        "--version", '-v',
         help="output version information and exit",
         action='version',
         version=analyzer.__disclaimer__
@@ -65,6 +68,16 @@ def set_up_args() -> argparse.Namespace:
         '--quiet', '-q',
         action='store_true',
         help='Run the program in quiet mode (nothing will be printed to the console).'
+    )
+    parser.add_argument(
+        '--out', '-o',
+        help='Set the output directory',
+        default='out'
+    )
+    parser.add_argument(
+        '--zip',
+        help='Zip the output folder',
+        action='store_true'
     )
     return parser.parse_args()
 
@@ -80,6 +93,10 @@ def main():
         logger=logger,
         fmt="[%(levelname)s] %(asctime)s (%(name)s) %(message)s"
     )
+
+    if os.path.exists(args.out) and os.listdir(args.out):
+        logger.info("Emptying output directory ('%s')", os.path.abspath(args.out))
+        shutil.rmtree(args.out, ignore_errors=True)
 
     if args.test:
         os.environ['TESTING_MODE'] = 'True'
@@ -102,6 +119,7 @@ def main():
         users = dict(list(users.items())[0:2])
 
     Report.table([u.to_dict() for u in users.values()], caption='Loaded users', id_col='_id')
+    utilities.to_csv(users, args.out, 'users.csv')
 
     Report.figure(plotting.plot_to_data_uri(plotting.plot_user_basic_info(users)), caption="Users details")
 
@@ -112,6 +130,7 @@ def main():
         f"Loaded {len(websites)} websites from {source_description} in {round(time.time() - start_time, 3)} seconds.")
     Report.table([w.to_dict() for w in list(websites.values())[0:5]], caption="The first loaded websites", id_col='url')
     Report.figure(plotting.plot_to_data_uri(plotting.plot_websites_categories(websites)), caption="Website categories")
+    utilities.to_csv(websites, args.out, 'websites.csv')
 
     start_time = time.time()
     Report.section("Process the Data")
@@ -144,20 +163,22 @@ def main():
         intervals = {}
         ranges_widths = [
             # t = 100 ms is the time between two captured emotions
-            25,  # 1/4 * t
-            50,  # 1/2 * t
-            100,  # 1 * t
-            200,  # 2 * t
+            # 25,  # 1/4 * t
+            # 50,  # 1/2 * t
+            # 100,  # 1 * t
+            # 200,  # 2 * t
             500,  # 5 * t
-            1000,  # 10 * t
-            2000  # 20 * t
+            # 1000,  # 10 * t
+            # 2000  # 20 * t
         ]
         for range_width in ranges_widths:
             Report.subsubsection(f"Range Width: {range_width} ms")
-            intervals[range_width] = [interactions_from_range(interactions, r) for r in
-                                      interactions_split_intervals(interactions, range_width)]
+            temp_intervals = [interactions_from_range(interactions, r) for r in
+                              interactions_split_intervals(interactions, range_width)]
 
-            for interactions_range in intervals[range_width]:
+            for interactions_range in temp_intervals:
+                if interactions_range.middle.timestamp not in intervals:
+                    intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)] = dict()
                 slopes = dict()
                 slopes["full"] = direction_changes(flatten_range(interactions_range), range_width)
                 slopes["before"] = direction_changes(
@@ -218,15 +239,39 @@ def main():
                 idle["before"] = average_idle_time(interactions_range.preceding + [interactions_range.middle])
                 idle["after"] = average_idle_time([interactions_range.middle] + interactions_range.following)
 
+                intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)][range_width] = {
+                    'slopes': slopes,
+                    'mouse_movements': mouse_movements,
+                    'scrolls': scrolls,
+                    'avg_speed': avg_speed,
+                    'clicks': clicks,
+                    'keys': keys,
+                    'urls': urls,
+                    'event_times': event_times,
+                    'idle': idle
+                }
+
+        utilities.to_csv(utilities.aggregate_data_to_list(intervals), args.out, user, 'aggregate.csv')
+        utilities.to_csv(interactions, args.out, user, 'interactions.csv')
+
         user_end_time = time.time()
         user_times.append(user_end_time - user_start_time)
         end_text.text = f"Ended processing the user at {datetime.datetime.utcfromtimestamp(user_end_time).isoformat(sep=' ', timespec='seconds')}, after {round(user_times[-1], 3)} seconds."
         logger.info("User done in %.3fs", user_times[-1])
 
     end_time = time.time()
-    logger.info("DONE after %.3fs", end_time - start_time)
+    total_time = end_time - start_time
+    logger.info("DONE after %.3fs", total_time)
     avg = sum(user_times) / len(user_times)
     std = math.sqrt(sum([(x - avg) ** 2 for x in user_times]) / len(user_times))
     logger.info("AVERAGE TIME PER USER: %.3fs (SD: %.3fs)", avg, std)
-    processing_summary.text = f"A total of {len(users)} users have been processed in {round(end_time - start_time, 3)} seconds, with an average of {round(avg, 3)} seconds per user (standard deviation: {round(std, 3)} seconds)."
+    processing_summary.text = f"A total of {len(users)} users have been processed in {round(total_time, 3)}" \
+                              f"seconds, with an average of {round(avg, 3)} seconds per user (standard deviation: " \
+                              f"{round(std, 3)} seconds). All the processed data have been saved to the directory "
+    Report.code(os.path.abspath(args.out), parent=processing_summary)
+    if args.zip:
+        logger.info("Zipping output folder")
+        zip_path = os.path.join(args.out, '..', os.path.basename(args.out))
+        shutil.make_archive(zip_path, 'zip', args.out)
+
     Report.html('report.html')
