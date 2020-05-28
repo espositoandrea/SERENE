@@ -142,7 +142,17 @@ def main():
         interactions_set_website_categories(interactions, websites)
 
         intervals = {}
-        for range_width in [600]:
+        ranges_widths = [
+            # t = 100 ms is the time between two captured emotions
+            25,  # 1/4 * t
+            50,  # 1/2 * t
+            100,  # 1 * t
+            200,  # 2 * t
+            500,  # 5 * t
+            1000,  # 10 * t
+            2000  # 20 * t
+        ]
+        for range_width in ranges_widths:
             Report.subsubsection(f"Range Width: {range_width} ms")
             intervals[range_width] = [interactions_from_range(interactions, r) for r in
                                       interactions_split_intervals(interactions, range_width)]
