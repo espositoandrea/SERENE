@@ -32,7 +32,8 @@ setup(
         'matplotlib',
         'coloredlogs',
         'pymongo',
-        'requests'
+        'requests',
+        'weasyprint'
     ],
     entry_points={
         'console_scripts': [

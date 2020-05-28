@@ -9,44 +9,44 @@ class Report:
     __current_report = ET.Element('main')
 
     @staticmethod
-    def __heading(title: str, level: int):
+    def __heading(title: str, level: int) -> ET.Element:
         node = ET.SubElement(Report.__current_report, f"h{level}")
         node.text = title
         return node
 
     @staticmethod
-    def section(title: str):
+    def section(title: str) -> ET.Element:
         return Report.__heading(title, 2)
 
     @staticmethod
-    def subsection(title: str):
+    def subsection(title: str) -> ET.Element:
         return Report.__heading(title, 3)
 
     @staticmethod
-    def subsubsection(title: str):
+    def subsubsection(title: str) -> ET.Element:
         return Report.__heading(title, 4)
 
     @staticmethod
-    def paragraph(title: str):
+    def paragraph(title: str) -> ET.Element:
         return Report.__heading(title, 5)
 
     @staticmethod
     def code(content: str, inline: bool = True, parent: ET.Element = None) -> ET.Element:
         if inline:
-            code = ET.SubElement(Report.__current_report if not parent else parent, 'pre')
+            code = ET.SubElement((Report.__current_report if parent is None else parent), 'code')
+            code.text = content
+        else:
+            code = ET.SubElement((Report.__current_report if parent is None else parent), 'pre')
             real_code = ET.SubElement(code, 'code')
             real_code.text = content
-        else:
-            code = ET.SubElement(Report.__current_report if not parent else parent, 'code')
-            code.text = content
         return code
 
     @staticmethod
-    def subparagraph(title: str):
+    def subparagraph(title: str) -> ET.Element:
         return Report.__heading(title, 6)
 
     @staticmethod
-    def figure(source: str, caption: str = None):
+    def figure(source: str, caption: str = None) -> ET.Element:
         figure = ET.SubElement(Report.__current_report, 'figure', {'class': 'figure text-center w-100'})
         if caption:
             figcaption = ET.SubElement(figure, 'figcaption', {'class': 'figure-caption'})
@@ -55,7 +55,7 @@ class Report:
         return figure
 
     @staticmethod
-    def table(data: List[Dict[str, Any]], caption: str = None, id_col: str = None):
+    def table(data: List[Dict[str, Any]], caption: str = None, id_col: str = None) -> ET.Element:
         div = ET.SubElement(Report.__current_report, 'div', {'class': 'table-responsive'})
         table = ET.SubElement(div, 'table', {'class': 'table table-striped'})
 
@@ -78,14 +78,14 @@ class Report:
         return div
 
     @staticmethod
-    def text(text: str = None):
+    def text(text: str = None) -> ET.Element:
         node = ET.SubElement(Report.__current_report, "p")
         if text:
             node.text = text
         return node
 
     @staticmethod
-    def __header():
+    def __header() -> ET.Element:
         header = ET.Element('header', {'class': "text-center"})
         title = ET.SubElement(header, 'h1')
         title.text = "Processing and Analysis Results"
@@ -95,7 +95,7 @@ class Report:
         return header
 
     @staticmethod
-    def html(file):
+    def html() -> str:
         html = ET.Element('html')
         head = ET.SubElement(html, 'head')
         ET.SubElement(head, 'meta', {'charset': 'UTF-8'})
@@ -160,4 +160,4 @@ class Report:
         body = ET.SubElement(html, 'body', {'class': 'container'})
         body.append(Report.__header())
         body.append(Report.__current_report)
-        ET.ElementTree(html).write(file)
+        return ET.tostring(html, encoding='unicode', method='html')#.decode('utf-8')

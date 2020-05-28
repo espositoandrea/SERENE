@@ -22,7 +22,6 @@ import math
 import os
 import shutil
 import time
-
 import coloredlogs
 import pymongo
 import urllib3
@@ -77,6 +76,13 @@ def set_up_args() -> argparse.Namespace:
         '--zip',
         help='Zip the output folder',
         action='store_true'
+    )
+    parser.add_argument(
+        '--report',
+        help="Set the output format of the report. Use 'none' to disable it",
+        choices=['html', 'pdf', 'none'],
+        metavar='FORMAT',
+        default='html'
     )
     return parser.parse_args()
 
@@ -137,7 +143,7 @@ def main():
     user_times = list()
     for i, user in enumerate(users, 1):
         user_start_time = time.time()
-        Report.subsection(f"Processing Data by User '{user}' ({i} of {len(users)})")
+        Report.subsection(f"Processing Data by User “{user}” ({i} of {len(users)})")
         Report.text(
             f"Started processing the user at {datetime.datetime.utcfromtimestamp(user_start_time).isoformat(sep=' ', timespec='seconds')}.")
         logger.info("Processing data by user '%s' (%d of %d)", str(user), i, len(users))
@@ -174,7 +180,8 @@ def main():
             Report.subsubsection(f"Range Width: {range_width} ms")
             temp_intervals = [interactions_from_range(interactions, r) for r in
                               interactions_split_intervals(interactions, range_width)]
-
+            Report.text(f"Found {len(temp_intervals)} intervals using the given width ({range_width} ms).")
+            interval_start_time = time.time()
             for interactions_range in temp_intervals:
                 if interactions_range.middle.timestamp not in intervals:
                     intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)] = dict()
@@ -249,6 +256,7 @@ def main():
                     'event_times': event_times,
                     'idle': idle
                 }
+            Report.text(f"Interval analysis completed after {round(time.time() - interval_start_time, 3)} seconds.")
 
         utilities.to_csv(utilities.aggregate_data_to_list(intervals), args.out, user, 'aggregate.csv')
         utilities.to_csv(interactions, args.out, user, 'interactions.csv')
@@ -266,12 +274,21 @@ def main():
     logger.info("AVERAGE TIME PER USER: %.3fs (SD: %.3fs)", avg, std)
     processing_summary.text = f"A total of {len(users)} users have been processed in {round(total_time, 3)}" \
                               f"seconds, with an average of {round(avg, 3)} seconds per user (standard deviation: " \
-                              f"{round(std, 3)} seconds). All the processed data have been saved to the directory "
-    Report.code(os.path.abspath(args.out), parent=processing_summary)
+                              f"{round(std, 3)} seconds). All the processed data have been saved to the directory “"
+    Report.code(os.path.abspath(args.out), parent=processing_summary).tail = '”.'
     if args.zip:
         logger.info("Zipping output folder")
         zip_path = os.path.join(args.out, '..', os.path.basename(args.out))
         shutil.make_archive(zip_path, 'zip', args.out)
 
-    s = Report.html()
-    print(s)
+    if args.report == 'html':
+        logger.info("Writing report to HTML file")
+        with open('report.html', mode='w', encoding='utf-8') as f:
+            f.write(Report.html())
+    elif args.report == 'pdf':
+        logger.info("Writing report to PDF file")
+        import weasyprint
+        html = weasyprint.HTML(string=Report.html())
+        html.write_pdf('report.pdf')
+    else:
+        logger.info("Not writing report")
