@@ -16,10 +16,9 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import math
-from typing import List, Tuple
+import statistics
 from copy import copy
-
-import numpy as np
+from typing import List, Tuple
 
 from .base import BasicStats
 from ..data import Interaction
@@ -108,6 +107,12 @@ def interactions_set_speed(interactions: List[Interaction]):
 
 
 def average_speed(interactions: List[Interaction]) -> Tuple[BasicStats, BasicStats, BasicStats]:
+    if not interactions:
+        return BasicStats(0, 0, 0), BasicStats(0, 0, 0), BasicStats(0, 0, 0)
+    elif len(interactions) == 1:
+        s = interactions[0].mouse.speed
+        return BasicStats(s.total, s.total, 0), BasicStats(s.x, s.x, 0), BasicStats(s.y, s.y, 0)
+
     tot_speed = []
     x_speed = []
     y_speed = []
@@ -117,6 +122,27 @@ def average_speed(interactions: List[Interaction]) -> Tuple[BasicStats, BasicSta
         x_speed.append(obj.mouse.speed.x)
         y_speed.append(obj.mouse.speed.y)
 
-    return BasicStats(sum(tot_speed), np.mean(tot_speed), np.std(tot_speed)), \
-           BasicStats(sum(x_speed), np.mean(x_speed), np.std(x_speed)), \
-           BasicStats(sum(y_speed), np.mean(y_speed), np.std(y_speed))
+    try:
+        return BasicStats(sum(tot_speed), statistics.mean(tot_speed), statistics.stdev(tot_speed)), \
+               BasicStats(sum(x_speed), statistics.mean(x_speed), statistics.stdev(x_speed)), \
+               BasicStats(sum(y_speed), statistics.mean(y_speed), statistics.stdev(y_speed))
+    except statistics.StatisticsError:
+        print(interactions)
+        raise
+
+
+def average_acceleration(interactions: List[Interaction]) -> Tuple[BasicStats, BasicStats, BasicStats]:
+    if not interactions:
+        return BasicStats(0, 0, 0), BasicStats(0, 0, 0), BasicStats(0, 0, 0)
+    tot_acc = []
+    x_acc = []
+    y_acc = []
+
+    for obj in interactions:
+        tot_acc.append(obj.mouse.acceleration.total)
+        x_acc.append(obj.mouse.acceleration.x)
+        y_acc.append(obj.mouse.acceleration.y)
+
+    return BasicStats(sum(tot_acc), statistics.mean(tot_acc), statistics.stdev(tot_acc)), \
+           BasicStats(sum(x_acc), statistics.mean(x_acc), statistics.stdev(x_acc)), \
+           BasicStats(sum(y_acc), statistics.mean(y_acc), statistics.stdev(y_acc))

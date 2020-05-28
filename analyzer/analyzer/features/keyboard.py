@@ -16,9 +16,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import dataclasses
+import statistics
 from typing import Generic, TypeVar, List
-
-import numpy as np
 
 from .base import BasicStats
 from ..data import Interaction
@@ -68,34 +67,53 @@ def number_of_keys(interactions: List[Interaction]) -> Keyboard[int]:
 def keyboard_statistics(interactions: List[Interaction], range_width: int) -> Keyboard[BasicStats]:
     keys = number_of_keys(interactions)
 
+    if not interactions:
+        no_keys = BasicStats(0, 0, 0)
+        return Keyboard(no_keys, no_keys, no_keys, no_keys, no_keys, no_keys)
+    elif len(interactions) == 1:
+        all = BasicStats(keys.all, keys.all, 0)
+        alpha = BasicStats(keys.alphabetic, keys.alphabetic, 0)
+        numeric = BasicStats(keys.numeric, keys.numeric, 0)
+        symbol = BasicStats(keys.symbol, keys.symbol, 0)
+        function = BasicStats(keys.function, keys.function, 0)
+        alphanum = BasicStats(keys.alphanumeric, keys.alphanumeric, 0)
+        return Keyboard(
+            all=all,
+            alphabetic=alpha,
+            numeric=numeric,
+            symbol=symbol,
+            function=function,
+            alphanumeric=alphanum
+        )
+
     # all keys
     avg = keys.all / range_width
-    std_dev = np.std([obj.keyboard.any for obj in interactions])
+    std_dev = statistics.stdev([obj.keyboard.any for obj in interactions])
     all = BasicStats(keys.all, avg, std_dev)
 
     # alphabetic keys
     avg = keys.alphabetic / range_width
-    std_dev = np.std([obj.keyboard.alpha for obj in interactions])
+    std_dev = statistics.stdev([obj.keyboard.alpha for obj in interactions])
     alpha = BasicStats(keys.alphabetic, avg, std_dev)
 
     # numeric keys
     avg = keys.numeric / range_width
-    std_dev = np.std([obj.keyboard.numeric for obj in interactions])
+    std_dev = statistics.stdev([obj.keyboard.numeric for obj in interactions])
     numeric = BasicStats(keys.numeric, avg, std_dev)
 
     # symbol keys
     avg = keys.symbol / range_width
-    std_dev = np.std([obj.keyboard.symbol for obj in interactions])
+    std_dev = statistics.stdev([obj.keyboard.symbol for obj in interactions])
     symbol = BasicStats(keys.symbol, avg, std_dev)
 
     # function keys
     avg = keys.function / range_width
-    std_dev = np.std([obj.keyboard.function for obj in interactions])
+    std_dev = statistics.stdev([obj.keyboard.function for obj in interactions])
     function = BasicStats(keys.function, avg, std_dev)
 
     # alphanumeric keys
     avg = keys.alphanumeric / range_width
-    std_dev = np.std([obj.keyboard.alpha or obj.keyboard.numeric for obj in interactions])
+    std_dev = statistics.stdev([obj.keyboard.alpha or obj.keyboard.numeric for obj in interactions])
     alphanum = BasicStats(keys.alphanumeric, avg, std_dev)
 
     return Keyboard(

@@ -16,9 +16,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import dataclasses
+import statistics
 from typing import List, Generic, TypeVar
-
-import numpy as np
 
 from .base import BasicStats
 from ..data import Interaction
@@ -56,29 +55,40 @@ def number_of_clicks(interactions: List[Interaction]) -> Clicks[int]:
 def clicks_statistics(interactions: List[Interaction], range_width: int) -> Clicks[BasicStats]:
     clicks = number_of_clicks(interactions)
 
+    if not interactions:
+        no_clicks = BasicStats(0, 0, 0)
+        return Clicks(no_clicks, no_clicks, no_clicks, no_clicks, no_clicks)
+    elif len(interactions) == 1:
+        left = BasicStats(clicks.left, clicks.left, 0)
+        middle = BasicStats(clicks.middle, clicks.middle, 0)
+        right = BasicStats(clicks.right, clicks.right, 0)
+        other = BasicStats(clicks.other, clicks.other, 0)
+        all = BasicStats(clicks.all, clicks.all, 0)
+        return Clicks(all, left, middle, right, other)
+
     # left button
     avg = clicks.left / range_width
-    std_dev = np.std([obj.mouse.clicks.left for obj in interactions])
+    std_dev = statistics.stdev([obj.mouse.clicks.left for obj in interactions])
     left = BasicStats(clicks.left, avg, std_dev)
 
     # middle button
     avg = clicks.middle / range_width
-    std_dev = np.std([obj.mouse.clicks.middle for obj in interactions])
+    std_dev = statistics.stdev([obj.mouse.clicks.middle for obj in interactions])
     middle = BasicStats(clicks.middle, avg, std_dev)
 
     # right button
     avg = clicks.right / range_width
-    std_dev = np.std([obj.mouse.clicks.right for obj in interactions])
+    std_dev = statistics.stdev([obj.mouse.clicks.right for obj in interactions])
     right = BasicStats(clicks.right, avg, std_dev)
 
     # other buttons
     avg = clicks.other / range_width
-    std_dev = np.std([obj.mouse.clicks.others for obj in interactions])
+    std_dev = statistics.stdev([obj.mouse.clicks.others for obj in interactions])
     other = BasicStats(clicks.other, avg, std_dev)
 
     # all buttons
     avg = clicks.all / range_width
-    std_dev = np.std([obj.mouse.clicks.any for obj in interactions])
+    std_dev = statistics.stdev([obj.mouse.clicks.any for obj in interactions])
     all = BasicStats(clicks.all, avg, std_dev)
 
     return Clicks(all, left, middle, right, other)

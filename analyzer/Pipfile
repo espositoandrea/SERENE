@@ -10,7 +10,6 @@ pylint = "*"
 requests = "*"
 pymongo = "*"
 coloredlogs = "*"
-numpy = "*"
 matplotlib = "*"
 
 [requires]

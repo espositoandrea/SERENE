@@ -31,7 +31,6 @@ setup(
     install_requires=[
         'matplotlib',
         'coloredlogs',
-        'numpy',
         'pymongo',
         'requests'
     ],

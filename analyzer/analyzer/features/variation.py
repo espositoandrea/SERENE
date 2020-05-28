@@ -16,9 +16,8 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import re
+import statistics
 from typing import List, Set
-
-import numpy as np
 
 from analyzer.data import Interaction
 from analyzer.features.base import BasicStats, RateStats
@@ -31,7 +30,9 @@ def get_changed_features(first: Interaction, second: Interaction) -> Set[str]:
 
 def average_events_time(interactions: List[Interaction]) -> BasicStats:
     times = [obj.timestamp - interactions[i - 1].timestamp for i, obj in enumerate(interactions[1:], 1)]
-    return BasicStats(sum(times), np.mean(times), np.std(times)) if times else BasicStats(0, 0, 0)
+    return BasicStats(sum(times), statistics.mean(times), statistics.stdev(times)) if len(times) > 1 else BasicStats(0,
+                                                                                                                     0,
+                                                                                                                     0)
 
 
 def average_idle_time(interactions: List[Interaction]) -> BasicStats:
@@ -49,7 +50,8 @@ def average_idle_time(interactions: List[Interaction]) -> BasicStats:
     if current_idle != 0 or not idle_times:
         idle_times.append(current_idle)
 
-    return BasicStats(sum(idle_times), np.mean(idle_times), np.std(idle_times))
+    return BasicStats(sum(idle_times), statistics.mean(idle_times), statistics.stdev(idle_times)) if len(
+        idle_times) > 1 else BasicStats(0, 0, 0)
 
 
 def mouse_movements_per_milliseconds(interactions: List[Interaction], range_width: int) -> RateStats:
