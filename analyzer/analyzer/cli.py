@@ -20,9 +20,8 @@ import datetime
 import logging
 import math
 import os
-import time
 import shutil
-import zipfile
+import time
 
 import coloredlogs
 import pymongo
@@ -34,10 +33,10 @@ from analyzer.features import average_speed, clicks_statistics, keyboard_statist
     mouse_movements_per_milliseconds, average_idle_time, average_events_time, interactions_set_directions, \
     direction_changes
 from . import plotting
+from . import utilities
 from .data import *
 from .interval import interactions_split_intervals, interactions_from_range, flatten_range
 from .report import Report
-from . import utilities
 
 
 def set_up_args() -> argparse.Namespace:
@@ -274,4 +273,5 @@ def main():
         zip_path = os.path.join(args.out, '..', os.path.basename(args.out))
         shutil.make_archive(zip_path, 'zip', args.out)
 
-    Report.html('report.html')
+    s = Report.html()
+    print(s)

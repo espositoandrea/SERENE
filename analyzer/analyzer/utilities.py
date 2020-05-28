@@ -46,10 +46,6 @@ def to_csv(values: AnalyzerValues, *filename: str, mode: str = 'w') -> None:
 
 def aggregate_data_to_list(values: Dict[Tuple[str, int], Dict[float, Dict[str, Any]]]) -> List[Dict[str, BaseValues]]:
     flattened = list()
-    from pprint import pprint
-    with open('BOH.json', mode='w') as f:
-        pprint(values, stream=f, indent=2)
-    # print(values)
     for obj_id, timestamp in values:
         d = {'middle.timestamp': timestamp, 'middle.id': obj_id}
         for range_width, val in values[(obj_id, timestamp)].items():
