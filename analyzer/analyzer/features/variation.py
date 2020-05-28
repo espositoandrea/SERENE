@@ -54,7 +54,7 @@ def average_idle_time(interactions: List[Interaction]) -> BasicStats:
         idle_times) > 1 else BasicStats(0, 0, 0)
 
 
-def mouse_movements_per_milliseconds(interactions: List[Interaction], range_width: int) -> RateStats:
+def mouse_movements_per_milliseconds(interactions: List[Interaction], range_width: float) -> RateStats:
     count = 0
     current_position = interactions[0].mouse.position
     for obj in interactions[1:]:
@@ -66,7 +66,7 @@ def mouse_movements_per_milliseconds(interactions: List[Interaction], range_widt
     return RateStats(rate=count / range_width, total=count)
 
 
-def scrolls_per_milliseconds(interactions: List[Interaction], range_width: int) -> RateStats:
+def scrolls_per_milliseconds(interactions: List[Interaction], range_width: float) -> RateStats:
     count = 0
     current_absolute = interactions[0].scroll.absolute
     current_relative = interactions[0].scroll.relative

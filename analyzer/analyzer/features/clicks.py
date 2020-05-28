@@ -52,7 +52,7 @@ def number_of_clicks(interactions: List[Interaction]) -> Clicks[int]:
     return clicks_stats
 
 
-def clicks_statistics(interactions: List[Interaction], range_width: int) -> Clicks[BasicStats]:
+def clicks_statistics(interactions: List[Interaction], range_width: float) -> Clicks[BasicStats]:
     clicks = number_of_clicks(interactions)
 
     if not interactions:

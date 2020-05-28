@@ -64,7 +64,7 @@ def number_of_keys(interactions: List[Interaction]) -> Keyboard[int]:
     )
 
 
-def keyboard_statistics(interactions: List[Interaction], range_width: int) -> Keyboard[BasicStats]:
+def keyboard_statistics(interactions: List[Interaction], range_width: float) -> Keyboard[BasicStats]:
     keys = number_of_keys(interactions)
 
     if not interactions:

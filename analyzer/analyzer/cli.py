@@ -152,23 +152,22 @@ def main():
                 slopes["full"] = average_direction(flatten_range(interactions_range))
                 slopes["before"] = average_direction(
                     interactions_range.preceding + [interactions_range.middle])
-                slopes["after"] = average_direction(
-                    [interactions_range.middle] + interactions_range.following)
+                slopes["after"] = average_direction([interactions_range.middle] + interactions_range.following)
 
                 mouse_movements = dict()
                 mouse_movements["full"] = mouse_movements_per_milliseconds(flatten_range(interactions_range),
                                                                            range_width)
                 mouse_movements["before"] = mouse_movements_per_milliseconds(
-                    interactions_range.preceding + [interactions_range.middle], range_width)
+                    interactions_range.preceding + [interactions_range.middle], range_width / 2)
                 mouse_movements["after"] = mouse_movements_per_milliseconds(
-                    [interactions_range.middle] + interactions_range.following, range_width)
+                    [interactions_range.middle] + interactions_range.following, range_width / 2)
 
                 scrolls = dict()
                 scrolls["full"] = scrolls_per_milliseconds(flatten_range(interactions_range), range_width)
                 scrolls["before"] = scrolls_per_milliseconds(interactions_range.preceding + [interactions_range.middle],
-                                                             range_width)
+                                                             range_width / 2)
                 scrolls["after"] = scrolls_per_milliseconds([interactions_range.middle] + interactions_range.following,
-                                                            range_width)
+                                                            range_width / 2)
 
                 avg_speed = dict()
                 avg_speed["full"] = average_speed(flatten_range(interactions_range))
@@ -179,24 +178,24 @@ def main():
                 clicks = dict()
                 clicks["full"] = clicks_statistics(flatten_range(interactions_range), range_width)
                 clicks["before"] = clicks_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width)
+                                                     range_width / 2)
                 clicks["after"] = clicks_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width)
+                                                    range_width / 2)
 
                 # keyboard statistics
                 keys = dict()
                 keys["full"] = keyboard_statistics(flatten_range(interactions_range), range_width)
                 keys["before"] = keyboard_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width)
+                                                     range_width / 2)
                 keys["after"] = keyboard_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width)
+                                                    range_width / 2)
 
                 urls = dict()
                 urls["full"] = websites_statistics(flatten_range(interactions_range), range_width)
                 urls["before"] = websites_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width)
+                                                     range_width / 2)
                 urls["after"] = websites_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width)
+                                                    range_width / 2)
 
                 event_times = dict()
                 event_times["full"] = average_events_time(flatten_range(interactions_range))

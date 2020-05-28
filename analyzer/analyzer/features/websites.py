@@ -43,7 +43,7 @@ def visited_websites(interactions: List[Interaction]) -> Dict[str, int]:
     return websites
 
 
-def websites_statistics(interactions: List[Interaction], range_width: int = None) -> VisitedWebsites:
+def websites_statistics(interactions: List[Interaction], range_width: float = None) -> VisitedWebsites:
     unique = len(visited_websites(interactions))
 
     last_url = interactions[0].url
