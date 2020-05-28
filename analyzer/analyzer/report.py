@@ -1,12 +1,36 @@
 import datetime
 import xml.etree.ElementTree as ET
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional, Tuple
 
 import requests
 
 
 class Report:
     __current_report = ET.Element('main')
+
+    class HtmlList:
+        def __init__(self, ordered: bool = False):
+            self.root = ET.SubElement(Report.current_report(), ('ol' if ordered else 'ul'))
+
+        def add_item(self, content: str):
+            li = ET.SubElement(self.root, 'li')
+            li.text = content
+            return li
+
+    class DescriptionList:
+        def __init__(self):
+            self.root = ET.SubElement(Report.current_report(), 'dl')
+
+        def add_item(self, heading: str, content: str):
+            dt = ET.SubElement(self.root, 'dt')
+            dt.text = heading
+            dl = ET.SubElement(self.root, 'dl')
+            dl.text = content
+            return dt, dl
+
+    @staticmethod
+    def current_report():
+        return Report.__current_report
 
     @staticmethod
     def __heading(title: str, level: int) -> ET.Element:
@@ -51,7 +75,7 @@ class Report:
         if caption:
             figcaption = ET.SubElement(figure, 'figcaption', {'class': 'figure-caption'})
             figcaption.text = caption
-        img = ET.SubElement(figure, 'img', {'src': source, 'class': 'figure-img img-fluid', 'alt': caption})
+        ET.SubElement(figure, 'img', {'src': source, 'class': 'figure-img img-fluid', 'alt': caption})
         return figure
 
     @staticmethod
@@ -93,6 +117,22 @@ class Report:
         p.text = datetime.datetime.now().isoformat(sep=' ', timespec='minutes')
         ET.SubElement(header, 'hr')
         return header
+
+    @staticmethod
+    def list(items: Optional[List[str]] = None, ordered: bool = False) -> 'Report.HtmlList':
+        html_list = Report.HtmlList(ordered=ordered)
+        if items:
+            for item in items:
+                html_list.add_item(item)
+        return html_list
+
+    @staticmethod
+    def description_list(items: Optional[List[Tuple[str, str]]] = None) -> 'Report.DescriptionList':
+        desc_list = Report.DescriptionList()
+        if items:
+            for item in items:
+                desc_list.add_item(*item)
+        return desc_list
 
     @staticmethod
     def html() -> str:
@@ -160,4 +200,4 @@ class Report:
         body = ET.SubElement(html, 'body', {'class': 'container'})
         body.append(Report.__header())
         body.append(Report.__current_report)
-        return ET.tostring(html, encoding='unicode', method='html')#.decode('utf-8')
+        return ET.tostring(html, encoding='unicode', method='html')  # .decode('utf-8')

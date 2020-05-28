@@ -168,19 +168,20 @@ def main():
         intervals = {}
         ranges_widths = [
             # t = 100 ms is the time between two captured emotions
-            # 25,  # 1/4 * t
-            # 50,  # 1/2 * t
-            # 100,  # 1 * t
-            # 200,  # 2 * t
+            25,  # 1/4 * t
+            50,  # 1/2 * t
+            100,  # 1 * t
+            200,  # 2 * t
             500,  # 5 * t
-            # 1000,  # 10 * t
-            # 2000  # 20 * t
+            1000,  # 10 * t
+            2000  # 20 * t
         ]
+        report_range_list = Report.description_list()
         for range_width in ranges_widths:
-            Report.subsubsection(f"Range Width: {range_width} ms")
+            _, report_range_list_item = report_range_list.add_item(f"Range width: {range_width} ms.", "")
             temp_intervals = [interactions_from_range(interactions, r) for r in
                               interactions_split_intervals(interactions, range_width)]
-            Report.text(f"Found {len(temp_intervals)} intervals using the given width ({range_width} ms).")
+            report_range_list_item.text += f" Found {len(temp_intervals)} intervals using the given width ({range_width} ms)."
             interval_start_time = time.time()
             for interactions_range in temp_intervals:
                 if interactions_range.middle.timestamp not in intervals:
@@ -256,7 +257,7 @@ def main():
                     'event_times': event_times,
                     'idle': idle
                 }
-            Report.text(f"Interval analysis completed after {round(time.time() - interval_start_time, 3)} seconds.")
+            report_range_list_item.text += f" Interval analysis completed after {round(time.time() - interval_start_time, 3)} seconds."
 
         utilities.to_csv(utilities.aggregate_data_to_list(intervals), args.out, user, 'aggregate.csv')
         utilities.to_csv(interactions, args.out, user, 'interactions.csv')
