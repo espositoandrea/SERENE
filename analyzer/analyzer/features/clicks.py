@@ -68,27 +68,27 @@ def clicks_statistics(interactions: List[Interaction], range_width: int) -> Clic
 
     # left button
     avg = clicks.left / range_width
-    std_dev = statistics.stdev([obj.mouse.clicks.left for obj in interactions])
+    std_dev = sum([(int(obj.mouse.clicks.left) - avg) ** 2 for obj in interactions]) / len(interactions)
     left = BasicStats(clicks.left, avg, std_dev)
 
     # middle button
     avg = clicks.middle / range_width
-    std_dev = statistics.stdev([obj.mouse.clicks.middle for obj in interactions])
+    std_dev = sum([(int(obj.mouse.clicks.middle) - avg) ** 2 for obj in interactions]) / len(interactions)
     middle = BasicStats(clicks.middle, avg, std_dev)
 
     # right button
     avg = clicks.right / range_width
-    std_dev = statistics.stdev([obj.mouse.clicks.right for obj in interactions])
+    std_dev = sum([(int(obj.mouse.clicks.right) - avg) ** 2 for obj in interactions]) / len(interactions)
     right = BasicStats(clicks.right, avg, std_dev)
 
     # other buttons
     avg = clicks.other / range_width
-    std_dev = statistics.stdev([obj.mouse.clicks.others for obj in interactions])
+    std_dev = sum([(int(obj.mouse.clicks.others) - avg) ** 2 for obj in interactions]) / len(interactions)
     other = BasicStats(clicks.other, avg, std_dev)
 
     # all buttons
     avg = clicks.all / range_width
-    std_dev = statistics.stdev([obj.mouse.clicks.any for obj in interactions])
+    std_dev = sum([(int(obj.mouse.clicks.any) - avg) ** 2 for obj in interactions]) / len(interactions)
     all = BasicStats(clicks.all, avg, std_dev)
 
     return Clicks(all, left, middle, right, other)

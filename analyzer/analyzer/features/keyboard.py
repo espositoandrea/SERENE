@@ -88,32 +88,33 @@ def keyboard_statistics(interactions: List[Interaction], range_width: int) -> Ke
 
     # all keys
     avg = keys.all / range_width
-    std_dev = statistics.stdev([obj.keyboard.any for obj in interactions])
+    std_dev = sum([(int(obj.keyboard.any) - avg) ** 2 for obj in interactions]) / len(interactions)
     all = BasicStats(keys.all, avg, std_dev)
 
     # alphabetic keys
     avg = keys.alphabetic / range_width
-    std_dev = statistics.stdev([obj.keyboard.alpha for obj in interactions])
+    std_dev = sum([(int(obj.keyboard.alpha) - avg) ** 2 for obj in interactions]) / len(interactions)
     alpha = BasicStats(keys.alphabetic, avg, std_dev)
 
     # numeric keys
     avg = keys.numeric / range_width
-    std_dev = statistics.stdev([obj.keyboard.numeric for obj in interactions])
+    std_dev = sum([(int(obj.keyboard.numeric) - avg) ** 2 for obj in interactions]) / len(interactions)
     numeric = BasicStats(keys.numeric, avg, std_dev)
 
     # symbol keys
     avg = keys.symbol / range_width
-    std_dev = statistics.stdev([obj.keyboard.symbol for obj in interactions])
+    std_dev = sum([(int(obj.keyboard.symbol) - avg) ** 2 for obj in interactions]) / len(interactions)
     symbol = BasicStats(keys.symbol, avg, std_dev)
 
     # function keys
     avg = keys.function / range_width
-    std_dev = statistics.stdev([obj.keyboard.function for obj in interactions])
+    std_dev = sum([(int(obj.keyboard.function) - avg) ** 2 for obj in interactions]) / len(interactions)
     function = BasicStats(keys.function, avg, std_dev)
 
     # alphanumeric keys
     avg = keys.alphanumeric / range_width
-    std_dev = statistics.stdev([obj.keyboard.alpha or obj.keyboard.numeric for obj in interactions])
+    std_dev = sum([(int(obj.keyboard.alpha or obj.keyboard.numeric) - avg) ** 2 for obj in interactions]) / len(
+        interactions)
     alphanum = BasicStats(keys.alphanumeric, avg, std_dev)
 
     return Keyboard(
