@@ -43,6 +43,7 @@ class Interaction:
     # Emotions
     emotions: Emotions
     url_category: str = None
+    slope: float = None
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -65,6 +66,7 @@ class Interaction:
             "mouse.acceleration": self.mouse.acceleration.total,
             "mouse.acceleration.x": self.mouse.acceleration.x,
             "mouse.acceleration.y": self.mouse.acceleration.y,
+            "trajectory.slope": self.slope,
             # Scroll
             "scroll.absolute.x": self.scroll.absolute.x,
             "scroll.absolute.y": self.scroll.absolute.y,

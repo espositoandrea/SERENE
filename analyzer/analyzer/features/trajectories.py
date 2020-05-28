@@ -15,17 +15,22 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Types
-from .base import BasicStats, RateStats
-from .clicks import Clicks
-from .keyboard import Keyboard
-from .websites import VisitedWebsites
+import statistics
+from typing import List, Tuple
 
-# Functions
-from .speed import interactions_set_speed, average_speed
-from .clicks import clicks_statistics, number_of_clicks
-from .keyboard import keyboard_statistics, number_of_keys
-from .websites import interactions_set_website_categories, visited_websites, websites_statistics
-from .variation import average_events_time, average_idle_time, get_changed_features, mouse_movements_per_milliseconds, \
-    scrolls_per_milliseconds
-from .trajectories import interactions_set_directions, average_direction
+from analyzer.data import Interaction
+
+
+def interactions_set_directions(interactions: List[Interaction]):
+    for obj in interactions:
+        obj.slope = obj.mouse.speed.y / obj.mouse.speed.x
+
+
+def average_direction(interactions: List[Interaction]) -> Tuple[float, float]:
+    if not interactions:
+        return 0, 0
+    elif len(interactions) == 1:
+        return interactions[0].slope, 0
+
+    slopes = [obj.slope for obj in interactions]
+    return statistics.mean(slopes), statistics.stdev(slopes)

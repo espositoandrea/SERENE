@@ -29,7 +29,8 @@ import urllib3
 import analyzer
 from analyzer.features import average_speed, clicks_statistics, keyboard_statistics, websites_statistics, \
     interactions_set_speed, interactions_set_website_categories, scrolls_per_milliseconds, \
-    mouse_movements_per_milliseconds, average_idle_time, average_events_time
+    mouse_movements_per_milliseconds, average_idle_time, average_events_time, interactions_set_directions, \
+    average_direction
 from . import plotting
 from .data import *
 from .interval import interactions_split_intervals, interactions_from_range, flatten_range
@@ -137,6 +138,7 @@ def main():
 
         interactions.sort(key=lambda obj: obj.timestamp)
         interactions_set_speed(interactions)
+        interactions_set_directions(interactions)
         interactions_set_website_categories(interactions, websites)
 
         intervals = {}
@@ -146,6 +148,13 @@ def main():
                                       interactions_split_intervals(interactions, range_width)]
 
             for interactions_range in intervals[range_width]:
+                slopes = dict()
+                slopes["full"] = average_direction(flatten_range(interactions_range))
+                slopes["before"] = average_direction(
+                    interactions_range.preceding + [interactions_range.middle])
+                slopes["after"] = average_direction(
+                    [interactions_range.middle] + interactions_range.following)
+
                 mouse_movements = dict()
                 mouse_movements["full"] = mouse_movements_per_milliseconds(flatten_range(interactions_range),
                                                                            range_width)
