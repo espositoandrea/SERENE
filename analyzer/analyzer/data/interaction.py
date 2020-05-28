@@ -153,7 +153,7 @@ def load_interactions(mongodb: db.Database = None, user: str = None) -> List[Int
             else:
                 timestamps[obj.timestamp].append(obj._id)
     else:
-        api_url = "https://giuseppe-desolda.ddns.net:8080/api/interactions/filtered/{}-{}" if user is None else "https://giuseppe-desolda.ddns.net:8080/api/user/" + user + "/interactions/filtered/{}-{}"
+        api_url = "https://giuseppe-desolda.ddns.net:8080/api/interactions/{}-{}" if user is None else f"https://giuseppe-desolda.ddns.net:8080/api/user/{user}/interactions/{{}}-{{}}"
         current_base = 0
         skip = 10000
 
