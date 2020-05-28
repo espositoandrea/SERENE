@@ -15,22 +15,32 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import statistics
-from typing import List, Tuple
+import dataclasses
+from typing import List
 
 from analyzer.data import Interaction
 
 
+@dataclasses.dataclass
+class DirectionStatistics:
+    changes: int
+    change_rate: float
+
+
 def interactions_set_directions(interactions: List[Interaction]):
     for obj in interactions:
-        obj.slope = obj.mouse.speed.y / obj.mouse.speed.x
+        if obj.mouse.speed.y == 0 and obj.mouse.speed.x == 0:
+            obj.slope = None
+        elif obj.mouse.speed.x == 0:
+            obj.slope = float('inf')
+        else:
+            obj.slope = obj.mouse.speed.y / obj.mouse.speed.x
 
 
-def average_direction(interactions: List[Interaction]) -> Tuple[float, float]:
-    if not interactions:
-        return 0, 0
-    elif len(interactions) == 1:
-        return interactions[0].slope, 0
-
-    slopes = [obj.slope for obj in interactions]
-    return statistics.mean(slopes), statistics.stdev(slopes)
+def direction_changes(interactions: List[Interaction], range_width) -> DirectionStatistics:
+    changes = 0
+    for i, obj in enumerate(interactions[1:], 1):
+        prev = interactions[i - 1]
+        if obj.slope != prev.slope:
+            changes += 1
+    return DirectionStatistics(changes=changes, change_rate=changes / range_width)

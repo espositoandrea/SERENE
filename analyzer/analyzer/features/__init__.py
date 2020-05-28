@@ -20,6 +20,7 @@ from .base import BasicStats, RateStats
 from .clicks import Clicks
 from .keyboard import Keyboard
 from .websites import VisitedWebsites
+from .trajectories import DirectionStatistics
 
 # Functions
 from .speed import interactions_set_speed, average_speed
@@ -28,4 +29,4 @@ from .keyboard import keyboard_statistics, number_of_keys
 from .websites import interactions_set_website_categories, visited_websites, websites_statistics
 from .variation import average_events_time, average_idle_time, get_changed_features, mouse_movements_per_milliseconds, \
     scrolls_per_milliseconds
-from .trajectories import interactions_set_directions, average_direction
+from .trajectories import interactions_set_directions, direction_changes
