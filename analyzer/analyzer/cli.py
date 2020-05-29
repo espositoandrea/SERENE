@@ -22,9 +22,11 @@ import math
 import os
 import shutil
 import time
+import gc
 import coloredlogs
 import pymongo
 import urllib3
+from bson import ObjectId
 
 import analyzer
 from analyzer.features import average_speed, clicks_statistics, keyboard_statistics, websites_statistics, \
@@ -89,6 +91,7 @@ def set_up_args() -> argparse.Namespace:
 
 def main():
     urllib3.disable_warnings()
+    gc.enable()
 
     args = set_up_args()
 
@@ -124,6 +127,7 @@ def main():
         users = dict(list(users.items())[0:2])
 
     Report.table([u.to_dict() for u in users.values()], caption='Loaded users', id_col='_id')
+    logger.info("Saving users")
     utilities.to_csv(users, args.out, 'users.csv')
 
     Report.figure(plotting.plot_to_data_uri(plotting.plot_user_basic_info(users)), caption="Users details")
@@ -135,6 +139,7 @@ def main():
         f"Loaded {len(websites)} websites from {source_description} in {round(time.time() - start_time, 3)} seconds.")
     Report.table([w.to_dict() for w in list(websites.values())[0:5]], caption="The first loaded websites", id_col='url')
     Report.figure(plotting.plot_to_data_uri(plotting.plot_websites_categories(websites)), caption="Website categories")
+    logger.info("Saving websites")
     utilities.to_csv(websites, args.out, 'websites.csv')
 
     start_time = time.time()
@@ -142,6 +147,8 @@ def main():
     processing_summary = Report.text('')
     user_times = list()
     for i, user in enumerate(users, 1):
+        logger.info("Running garbage collector")
+        gc.collect()
         user_start_time = time.time()
         Report.subsection(f"Processing Data by User “{user}” ({i} of {len(users)})")
         Report.text(
@@ -160,11 +167,18 @@ def main():
 
         end_text = Report.text()
 
-        interactions.sort(key=lambda obj: obj.timestamp)
+        logger.info("Sorting by timestamps")
+        interactions.sort(key=lambda obj: (obj.timestamp, ObjectId(obj._id).generation_time))
+        logger.info("Setting speed")
         interactions_set_speed(interactions)
+        logger.info("Setting direction")
         interactions_set_directions(interactions)
+        logger.info("Setting websites categories")
         interactions_set_website_categories(interactions, websites)
+        logger.info("Saving punctual data")
+        utilities.to_csv(interactions, args.out, user, 'interactions.csv')
 
+        logger.info("Getting intervals")
         intervals = {}
         ranges_widths = [
             # t = 100 ms is the time between two captured emotions
@@ -178,89 +192,84 @@ def main():
         ]
         report_range_list = Report.description_list()
         for range_width in ranges_widths:
+            logger.info("Getting intervals of %d milliseconds", range_width)
             _, report_range_list_item = report_range_list.add_item(f"Range width: {range_width} ms.", "")
             temp_intervals = [interactions_from_range(interactions, r) for r in
                               interactions_split_intervals(interactions, range_width)]
             report_range_list_item.text += f" Found {len(temp_intervals)} intervals using the given width ({range_width} ms)."
             interval_start_time = time.time()
+            logger.info("Calculating aggregate data on %d intervals", len(temp_intervals))
             for interactions_range in temp_intervals:
                 if interactions_range.middle.timestamp not in intervals:
                     intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)] = dict()
-                slopes = dict()
-                slopes["full"] = direction_changes(flatten_range(interactions_range), range_width)
-                slopes["before"] = direction_changes(
-                    interactions_range.preceding + [interactions_range.middle], range_width / 2)
-                slopes["after"] = direction_changes([interactions_range.middle] + interactions_range.following,
-                                                    range_width / 2)
-
-                mouse_movements = dict()
-                mouse_movements["full"] = mouse_movements_per_milliseconds(flatten_range(interactions_range),
-                                                                           range_width)
-                mouse_movements["before"] = mouse_movements_per_milliseconds(
-                    interactions_range.preceding + [interactions_range.middle], range_width / 2)
-                mouse_movements["after"] = mouse_movements_per_milliseconds(
-                    [interactions_range.middle] + interactions_range.following, range_width / 2)
-
-                scrolls = dict()
-                scrolls["full"] = scrolls_per_milliseconds(flatten_range(interactions_range), range_width)
-                scrolls["before"] = scrolls_per_milliseconds(interactions_range.preceding + [interactions_range.middle],
-                                                             range_width / 2)
-                scrolls["after"] = scrolls_per_milliseconds([interactions_range.middle] + interactions_range.following,
-                                                            range_width / 2)
-
-                avg_speed = dict()
-                avg_speed["full"] = average_speed(flatten_range(interactions_range))
-                avg_speed["before"] = average_speed(interactions_range.preceding + [interactions_range.middle])
-                avg_speed["after"] = average_speed([interactions_range.middle] + interactions_range.following)
-
-                # Click statistics
-                clicks = dict()
-                clicks["full"] = clicks_statistics(flatten_range(interactions_range), range_width)
-                clicks["before"] = clicks_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width / 2)
-                clicks["after"] = clicks_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width / 2)
-
-                # keyboard statistics
-                keys = dict()
-                keys["full"] = keyboard_statistics(flatten_range(interactions_range), range_width)
-                keys["before"] = keyboard_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width / 2)
-                keys["after"] = keyboard_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width / 2)
-
-                urls = dict()
-                urls["full"] = websites_statistics(flatten_range(interactions_range), range_width)
-                urls["before"] = websites_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width / 2)
-                urls["after"] = websites_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width / 2)
-
-                event_times = dict()
-                event_times["full"] = average_events_time(flatten_range(interactions_range))
-                event_times["before"] = average_events_time(interactions_range.preceding + [interactions_range.middle])
-                event_times["after"] = average_events_time([interactions_range.middle] + interactions_range.following)
-
-                idle = dict()
-                idle["full"] = average_idle_time(flatten_range(interactions_range))
-                idle["before"] = average_idle_time(interactions_range.preceding + [interactions_range.middle])
-                idle["after"] = average_idle_time([interactions_range.middle] + interactions_range.following)
 
                 intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)][range_width] = {
-                    'slopes': slopes,
-                    'mouse_movements': mouse_movements,
-                    'scrolls': scrolls,
-                    'avg_speed': avg_speed,
-                    'clicks': clicks,
-                    'keys': keys,
-                    'urls': urls,
-                    'event_times': event_times,
-                    'idle': idle
+                    'slopes': {
+                        'full':direction_changes(flatten_range(interactions_range), range_width),
+                        'before':direction_changes(
+                    interactions_range.preceding + [interactions_range.middle], range_width / 2),
+                        'after':direction_changes([interactions_range.middle] + interactions_range.following,
+                                                    range_width / 2)
+                    },
+                    'mouse_movements': {
+                        'full':mouse_movements_per_milliseconds(flatten_range(interactions_range),
+                                                                           range_width),
+                        'before':mouse_movements_per_milliseconds(
+                    interactions_range.preceding + [interactions_range.middle], range_width / 2),
+                        'after':mouse_movements_per_milliseconds(
+                    [interactions_range.middle] + interactions_range.following, range_width / 2)
+                    },
+                    'scrolls': {
+                        'full':scrolls_per_milliseconds(flatten_range(interactions_range), range_width),
+                        'before':scrolls_per_milliseconds(interactions_range.preceding + [interactions_range.middle],
+                                                             range_width / 2),
+                        'after':scrolls_per_milliseconds([interactions_range.middle] + interactions_range.following,
+                                                            range_width / 2)
+                    },
+                    'avg_speed': {
+                        'full':average_speed(flatten_range(interactions_range)),
+                        'before':average_speed(interactions_range.preceding + [interactions_range.middle]),
+                        'after':average_speed([interactions_range.middle] + interactions_range.following)
+                    },
+                    'clicks': {
+                        'full':clicks_statistics(flatten_range(interactions_range), range_width),
+                        'before':clicks_statistics(interactions_range.preceding + [interactions_range.middle],
+                                                     range_width / 2),
+                        'after':clicks_statistics([interactions_range.middle] + interactions_range.following,
+                                                    range_width / 2)
+                    },
+                    'keys': {
+                        'full':keyboard_statistics(flatten_range(interactions_range), range_width),
+                        'before':keyboard_statistics(interactions_range.preceding + [interactions_range.middle],
+                                                     range_width / 2),
+                        'after':keyboard_statistics([interactions_range.middle] + interactions_range.following,
+                                                    range_width / 2)
+                    },
+                    'urls': {
+                        'full':websites_statistics(flatten_range(interactions_range), range_width),
+                        'before':websites_statistics(interactions_range.preceding + [interactions_range.middle],
+                                                     range_width / 2),
+                        'after':websites_statistics([interactions_range.middle] + interactions_range.following,
+                                                    range_width / 2)
+                    },
+                    'event_times': {
+                        'full':average_events_time(flatten_range(interactions_range)),
+                        'before':average_events_time(interactions_range.preceding + [interactions_range.middle]),
+                        'after':average_events_time([interactions_range.middle] + interactions_range.following)
+                    },
+                    'idle': {
+                        'full':average_idle_time(flatten_range(interactions_range)),
+                        'before':average_idle_time(interactions_range.preceding + [interactions_range.middle]),
+                        'after':average_idle_time([interactions_range.middle] + interactions_range.following)
+                    }
                 }
+            logger.info("Running garbage collector")
+            gc.collect()
             report_range_list_item.text += f" Interval analysis completed after {round(time.time() - interval_start_time, 3)} seconds."
+            logger.info("Interval analysis completed after %.3f seconds", time.time() - interval_start_time)
 
+        logger.info("Saving aggregate data")
         utilities.to_csv(utilities.aggregate_data_to_list(intervals), args.out, user, 'aggregate.csv')
-        utilities.to_csv(interactions, args.out, user, 'interactions.csv')
 
         user_end_time = time.time()
         user_times.append(user_end_time - user_start_time)

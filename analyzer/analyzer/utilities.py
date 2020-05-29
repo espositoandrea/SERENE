@@ -18,6 +18,7 @@
 import csv
 import os
 from typing import List, Dict, Union, Any, Tuple
+from itertools import tee
 
 from analyzer.data import Interaction, User, Website
 from analyzer.data.base import BaseObject
@@ -30,14 +31,26 @@ def to_csv(values: AnalyzerValues, *filename: str, mode: str = 'w') -> None:
     dest_path = os.path.join(*filename)
     if not os.path.exists(os.path.dirname(dest_path)):
         os.makedirs(os.path.dirname(dest_path), exist_ok=True)
+    
+
+    if isinstance(values, dict):
+        for_keys = next(iter(values.values()))
+    else:
+        values, backup = tee(values)
+        for_keys = next(iter(backup))
+        del backup
+    if isinstance(for_keys, BaseObject):
+        keys = for_keys.to_dict().keys()
+    else:
+        keys = for_keys.keys()
 
     if isinstance(values, dict):
         values = [values[k] for k in values]
 
-    values = [val.to_dict() if isinstance(val, BaseObject) else val for val in values]
+    values = (val.to_dict() if isinstance(val, BaseObject) else val for val in values)
 
     with open(dest_path, mode=mode, encoding='utf-8', newline='') as file:
-        writer = csv.DictWriter(file, values[0].keys())
+        writer = csv.DictWriter(file, keys)
         if mode != 'a' and mode != 'ab':
             writer.writeheader()
 
@@ -45,7 +58,6 @@ def to_csv(values: AnalyzerValues, *filename: str, mode: str = 'w') -> None:
 
 
 def aggregate_data_to_list(values: Dict[Tuple[str, int], Dict[float, Dict[str, Any]]]) -> List[Dict[str, BaseValues]]:
-    flattened = list()
     for obj_id, timestamp in values:
         d = {'middle.timestamp': timestamp, 'middle.id': obj_id}
         for range_width, val in values[(obj_id, timestamp)].items():
@@ -91,5 +103,4 @@ def aggregate_data_to_list(values: Dict[Tuple[str, int], Dict[float, Dict[str, A
                 # URLs
                 for k in vars(val['urls'][location]):
                     d[f"{range_width}.{location}.urls.{k}"] = getattr(val['urls'][location], k)
-        flattened.append(d)
-    return flattened
+        yield d

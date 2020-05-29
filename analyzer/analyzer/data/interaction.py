@@ -20,6 +20,7 @@ import math
 import os
 import re
 from typing import List, Dict, Any
+import gc
 
 import pymongo.database as db
 import requests
@@ -28,22 +29,31 @@ from .base import *
 from .emotions import Emotions
 
 
-@dataclasses.dataclass
 class Interaction(BaseObject):
-    _id: str
-    user_id: str
-    timestamp: int
-    url: str
-    # Mouse
-    mouse: MouseData
-    # Scroll
-    scroll: ScrollData
-    # Keyboard
-    keyboard: KeyboardData
-    # Emotions
-    emotions: Emotions
-    url_category: str = None
-    slope: float = None
+    __slots__ = [
+        "_id",
+        "user_id",
+        "timestamp",
+        "url",
+        "mouse",
+        "scroll",
+        "keyboard",
+        "emotions",
+        "url_category",
+        "slope"
+    ]
+    def __init__(self, **kwargs):
+        super().__init__()
+        self._id: str = kwargs.get("_id")
+        self.user_id: str = kwargs.get("user_id")
+        self.timestamp: int = kwargs.get("timestamp")
+        self.url: str = kwargs.get("url")
+        self.mouse: MouseData = kwargs.get("mouse")
+        self.scroll: ScrollData = kwargs.get("scroll")
+        self.keyboard: KeyboardData = kwargs.get("keyboard")
+        self.emotions: Emotions = kwargs.get("emotions")
+        self.url_category: str = kwargs.get("url_category")
+        self.slope: float = kwargs.get("slope")
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -140,7 +150,6 @@ def load_interactions(mongodb: db.Database = None, user: str = None) -> List[Int
     is_test_mode = os.getenv('TESTING_MODE', 'False') == 'True'
     testing_limit = 20000
 
-    timestamps = dict()
     if mongodb:
         logger.info("Loading interactions from database...")
         interactions = mongodb['interactions'].find() if user is None else mongodb['interactions'].find({'ui': user})
@@ -149,11 +158,6 @@ def load_interactions(mongodb: db.Database = None, user: str = None) -> List[Int
             interactions.limit(testing_limit)
 
         interactions = [convert_object(obj) for obj in interactions]
-        for obj in interactions:
-            if obj.timestamp and obj.timestamp not in timestamps:
-                timestamps[obj.timestamp] = [obj._id]
-            else:
-                timestamps[obj.timestamp].append(obj._id)
     else:
         api_url = "https://giuseppe-desolda.ddns.net:8080/api/interactions/{}-{}" if user is None else f"https://giuseppe-desolda.ddns.net:8080/api/user/{user}/interactions/{{}}-{{}}"
         current_base = 0
@@ -182,37 +186,30 @@ def load_interactions(mongodb: db.Database = None, user: str = None) -> List[Int
                             round(current_base / skip) + 1, expected_iterations)
                 break
 
-            current = list()
-
-            for obj in db_content:
-                if "t" in obj and obj['t'] not in timestamps:
-                    timestamps[obj['t']] = [obj['_id']]
-                else:
-                    timestamps[obj['t']].append(obj['_id'])
-
-                # instead of saving the pressed mouse buttons, we save the click events
-                current.append(convert_object(obj))
-            interactions.extend(current)
+            interactions.extend(convert_object(obj) for obj in db_content)
             current_base += skip
             logger.info("Loaded interactions from web APIs (iteration %d of %d)", round(current_base / skip),
                         expected_iterations)
+            logger.info("Running garbage collector")
+            gc.collect()
 
     logger.info("Done. Loaded %d interactions", len(interactions))
 
     # Remove duplicate timestamps
-    logger.info("Removing duplicate timestamps from interactions")
-    for ids in timestamps.values():
-        if len(ids) <= 1:
-            continue
+    # logger.info("Removing duplicate timestamps from interactions")
+    # for ids in timestamps.values():
+    #     if len(ids) <= 1:
+    #         continue
+    #     logger.info("Removing duplicates from [%s]", ", ".join(ids))
 
-        objects = [obj for obj in interactions if obj._id in ids]
-        not_emotions = list(filter(lambda obj: not obj.emotions.exists, objects))
-        if len(objects) == len(not_emotions):
-            to_remove = objects[1:]
-        else:
-            to_remove = not_emotions
+    #     objects = [obj for obj in interactions if obj._id in ids]
+    #     not_emotions = list(filter(lambda obj: not obj.emotions.exists, objects))
+    #     if len(objects) == len(not_emotions):
+    #         to_remove = objects[1:]
+    #     else:
+    #         to_remove = not_emotions
 
-        interactions = list(filter(lambda obj: obj not in to_remove, interactions))
-    logger.info("Done. New number of interactions: %d", len(interactions))
+    #     interactions = list(filter(lambda obj: obj not in to_remove, interactions))
+    # logger.info("Done. New number of interactions: %d", len(interactions))
 
     return interactions
