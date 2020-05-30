@@ -5,7 +5,10 @@ init:
 lint:
 	pipenv run pylint --rcfile=.pylintrc analyzer -f colorized --exit-zero
 
+build:
+	pipenv run python ./setup.py sdist bdist_wheel
+
 test: | lint
 	# py.test tests
 
-.PHONY: init test lint
+.PHONY: init test lint build

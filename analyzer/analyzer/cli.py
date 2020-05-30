@@ -106,6 +106,8 @@ def main():
             fmt="[%(levelname)s] %(asctime)s (%(name)s) %(message)s",
         )
     if not args.no_log:
+        if not os.path.exists(args.out):
+            os.makedirs(args.out, exist_ok=True)
         file_handler = logging.FileHandler('{}/report.log'.format(args.out), mode='w')
         file_handler.setFormatter(logging.Formatter("[%(levelname)s] %(asctime)s (%(name)s) %(message)s"))
         file_handler.setLevel(logging.INFO)

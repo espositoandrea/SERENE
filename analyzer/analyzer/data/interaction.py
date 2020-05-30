@@ -246,7 +246,7 @@ class InteractionsList(object):
             yield current_range
 
     @timed("Analyzed all intervals in %.3fs")
-    def process_intervals(self, range_width: float) -> Dict[float, Dict[int, IntervalData]]:
+    def process_intervals(self, range_width: float) -> Dict[int, IntervalData]:
         logger.info("Getting intervals of %d milliseconds", range_width)
         temp_intervals = self._get_intervals(range_width)
         logger.info("Calculating aggregate data on intervals")
@@ -255,7 +255,7 @@ class InteractionsList(object):
             intervals[interactions_range.middle] = self._process_single_interval(interactions_range, range_width)
         logger.info("Running garbage collector")
         gc.collect()
-        return {range_width: intervals}
+        return intervals
 
     def _get_direction_changes(self, interactions: Range[int], range_width: float) -> RangeData[DirectionStatistics]:
         def direction_changes(indexes: Iterator[int], width) -> DirectionStatistics:

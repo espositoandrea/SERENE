@@ -120,11 +120,12 @@ def load_interactions(mongodb: db.Database = None, user: str = None) -> Interact
                 break
 
             interactions.extend(convert_object(obj) for obj in db_content)
+            del db_content
             current_base += skip
             logger.info("Loaded interactions from web APIs (iteration %d of %d)", round(current_base / skip),
                         expected_iterations)
-            logger.info("Running garbage collector")
-            gc.collect()
+        logger.info("Running garbage collector")
+        gc.collect()
 
     logger.info("Done. Loaded %d interactions", len(interactions))
 

@@ -77,48 +77,46 @@ class AggregateData(object):
                 val = val.to_dict()
                 for location in ['full', 'before', 'after']:
                     # Average speed
-                    for k in vars(val['avg_speed'][location][0]):
-                        d[f'{range_width}.avg_speed.{location}.total.{k}'] = getattr(val['avg_speed'][location][0], k)
-                    for k in vars(val['avg_speed'][location][1]):
-                        d[f'{range_width}.avg_speed.{location}.x.{k}'] = getattr(val['avg_speed'][location][1], k)
-                    for k in vars(val['avg_speed'][location][2]):
-                        d[f'{range_width}.avg_speed.{location}.y.{k}'] = getattr(val['avg_speed'][location][2], k)
+                    for k, v in val['avg_speed'][location][0]:
+                        d[f'{range_width}.avg_speed.{location}.total.{k}'] = v
+                    for k, v in val['avg_speed'][location][1]:
+                        d[f'{range_width}.avg_speed.{location}.x.{k}'] = v
+                    for k, v in val['avg_speed'][location][2]:
+                        d[f'{range_width}.avg_speed.{location}.y.{k}'] = v
 
                     # Clicks
-                    for k in vars(val['clicks'][location]):
-                        for j in vars(getattr(val['clicks'][location], k)):
-                            d[f"{range_width}.{location}.clicks.{k}.{j}"] = getattr(getattr(val['clicks'][location], k),
-                                                                                    j)
+                    for k, v in val['clicks'][location]:
+                        for j, v1 in v:
+                            d[f"{range_width}.{location}.clicks.{k}.{j}"] = v1
 
                     # Time between events
-                    for k in vars(val['event_times'][location]):
-                        d[f"{range_width}.{location}.event_times.{k}"] = getattr(val['event_times'][location], k)
+                    for k, v in val['event_times'][location]:
+                        d[f"{range_width}.{location}.event_times.{k}"] = v
 
                     # Idle time
-                    for k in vars(val['idle'][location]):
-                        d[f"{range_width}.{location}.idle.{k}"] = getattr(val['idle'][location], k)
+                    for k, v in val['idle'][location]:
+                        d[f"{range_width}.{location}.idle.{k}"] = v
 
                     # Keyboard
-                    for k in vars(val['keys'][location]):
-                        for j in vars(getattr(val['keys'][location], k)):
-                            d[f"{range_width}.{location}.keys.{k}.{j}"] = getattr(getattr(val['keys'][location], k), j)
+                    for k, v in val['keys'][location]:
+                        for j, v1 in v:
+                            d[f"{range_width}.{location}.keys.{k}.{j}"] = v1
 
                     # Mouse movements
-                    for k in vars(val['mouse_movements'][location]):
-                        d[f"{range_width}.{location}.mouse_movements.{k}"] = getattr(val['mouse_movements'][location],
-                                                                                     k)
+                    for k, v in val['mouse_movements'][location]:
+                        d[f"{range_width}.{location}.mouse_movements.{k}"] = v
 
                     # Scrolls
-                    for k in vars(val['scrolls'][location]):
-                        d[f"{range_width}.{location}.scrolls.{k}"] = getattr(val['scrolls'][location], k)
+                    for k, v in val['scrolls'][location]:
+                        d[f"{range_width}.{location}.scrolls.{k}"] = v
 
                     # Trajectory
-                    for k in vars(val['slopes'][location]):
-                        d[f"{range_width}.{location}.slopes.{k}"] = getattr(val['slopes'][location], k)
+                    for k, v in val['slopes'][location]:
+                        d[f"{range_width}.{location}.slopes.{k}"] = v
 
                     # URLs
-                    for k in vars(val['urls'][location]):
-                        d[f"{range_width}.{location}.urls.{k}"] = getattr(val['urls'][location], k)
+                    for k, v in val['urls'][location]:
+                        d[f"{range_width}.{location}.urls.{k}"] = v
             yield d
 
 
