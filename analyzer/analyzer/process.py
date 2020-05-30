@@ -17,9 +17,11 @@
 
 import gc
 import logging
+import os
 from typing import Dict
 
 import pymongo.database as db
+import multiprocessing
 
 from . import utilities
 from .data import *
@@ -54,8 +56,9 @@ def process_user(user: str, websites: Dict[str, Website], db: db.Database, index
         1000,  # 10 * t
         2000  # 20 * t
     ]
-    for range_width in ranges_widths:
-        intervals[range_width], __ = interactions.process_intervals(range_width)
+    with multiprocessing.Pool() as pool:
+        for data, __ in pool.map(interactions.process_intervals, ranges_widths):
+            intervals.update(data)
 
     logger.info("Saving aggregate data")
     utilities.to_csv(utilities.aggregate_data_to_list(intervals, interactions), out_dir, user, 'aggregate.csv')
