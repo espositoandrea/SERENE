@@ -54,6 +54,11 @@ def set_up_args() -> argparse.Namespace:
              "If it's not available, the web API will be used."
     )
     parser.add_argument(
+        '--user',
+        metavar='USER_ID',
+        help="The user ID to analyze."
+    )
+    parser.add_argument(
         "--version", '-v',
         help="output version information and exit",
         action='version',
@@ -75,6 +80,11 @@ def set_up_args() -> argparse.Namespace:
         default='out'
     )
     parser.add_argument(
+        '--drop', '-d',
+        action='store_true',
+        help='Drop the output folder if it already exist.'
+    )
+    parser.add_argument(
         '--zip',
         help='Zip the output folder',
         action='store_true'
@@ -82,7 +92,7 @@ def set_up_args() -> argparse.Namespace:
     parser.add_argument(
         '--report',
         help="Set the output format of the report. Use 'none' to disable it",
-        choices=['html', 'pdf', 'none'],
+        choices=['html', 'pdf', 'none', 'all'],
         metavar='FORMAT',
         default='html'
     )
@@ -102,7 +112,7 @@ def main():
         fmt="[%(levelname)s] %(asctime)s (%(name)s) %(message)s"
     )
 
-    if os.path.exists(args.out) and os.listdir(args.out):
+    if args.drop and os.path.exists(args.out) and os.listdir(args.out):
         logger.info("Emptying output directory ('%s')", os.path.abspath(args.out))
         shutil.rmtree(args.out, ignore_errors=True)
 
@@ -146,6 +156,8 @@ def main():
     Report.section("Process the Data")
     processing_summary = Report.text('')
     user_times = list()
+    if args.user:
+        users = [args.user]
     for i, user in enumerate(users, 1):
         logger.info("Running garbage collector")
         gc.collect()
@@ -194,73 +206,73 @@ def main():
         for range_width in ranges_widths:
             logger.info("Getting intervals of %d milliseconds", range_width)
             _, report_range_list_item = report_range_list.add_item(f"Range width: {range_width} ms.", "")
-            temp_intervals = [interactions_from_range(interactions, r) for r in
-                              interactions_split_intervals(interactions, range_width)]
-            report_range_list_item.text += f" Found {len(temp_intervals)} intervals using the given width ({range_width} ms)."
+            temp_intervals = (interactions_from_range(interactions, r) for r in
+                              interactions_split_intervals(interactions, range_width))
+            report_range_list_item.text += f" Got the intervals using the given width ({range_width} ms)."
             interval_start_time = time.time()
-            logger.info("Calculating aggregate data on %d intervals", len(temp_intervals))
+            logger.info("Calculating aggregate data on intervals")
             for interactions_range in temp_intervals:
-                if interactions_range.middle.timestamp not in intervals:
+                if (interactions_range.middle._id, interactions_range.middle.timestamp) not in intervals:
                     intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)] = dict()
 
                 intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)][range_width] = {
                     'slopes': {
-                        'full':direction_changes(flatten_range(interactions_range), range_width),
-                        'before':direction_changes(
-                    interactions_range.preceding + [interactions_range.middle], range_width / 2),
-                        'after':direction_changes([interactions_range.middle] + interactions_range.following,
-                                                    range_width / 2)
+                        'full': direction_changes(flatten_range(interactions_range), range_width),
+                        'before': direction_changes(
+                            interactions_range.preceding + [interactions_range.middle], range_width / 2),
+                        'after': direction_changes([interactions_range.middle] + interactions_range.following,
+                                                   range_width / 2)
                     },
                     'mouse_movements': {
-                        'full':mouse_movements_per_milliseconds(flatten_range(interactions_range),
-                                                                           range_width),
-                        'before':mouse_movements_per_milliseconds(
-                    interactions_range.preceding + [interactions_range.middle], range_width / 2),
-                        'after':mouse_movements_per_milliseconds(
-                    [interactions_range.middle] + interactions_range.following, range_width / 2)
+                        'full': mouse_movements_per_milliseconds(flatten_range(interactions_range),
+                                                                 range_width),
+                        'before': mouse_movements_per_milliseconds(
+                            interactions_range.preceding + [interactions_range.middle], range_width / 2),
+                        'after': mouse_movements_per_milliseconds(
+                            [interactions_range.middle] + interactions_range.following, range_width / 2)
                     },
                     'scrolls': {
-                        'full':scrolls_per_milliseconds(flatten_range(interactions_range), range_width),
-                        'before':scrolls_per_milliseconds(interactions_range.preceding + [interactions_range.middle],
-                                                             range_width / 2),
-                        'after':scrolls_per_milliseconds([interactions_range.middle] + interactions_range.following,
-                                                            range_width / 2)
+                        'full': scrolls_per_milliseconds(flatten_range(interactions_range), range_width),
+                        'before': scrolls_per_milliseconds(interactions_range.preceding + [interactions_range.middle],
+                                                           range_width / 2),
+                        'after': scrolls_per_milliseconds([interactions_range.middle] + interactions_range.following,
+                                                          range_width / 2)
                     },
                     'avg_speed': {
-                        'full':average_speed(flatten_range(interactions_range)),
-                        'before':average_speed(interactions_range.preceding + [interactions_range.middle]),
-                        'after':average_speed([interactions_range.middle] + interactions_range.following)
+                        'full': average_speed(flatten_range(interactions_range)),
+                        'before': average_speed(interactions_range.preceding + [interactions_range.middle]),
+                        'after': average_speed([interactions_range.middle] + interactions_range.following)
                     },
                     'clicks': {
-                        'full':clicks_statistics(flatten_range(interactions_range), range_width),
-                        'before':clicks_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width / 2),
-                        'after':clicks_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width / 2)
+                        'full': clicks_statistics(flatten_range(interactions_range), range_width),
+                        'before': clicks_statistics(interactions_range.preceding + [interactions_range.middle],
+                                                    range_width / 2),
+                        'after': clicks_statistics([interactions_range.middle] + interactions_range.following,
+                                                   range_width / 2)
                     },
                     'keys': {
-                        'full':keyboard_statistics(flatten_range(interactions_range), range_width),
-                        'before':keyboard_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width / 2),
-                        'after':keyboard_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width / 2)
+                        'full': keyboard_statistics(flatten_range(interactions_range), range_width),
+                        'before': keyboard_statistics(interactions_range.preceding + [interactions_range.middle],
+                                                      range_width / 2),
+                        'after': keyboard_statistics([interactions_range.middle] + interactions_range.following,
+                                                     range_width / 2)
                     },
                     'urls': {
-                        'full':websites_statistics(flatten_range(interactions_range), range_width),
-                        'before':websites_statistics(interactions_range.preceding + [interactions_range.middle],
-                                                     range_width / 2),
-                        'after':websites_statistics([interactions_range.middle] + interactions_range.following,
-                                                    range_width / 2)
+                        'full': websites_statistics(flatten_range(interactions_range), range_width),
+                        'before': websites_statistics(interactions_range.preceding + [interactions_range.middle],
+                                                      range_width / 2),
+                        'after': websites_statistics([interactions_range.middle] + interactions_range.following,
+                                                     range_width / 2)
                     },
                     'event_times': {
-                        'full':average_events_time(flatten_range(interactions_range)),
-                        'before':average_events_time(interactions_range.preceding + [interactions_range.middle]),
-                        'after':average_events_time([interactions_range.middle] + interactions_range.following)
+                        'full': average_events_time(flatten_range(interactions_range)),
+                        'before': average_events_time(interactions_range.preceding + [interactions_range.middle]),
+                        'after': average_events_time([interactions_range.middle] + interactions_range.following)
                     },
                     'idle': {
-                        'full':average_idle_time(flatten_range(interactions_range)),
-                        'before':average_idle_time(interactions_range.preceding + [interactions_range.middle]),
-                        'after':average_idle_time([interactions_range.middle] + interactions_range.following)
+                        'full': average_idle_time(flatten_range(interactions_range)),
+                        'before': average_idle_time(interactions_range.preceding + [interactions_range.middle]),
+                        'after': average_idle_time([interactions_range.middle] + interactions_range.following)
                     }
                 }
             logger.info("Running garbage collector")
@@ -291,14 +303,16 @@ def main():
         zip_path = os.path.join(args.out, '..', os.path.basename(args.out))
         shutil.make_archive(zip_path, 'zip', args.out)
 
-    if args.report == 'html':
-        logger.info("Writing report to HTML file")
-        with open('report.html', mode='w', encoding='utf-8') as f:
-            f.write(Report.html())
-    elif args.report == 'pdf':
-        logger.info("Writing report to PDF file")
-        import weasyprint
-        html = weasyprint.HTML(string=Report.html())
-        html.write_pdf('report.pdf')
-    else:
+    if args.report == 'none':
         logger.info("Not writing report")
+    else:
+        args.report = 'html pdf' if args.report == 'all' else args.report
+        if 'html' in args.report:
+            logger.info("Writing report to HTML file")
+            with open('report.html', mode='w', encoding='utf-8') as f:
+                f.write(Report.html())
+        if 'pdf' in args.report:
+            logger.info("Writing report to PDF file")
+            import weasyprint
+            html = weasyprint.HTML(string=Report.html())
+            html.write_pdf('report.pdf')
