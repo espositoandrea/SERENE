@@ -40,23 +40,3 @@ class User(BaseObject):
             'internet': self.internet,
             'gender': self.gender
         }
-
-
-def load_users(mongodb: db.Database = None) -> Dict[str, User]:
-    logger = logging.getLogger(__name__)
-
-    if mongodb:
-        logger.info("Loading users from database...")
-        db_content = list(mongodb['users'].find())
-    else:
-        logger.info("Loading users from web APIs...")
-        db_content = requests.get("https://giuseppe-desolda.ddns.net:8080/api/users", verify=False).json()
-
-    users = dict()
-    for user in db_content:
-        user['id'] = str(user['_id'])
-        del user['_id']
-        users[user['id']] = User(**user)
-    del db_content
-    logger.info("Done. Loaded %d users", len(users))
-    return users

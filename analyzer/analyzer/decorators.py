@@ -15,18 +15,24 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-# Types
-from .base import BasicStats, RateStats
-from .clicks import Clicks
-from .keyboard import Keyboard
-from .websites import VisitedWebsites
-from .trajectories import DirectionStatistics
+import time
+import logging
+import functools
+from typing import Tuple, Any, Callable, TypeVar
 
-# Functions
-from .speed import interactions_set_speed, average_speed
-from .clicks import clicks_statistics, number_of_clicks
-from .keyboard import keyboard_statistics, number_of_keys
-from .websites import interactions_set_website_categories, visited_websites, websites_statistics
-from .variation import average_events_time, average_idle_time, get_changed_features, mouse_movements_per_milliseconds, \
-    scrolls_per_milliseconds
-from .trajectories import interactions_set_directions, direction_changes
+T = TypeVar('T')
+
+
+def timed(message: str = 'Completed after %.3fs') -> Callable[[Callable[..., T]], Callable[..., Tuple[T, float]]]:
+    def inner_function(f: Callable[..., T]) -> Callable[..., Tuple[T, float]]:
+        @functools.wraps(f)
+        def wrapper(*args, **kwargs) -> Tuple[T, float]:
+            start_time = time.time()
+            result = f(*args, **kwargs)
+            end_time = time.time()
+            logging.getLogger(f.__module__).info(message, end_time - start_time)
+            return result, end_time - start_time
+
+        return wrapper
+
+    return inner_function

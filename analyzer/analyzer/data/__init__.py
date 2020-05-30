@@ -17,6 +17,8 @@
 
 from .base import Speed2D, ScreenCoordinates, MouseData, KeyboardData, ScrollData
 from .emotions import Emotions
-from .interaction import Interaction, load_interactions
-from .user import User, load_users
-from .website import Website, load_websites
+from .user import User
+from .website import Website
+from .interaction import Interaction
+
+from .loader import load_interactions, load_websites, load_users

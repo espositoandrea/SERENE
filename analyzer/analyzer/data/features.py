@@ -16,7 +16,38 @@
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import dataclasses
+from typing import Generic, TypeVar
 
+T = TypeVar('T')
+
+
+@dataclasses.dataclass
+class Keyboard(Generic[T]):
+    all: T = None
+    alphabetic: T = None
+    numeric: T = None
+    symbol: T = None
+    function: T = None
+    alphanumeric: T = None
+
+@dataclasses.dataclass
+class VisitedWebsites:
+    unique: int
+    changed: int
+    change_rate: float
+
+@dataclasses.dataclass
+class Clicks(Generic[T]):
+    all: T = None
+    left: T = None
+    middle: T = None
+    right: T = None
+    other: T = None
+
+@dataclasses.dataclass
+class DirectionStatistics:
+    changes: int
+    change_rate: float
 
 @dataclasses.dataclass
 class BasicStats:
