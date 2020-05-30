@@ -180,7 +180,7 @@ def main():
         end_text = Report.text()
 
         logger.info("Sorting by timestamps")
-        interactions.sort(key=lambda obj: (obj.timestamp, ObjectId(obj._id).generation_time))
+        interactions.sort(key=lambda obj: (obj.timestamp, ObjectId(obj.id).generation_time))
         logger.info("Setting speed")
         interactions_set_speed(interactions)
         logger.info("Setting direction")
@@ -212,10 +212,10 @@ def main():
             interval_start_time = time.time()
             logger.info("Calculating aggregate data on intervals")
             for interactions_range in temp_intervals:
-                if (interactions_range.middle._id, interactions_range.middle.timestamp) not in intervals:
-                    intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)] = dict()
+                if (interactions_range.middle.id, interactions_range.middle.timestamp) not in intervals:
+                    intervals[(interactions_range.middle.id, interactions_range.middle.timestamp)] = dict()
 
-                intervals[(interactions_range.middle._id, interactions_range.middle.timestamp)][range_width] = {
+                intervals[(interactions_range.middle.id, interactions_range.middle.timestamp)][range_width] = {
                     'slopes': {
                         'full': direction_changes(flatten_range(interactions_range), range_width),
                         'before': direction_changes(

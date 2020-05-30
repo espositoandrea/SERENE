@@ -15,12 +15,12 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import gc
 import logging
 import math
 import os
 import re
 from typing import List, Dict, Any
-import gc
 
 import pymongo.database as db
 import requests
@@ -31,7 +31,7 @@ from .emotions import Emotions
 
 class Interaction(BaseObject):
     __slots__ = [
-        "_id",
+        "id",
         "user_id",
         "timestamp",
         "url",
@@ -42,9 +42,10 @@ class Interaction(BaseObject):
         "url_category",
         "slope"
     ]
+
     def __init__(self, **kwargs):
         super().__init__()
-        self._id: str = kwargs.get("_id")
+        self.id: str = kwargs.get("id")
         self.user_id: str = kwargs.get("user_id")
         self.timestamp: int = kwargs.get("timestamp")
         self.url: str = kwargs.get("url")
@@ -57,7 +58,7 @@ class Interaction(BaseObject):
 
     def to_dict(self) -> Dict[str, Any]:
         return {
-            "_id": self._id,
+            "id": self.id,
             "user_id": self.user_id,
             "timestamp": self.timestamp,
             "url": self.url,
@@ -106,7 +107,7 @@ def load_interactions(mongodb: db.Database = None, user: str = None) -> List[Int
     def convert_object(to_convert: dict) -> Interaction:
         # noinspection PyArgumentList
         return Interaction(
-            _id=to_convert["_id"],
+            id=to_convert["_id"],
             user_id=to_convert.get("ui", None),
             timestamp=to_convert.get("t", None),
             url=to_convert.get("u", None),

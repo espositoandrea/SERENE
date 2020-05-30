@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PylintConfigService">
+    <option name="customPylintPath" value="D:\VMs Shared Folder\Bachelor-Thesis\analyzer\.venv\Scripts\pylint.exe" />
+    <option name="pylintrcPath" value="D:\VMs Shared Folder\Bachelor-Thesis\analyzer\.pylintrc" />
+  </component>
+</project>

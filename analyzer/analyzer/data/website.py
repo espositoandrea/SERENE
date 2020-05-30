@@ -15,7 +15,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import dataclasses
 import logging
 import urllib.parse
 from typing import Optional, Dict, Union
@@ -26,11 +25,13 @@ import requests
 from analyzer.data.base import BaseObject
 
 
-@dataclasses.dataclass
 class Website(BaseObject):
-    url: Optional[urllib.parse.ParseResult]
-    count: int = 0
-    category: str = 'UNKNOWN'
+    __slots__ = ["url", "count", "category"]
+
+    def __init__(self, url: Optional[urllib.parse.ParseResult], count: int = 0, category: str = 'UNKNOWN'):
+        self.url: Optional[urllib.parse.ParseResult] = url
+        self.count: int = count
+        self.category: str = category
 
     def to_dict(self) -> Dict[str, Union[int, str]]:
         return {
@@ -40,7 +41,7 @@ class Website(BaseObject):
         }
 
 
-def load_websites(mongodb: db.Database = None):
+def load_websites(mongodb: db.Database = None) -> Dict[str, Website]:
     logger = logging.getLogger(__name__)
 
     if mongodb:
@@ -54,9 +55,8 @@ def load_websites(mongodb: db.Database = None):
         db_content = requests.get("https://giuseppe-desolda.ddns.net:8080/api/websites", verify=False).json()
         for w in db_content:
             w['url'] = urllib.parse.urlparse(w['url'])
-    websites = {}
-    for website in db_content:
-        websites[website['url'].geturl()] = Website(**website)
+
+    websites = {website['url'].geturl(): Website(**website) for website in db_content}
 
     logger.info("Done. Loaded %d websites", len(websites))
     return websites

@@ -15,18 +15,29 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import dataclasses
 
+class Emotions(object):
+    __slots__ = [
+        "exists",
+        "joy",
+        "fear",
+        "disgust",
+        "sadness",
+        "anger",
+        "surprise",
+        "contempt",
+        "valence",
+        "engagement"
+    ]
 
-@dataclasses.dataclass
-class Emotions:
-    exists: bool = False
-    joy: float = None
-    fear: float = None
-    disgust: float = None
-    sadness: float = None
-    anger: float = None
-    surprise: float = None
-    contempt: float = None
-    valence: float = None
-    engagement: float = None
+    def __init__(self, **kwargs):
+        self.exists: bool = kwargs.get("exists", False)
+        self.joy: float = kwargs.get("joy", None)
+        self.fear: float = kwargs.get("fear", None)
+        self.disgust: float = kwargs.get("disgust", None)
+        self.sadness: float = kwargs.get("sadness", None)
+        self.anger: float = kwargs.get("anger", None)
+        self.surprise: float = kwargs.get("surprise", None)
+        self.contempt: float = kwargs.get("contempt", None)
+        self.valence: float = kwargs.get("valence", None)
+        self.engagement: float = kwargs.get("engagement", None)

@@ -15,54 +15,69 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import dataclasses
+from abc import ABCMeta, abstractmethod
 
 
-@dataclasses.dataclass
-class BaseObject:
+class BaseObject(object, metaclass=ABCMeta):
+    __slots__ = []
+
+    @abstractmethod
     def to_dict(self):
         pass
 
 
-@dataclasses.dataclass
-class ScreenCoordinates:
-    x: int
-    y: int
+class ScreenCoordinates(object):
+    __slots__ = ["x", "y"]
+
+    def __init__(self, x: int, y: int):
+        self.x: int = x
+        self.y: int = y
 
 
-@dataclasses.dataclass()
-class ScrollData:
-    absolute: ScreenCoordinates
-    relative: ScreenCoordinates
+class ScrollData(object):
+    __slots__ = ["absolute", "relative"]
+
+    def __init__(self, absolute: ScreenCoordinates, relative: ScreenCoordinates):
+        self.absolute: ScreenCoordinates = absolute
+        self.relative: ScreenCoordinates = relative
 
 
-@dataclasses.dataclass
-class KeyboardData:
-    any: bool
-    alpha: bool
-    numeric: bool
-    function: bool
-    symbol: bool
+class KeyboardData(object):
+    __slots__ = ["any", "alpha", "numeric", "function", "symbol"]
+
+    def __init__(self, any: bool, alpha: bool, numeric: bool, function: bool, symbol: bool):
+        self.any: bool = any
+        self.alpha: bool = alpha
+        self.numeric: bool = numeric
+        self.function: bool = function
+        self.symbol: bool = symbol
 
 
-@dataclasses.dataclass
-class Speed2D:
-    total: float
-    x: float
-    y: float
+class Speed2D(object):
+    __slots__ = ["total", "x", "y"]
+
+    def __init__(self, total: float, x: float, y: float):
+        self.total: float = total
+        self.x: float = x
+        self.y: float = y
 
 
-@dataclasses.dataclass
-class MouseData:
-    @dataclasses.dataclass
-    class Clicks:
-        any: bool
-        left: bool
-        middle: bool
-        right: bool
-        others: bool
+class MouseData(object):
+    __slots__ = ["position", "clicks", "speed", "acceleration"]
 
-    position: ScreenCoordinates
-    clicks: Clicks
-    speed: Speed2D = None
-    acceleration: Speed2D = None
+    class Clicks(object):
+        __slots__ = ["any", "left", "middle", "right", "others"]
+
+        def __init__(self, any: bool, left: bool, middle: bool, right: bool, others: bool):
+            self.any: bool = any
+            self.left: bool = left
+            self.middle: bool = middle
+            self.right: bool = right
+            self.others: bool = others
+
+    def __init__(self, position: ScreenCoordinates, clicks: 'MouseData.Clicks', speed: Speed2D = None,
+                 acceleration: Speed2D = None):
+        self.position: ScreenCoordinates = position
+        self.clicks: MouseData.Clicks = clicks
+        self.speed: Speed2D = speed
+        self.acceleration: Speed2D = acceleration
