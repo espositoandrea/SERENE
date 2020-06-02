@@ -1,4 +1,4 @@
-\documentclass[colored]{esposito-thesis}
+\documentclass[fancyheader, colored, draft]{esposito-thesis}
 
 \usepackage[italian]{babel}
 \frenchspacing
@@ -28,12 +28,11 @@
 
 % PDF Metadata
 \makeatletter
-\hypersetup{pdfinfo={
-		Title={\@title},
-		Author={\@author, Supervisor: \@supervisor},
-		Subject={\@degreetype Thesis in \@course},
-		Keywords={\@university, Thesis, Computer Science, Esposito, Andrea}
-	}
+\hypersetup{
+	pdftitle={\@title},
+	pdfauthor={\@author, Relatore: \@supervisor},
+	pdfsubject={\@degreetype Thesis in \@course},
+	pdfkeywords={tesi, triennale, ux, smells, usabilità, rilevazione, hci, ium}
 }
 \makeatother
 

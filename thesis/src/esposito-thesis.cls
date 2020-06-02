@@ -45,9 +45,19 @@
 
 \DeclareOption{fancyheader}{\newcommand{\fancyheader}{yes}}
 \DeclareOption{colored}{\newcommand{\colored}{yes}}
+\DeclareOption{draft}{\newcommand{\draft}{yes}}
 \ProcessOptions\relax
 
 \makeatletter
+
+\@ifundefined{draft}{}{%
+	\RequirePackage{draftwatermark}
+	\DraftwatermarkOptions{
+		fontsize=.1\paperwidth,
+		text={BOZZA - \number\year-\two@digits\month-\two@digits\day}
+	}
+	% \setkeys{Gin}{draft=false}
+}
 
 \@ifundefined{colored}{%
 	\definecolor{UniBlue}{HTML}{000000}

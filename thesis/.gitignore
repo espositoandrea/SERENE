@@ -1,5 +1,5 @@
 # ignore preview pdf
-src/thesis-*.pdf
+src/thesis.pdf
 # ignore output
 out/
 

@@ -1,18 +1,18 @@
-BASEFILENAME = Thesis
+BASEFILENAME = thesis
 SOURCE_DIR = src
 OUTPUT_FILENAME = thesis-esposito-`date +%Y%m%d`T`date +%H%M`
 
 all: build
 
 clean:
-	cd "$(SOURCE_DIR)" && rm -f *.bcf *.run.xml *.aux *.glo *.idx *.log *.toc *.ist *.acn *.acr *.alg *.bbl *.blg *.dvi *.glg *.gls *.ilg *.ind *.lof *.lot *.maf *.mtc *.mtc1 *.out *.synctex.gz "*.synctex(busy)" *.thm
+	cd "$(SOURCE_DIR)" && latexmk -c -silent
 
 build:
-	cd "$(SOURCE_DIR)" && latexmk --synctex=1 --shell-escape "$(BASEFILENAME).tex" -pdf -jobname="$(OUTPUT_FILENAME)" -silent
+	cd "$(SOURCE_DIR)" && latexmk --synctex=1 --shell-escape "$(BASEFILENAME).tex" -pdf -silent
 
 dist: | build
 	mkdir -p out
-	cp "$(SOURCE_DIR)/$(BASEFILENAME).pdf" out/
+	cp "$(SOURCE_DIR)/$(BASEFILENAME).pdf" "out/$(OUTPUT_FILENAME).pdf"
 
 titles:
 	cd "$(SOURCE_DIR)" && python add-titles-labels.py
