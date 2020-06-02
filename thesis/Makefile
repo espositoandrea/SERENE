@@ -1,5 +1,6 @@
 BASEFILENAME = Thesis
 SOURCE_DIR = src
+OUTPUT_FILENAME = thesis-esposito-`date +%Y%m%d`T`date +%H%M`
 
 all: build
 
@@ -7,14 +8,7 @@ clean:
 	cd "$(SOURCE_DIR)" && rm -f *.bcf *.run.xml *.aux *.glo *.idx *.log *.toc *.ist *.acn *.acr *.alg *.bbl *.blg *.dvi *.glg *.gls *.ilg *.ind *.lof *.lot *.maf *.mtc *.mtc1 *.out *.synctex.gz "*.synctex(busy)" *.thm
 
 build:
-	@echo "\033[32mCompiling LaTeX (1/4):\033[0m"
-	cd "$(SOURCE_DIR)" && pdflatex -synctex=1 -interaction=batchmode --shell-escape "$(BASEFILENAME).tex"
-	@echo "\033[32mBuilding bibliography (2/4):\033[0m"
-	cd "$(SOURCE_DIR)" && biber "$(BASEFILENAME)"
-	@echo "\033[32mCompiling LaTeX (3/4):\033[0m"
-	cd "$(SOURCE_DIR)" && pdflatex -synctex=1 -interaction=batchmode --shell-escape "$(BASEFILENAME).tex"
-	@echo "\033[32mCompiling LaTeX (4/4):\033[0m"
-	cd "$(SOURCE_DIR)" && pdflatex -synctex=1 -interaction=batchmode --shell-escape "$(BASEFILENAME).tex"
+	cd "$(SOURCE_DIR)" && latexmk --synctex=1 --shell-escape "$(BASEFILENAME).tex" -pdf -jobname="$(OUTPUT_FILENAME)" -silent
 
 dist: | build
 	mkdir -p out

@@ -3,11 +3,10 @@
 
 \LoadClass[a4paper,twoside,openright,11pt]{book}
 
-\RequirePackage[inner=3.5cm, outer=2.5cm, top=2.5cm, bottom=2.5cm]{geometry}
+\RequirePackage[inner=3.5cm, outer=2.5cm, top=3cm, bottom=3.5cm]{geometry}
 \RequirePackage{amssymb}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[table,xcdraw]{xcolor}
-\definecolor{UniBlue}{HTML}{00388C}
 \RequirePackage[explicit]{titlesec}
 \RequirePackage{calc}
 \RequirePackage{soul}
@@ -33,6 +32,9 @@
 \DeclareTranslation{English}{supervisor}{Supervisor}
 \DeclareTranslation{Italian}{supervisor}{Relatore}
 
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{1}
+
 \RequirePackage{hyperref}
 
 % Uncomment for italian
@@ -42,9 +44,17 @@
 % \def\tableautorefname{tabella}
 
 \DeclareOption{fancyheader}{\newcommand{\fancyheader}{yes}}
+\DeclareOption{colored}{\newcommand{\colored}{yes}}
 \ProcessOptions\relax
 
 \makeatletter
+
+\@ifundefined{colored}{%
+	\definecolor{UniBlue}{HTML}{000000}
+}{%
+	\definecolor{UniBlue}{HTML}{00388C}
+}
+
 \@ifundefined{fancyheader}{}{%
 	\newsavebox{\feline@chapter}%
 	\newcommand\feline@chapter@marker[1][4cm]{%
@@ -91,7 +101,7 @@
 	\null
 	\pagestyle{empty}
 	\begin{center}
-		\includegraphics[width=7cm]{UniBa}\\[1cm]
+		\includegraphics[width=7cm]{UniBa.jpg}\\[1cm]
 		\vspace*{\fill}
 		\textsc{\@degreetype{}}\\
 		\textsc{\large\color{UniBlue} \@course}\\[5mm]
