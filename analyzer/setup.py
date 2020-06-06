@@ -33,7 +33,6 @@ setup(
         'coloredlogs',
         'pymongo',
         'requests',
-        'weasyprint'
     ],
     entry_points={
         'console_scripts': [

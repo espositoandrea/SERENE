@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 
 @timed("Loaded interactions in %.3fs")
-def load_interactions(mongodb: db.Database = None, user: str = None) -> InteractionsList:
+def load_interactions(mongodb: db.Database = None, user: str = None, enable_gc: bool = True) -> InteractionsList:
     def convert_object(to_convert: dict) -> Interaction:
         # noinspection PyArgumentList
         return Interaction(
@@ -124,8 +124,10 @@ def load_interactions(mongodb: db.Database = None, user: str = None) -> Interact
             current_base += skip
             logger.info("Loaded interactions from web APIs (iteration %d of %d)", round(current_base / skip),
                         expected_iterations)
-        logger.info("Running garbage collector")
-        gc.collect()
+        if enable_gc:
+            logger.info("Running garbage collector")
+            collected = gc.collect()
+            logger.info("Garbage collector collected %d objects", collected)
 
     logger.info("Done. Loaded %d interactions", len(interactions))
 

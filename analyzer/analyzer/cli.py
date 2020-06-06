@@ -63,6 +63,18 @@ def set_up_args() -> argparse.Namespace:
         help='Run in testing mode: the amount of data processed is significantly smaller.'
     )
     parser.add_argument(
+        '--no-gc',
+        action='store_false',
+        dest="gc_enabled",
+        help='Disable explicit calls to garbage collection.'
+    )
+    parser.add_argument(
+        '--multiprocess',
+        action='store_false',
+        dest="multiprocessing_enabled",
+        help='Enables multiprocessing (it will use all the available CPU minus two).'
+    )
+    parser.add_argument(
         '--quiet', '-q',
         action='store_true',
         help='Run the program in quiet mode (nothing will be printed to the console).'
@@ -142,7 +154,7 @@ def main():
     if args.user:
         users = [args.user]
     for i, user in enumerate(users, 1):
-        __, t = process_user(user, websites, db=db, index=i, total_users=len(users))
+        __, t = process_user(user, websites, db=db, index=i, total_users=len(users), enable_gc=args.gc_enabled, enable_multiprocessing=args.multiprocessing_enabled)
         user_times.append(t)
 
     end_time = time.time()

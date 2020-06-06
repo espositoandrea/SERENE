@@ -30,13 +30,16 @@ from .decorators import timed
 
 @timed("User done in %.3fs")
 def process_user(user: str, websites: Dict[str, Website], db: db.Database, index: int = 1,
-                 total_users: int = 1, out_dir: str = 'out') -> None:
+                 total_users: int = 1, out_dir: str = 'out', enable_gc: bool = True,
+                 enable_multiprocessing: bool = False) -> None:
     logger = logging.getLogger(__name__)
-    logger.info("Running garbage collector")
-    gc.collect()
+    if enable_gc:
+        logger.info("Running garbage collector")
+        collected = gc.collect()
+        logger.info("Gargage collector collected %d objects", collected)
     logger.info("Processing data by user '%s' (%d of %d)", str(user), index, total_users)
 
-    interactions, __ = load_interactions(mongodb=db, user=user)
+    interactions, __ = load_interactions(mongodb=db, user=user, enable_gc=enable_gc)
     if not interactions:
         logger.warning("No interactions from the user")
         return
@@ -56,12 +59,15 @@ def process_user(user: str, websites: Dict[str, Website], db: db.Database, index
         1000,  # 10 * t
         2000  # 20 * t
     ]
-    # with multiprocessing.Pool() as pool:
-    #     for data, __ in pool.map(interactions.process_intervals, ranges_widths):
-    #         intervals.update(data)
 
-    for range_width in ranges_widths:
-        intervals[range_width], __ = interactions.process_intervals(range_width)
+    if enable_multiprocessing:
+        import multiprocessing
+        with multiprocessing.Pool() as pool:
+            for (data, width), __ in pool.map(interactions.process_intervals, ranges_widths):
+                intervals.update({width: data})
+    else:
+        for range_width in ranges_widths:
+            (intervals[range_width], __), __ = interactions.process_intervals(range_width, enable_gc=enable_gc)
 
     logger.info("Saving aggregate data")
     utilities.to_csv(utilities.aggregate_data_to_list(intervals, interactions), out_dir, user, 'aggregate.csv')
