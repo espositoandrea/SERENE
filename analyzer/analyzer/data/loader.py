@@ -14,6 +14,9 @@
 #
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+"""A module to load all the collected data using a database or the REST APIs."""
+
 import gc
 import logging
 import math
@@ -26,7 +29,7 @@ import pymongo.database as db
 import requests
 
 from analyzer.decorators import timed
-from .base import *
+from .base import MouseData, ScreenCoordinates, ScrollData, KeyboardData
 from .emotions import Emotions
 from .interaction import InteractionsList, Interaction
 from .user import User
@@ -34,10 +37,48 @@ from .website import Website
 
 logger = logging.getLogger(__name__)
 
+BASE_API_URL = "https://giuseppe-desolda.ddns.net:8080"
+
 
 @timed("Loaded interactions in %.3fs")
-def load_interactions(mongodb: db.Database = None, user: str = None, enable_gc: bool = True) -> InteractionsList:
+def load_interactions(mongodb: db.Database = None, user: str = None,
+                      enable_gc: bool = True) -> InteractionsList:
+    """Load the interactions.
+
+    Parameters
+    ----------
+    mongodb : pymongo.database.Database, optional
+        An instance of a MongoDB database to get the data. If None, the REST
+        APIs will be used.
+    user : str, optional
+        The ID of the user whose interactions will be fetched. If None, all the
+        collected interactions will be fetched.
+    enable_gc : bool, optional
+        Whether or not to enable the explicit calls to the garbage collection.
+        This will improve the memory footprint but will make the program run
+        slower.
+
+    Returns
+    -------
+    InteractionsList
+        The list of interactions.
+    float
+        The time the execution took. Returned by the `@timed` decorator.
+    """
+
     def convert_object(to_convert: dict) -> Interaction:
+        """Convert a dictionary to an Interaction object.
+
+        Parameters
+        ----------
+        to_convert : dict
+            The dictionary to be converted.
+
+        Returns
+        -------
+        Interaction
+            The converted object.
+        """
         # noinspection PyArgumentList
         return Interaction(
             id=to_convert["_id"],
@@ -45,19 +86,23 @@ def load_interactions(mongodb: db.Database = None, user: str = None, enable_gc: 
             timestamp=to_convert.get("t", None),
             url=to_convert.get("u", None),
             mouse=MouseData(
-                position=ScreenCoordinates(*to_convert.get("m", {}).get("p", [None, None])),
+                position=ScreenCoordinates(
+                    *to_convert.get("m", {}).get("p", [None, None])),
                 clicks=MouseData.Clicks(
                     any=any(to_convert.get("m", {}).get("b", {}).values()),
                     left=to_convert.get("m", {}).get("b", {}).get('l', False),
                     right=to_convert.get("m", {}).get("b", {}).get('r'),
                     middle=to_convert.get("m", {}).get("b", {}).get('m'),
-                    others=any([value for key, value in to_convert.get("m", {}).get("b", {}).items() if
+                    others=any([value for key, value in
+                                to_convert.get("m", {}).get("b", {}).items() if
                                 re.match(r"^b\d+?$", key)]),
                 )
             ),
             scroll=ScrollData(
-                absolute=ScreenCoordinates(*to_convert.get("s", {}).get("a", [None, None])),
-                relative=ScreenCoordinates(*to_convert.get("s", {}).get("r", [None, None])),
+                absolute=ScreenCoordinates(
+                    *to_convert.get("s", {}).get("a", [None, None])),
+                relative=ScreenCoordinates(
+                    *to_convert.get("s", {}).get("r", [None, None])),
             ),
             keyboard=KeyboardData(
                 any=any(to_convert.get("k", {}).values()),
@@ -85,21 +130,24 @@ def load_interactions(mongodb: db.Database = None, user: str = None, enable_gc: 
 
     if mongodb:
         logger.info("Loading interactions from database...")
-        interactions = mongodb['interactions'].find() if user is None else mongodb['interactions'].find({'ui': user})
+        interactions = mongodb['interactions'].find() if user is None else \
+            mongodb['interactions'].find({'ui': user})
         logger.info("Got %d objects", interactions.count())
         if is_test_mode:
             interactions.limit(testing_limit)
 
         interactions = [convert_object(obj) for obj in interactions]
     else:
-        api_url = "https://giuseppe-desolda.ddns.net:8080/api/interactions/{}-{}" if user is None else f"https://giuseppe-desolda.ddns.net:8080/api/user/{user}/interactions/{{}}-{{}}"
+        api_url = f"{BASE_API_URL}/api/interactions/{{}}-{{}}" if user is None \
+            else f"{BASE_API_URL}/api/user/{user}/interactions/{{}}-{{}}"
         current_base = 0
         skip = 10000
 
-        number_of_objects = int(requests.get(api_url[0:-5] + 'count', verify=False).text)
-        expected_iterations = math.ceil(
-            number_of_objects / skip) if not is_test_mode or number_of_objects < testing_limit else math.ceil(
-            testing_limit / skip)
+        number_of_objects = int(requests.get(
+            api_url[0:-5] + 'count', verify=False).text)
+        expected_iterations = math.ceil(number_of_objects / skip) \
+            if not is_test_mode or number_of_objects < testing_limit \
+            else math.ceil(testing_limit / skip)
 
         if number_of_objects == 0:
             logger.warning("No data to load")
@@ -110,20 +158,26 @@ def load_interactions(mongodb: db.Database = None, user: str = None, enable_gc: 
             if is_test_mode and current_base >= testing_limit:
                 break
 
-            logger.info("Loading interactions from web APIs (iteration %d of %d)...", round(current_base / skip) + 1,
-                        expected_iterations)
-            db_content = requests.get(api_url.format(current_base, skip), verify=False).json()
+            logger.info(
+                "Loading interactions from web APIs (%d of %d)...",
+                round(current_base / skip) + 1,
+                expected_iterations)
+            db_content = requests.get(api_url.format(current_base, skip),
+                                      verify=False).json()
 
             if not db_content:
-                logger.info("Loaded interactions from web APIs (iteration %d of %d): empty",
-                            round(current_base / skip) + 1, expected_iterations)
+                logger.info(
+                    "Loaded interactions from web APIs (%d of %d): empty",
+                    round(current_base / skip) + 1, expected_iterations)
                 break
 
             interactions.extend(convert_object(obj) for obj in db_content)
             del db_content
             current_base += skip
-            logger.info("Loaded interactions from web APIs (iteration %d of %d)", round(current_base / skip),
-                        expected_iterations)
+            logger.info(
+                "Loaded interactions from web APIs (%d of %d)",
+                round(current_base / skip),
+                expected_iterations)
         if enable_gc:
             logger.info("Running garbage collector")
             collected = gc.collect()
@@ -137,15 +191,17 @@ def load_interactions(mongodb: db.Database = None, user: str = None, enable_gc: 
     #     if len(ids) <= 1:
     #         continue
     #     logger.info("Removing duplicates from [%s]", ", ".join(ids))
-
+    #
     #     objects = [obj for obj in interactions if obj._id in ids]
-    #     not_emotions = list(filter(lambda obj: not obj.emotions.exists, objects))
+    #     not_emotions = list(
+    #         filter(lambda obj: not obj.emotions.exists, objects))
     #     if len(objects) == len(not_emotions):
     #         to_remove = objects[1:]
     #     else:
     #         to_remove = not_emotions
-
-    #     interactions = list(filter(lambda obj: obj not in to_remove, interactions))
+    #
+    #     interactions = list(
+    #         filter(lambda obj: obj not in to_remove, interactions))
     # logger.info("Done. New number of interactions: %d", len(interactions))
 
     return InteractionsList(interactions)
@@ -153,12 +209,30 @@ def load_interactions(mongodb: db.Database = None, user: str = None, enable_gc: 
 
 @timed("Loaded users in %.3fs")
 def load_users(mongodb: db.Database = None) -> Dict[str, User]:
+    """Load the users.
+
+    Parameters
+    ----------
+    mongodb : pymongo.database.Database, optional
+        An instance of a MongoDB database to get the data. If None, the REST
+        APIs will be used.
+
+    Returns
+    -------
+    dict [str, User]
+        A dictionary containing the collected users. The keys are the users'
+        IDs and the values the users' data.
+    float
+        The time the execution took. Returned by the `@timed` decorator.
+    """
     if mongodb:
         logger.info("Loading users from database...")
         db_content = list(mongodb['users'].find())
     else:
         logger.info("Loading users from web APIs...")
-        db_content = requests.get("https://giuseppe-desolda.ddns.net:8080/api/users", verify=False).json()
+        db_content = requests.get(
+            "https://giuseppe-desolda.ddns.net:8080/api/users",
+            verify=False).json()
 
     users = dict()
     for user in db_content:
@@ -172,19 +246,38 @@ def load_users(mongodb: db.Database = None) -> Dict[str, User]:
 
 @timed("Loaded websites in %.3fs")
 def load_websites(mongodb: db.Database = None) -> Dict[str, Website]:
+    """Load the websites.
+
+    Parameters
+    ----------
+    mongodb : pymongo.database.Database, optional
+        An instance of a MongoDB database to get the data. If None, the REST
+        APIs will be used.
+
+    Returns
+    -------
+    dict [str, Website]
+        A dictionary containing the collected websites. The keys are the
+        websites' URLs and the values the websites' data.
+    float
+        The time the execution took. Returned by the `@timed` decorator.
+    """
     if mongodb:
         logger.info("Loading websites from database...")
         db_content = list(mongodb['websites'].find())
-        for w in db_content:
-            w['url'] = urllib.parse.urlparse(str(w['_id']))
-            del w['_id']
+        for website in db_content:
+            website['url'] = urllib.parse.urlparse(str(website['_id']))
+            del website['_id']
     else:
         logger.info("Loading websites from web APIs...")
-        db_content = requests.get("https://giuseppe-desolda.ddns.net:8080/api/websites", verify=False).json()
-        for w in db_content:
-            w['url'] = urllib.parse.urlparse(w['url'])
+        db_content = requests.get(
+            "https://giuseppe-desolda.ddns.net:8080/api/websites",
+            verify=False).json()
+        for website in db_content:
+            website['url'] = urllib.parse.urlparse(website['url'])
 
-    websites = {website['url'].geturl(): Website(**website) for website in db_content}
+    websites = {website['url'].geturl(): Website(**website) for website in
+                db_content}
 
     logger.info("Done. Loaded %d websites", len(websites))
     return websites

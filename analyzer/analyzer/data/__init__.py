@@ -15,7 +15,20 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from .base import Speed2D, ScreenCoordinates, MouseData, KeyboardData, ScrollData
+"""The data module
+
+This module contains the definition of all the data used by the tool.
+
+Notes
+-----
+
+All the definitions in this module aim at memory efficiency. For this reason,
+all of the defined classes define the `__slots__` magic attributes, thus
+removing the automatic `__dict__` attribute.
+"""
+
+from .base import Speed2D, ScreenCoordinates, MouseData, KeyboardData, \
+    ScrollData
 from .emotions import Emotions
 from .user import User
 from .website import Website

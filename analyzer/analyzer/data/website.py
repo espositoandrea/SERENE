@@ -15,29 +15,57 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import logging
+"""Module containing the definition of the Website class"""
+
 import urllib.parse
 from typing import Optional, Dict, Union
-
-import pymongo.database as db
-import requests
 
 from analyzer.data.base import BaseObject
 
 
 class Website(BaseObject):
+    """A website.
+
+    This class represents a website.
+
+    Attributes
+    ----------
+    url : urllib.parse.ParseResult
+        The url of the website.
+    count : int
+        The number of visits received by the website.
+    category : str
+        The category of the website.
+    """
     __slots__ = ["url", "count", "category"]
 
-    def __init__(self, url: Optional[urllib.parse.ParseResult], count: int = 0, category: str = 'UNKNOWN'):
+    def __init__(self, url: Optional[urllib.parse.ParseResult], count: int = 0,
+                 category: str = 'UNKNOWN'):
+        """Create a new website
+        Parameters
+        ----------
+        url : urllib.parse.ParseResult
+            The url of the website. May be `None`.
+        count : int, optional
+            The number of visits received by the website.
+        category : str, optional
+            The category of the website.
+        """
         self.url: Optional[urllib.parse.ParseResult] = url
         self.count: int = count
         self.category: str = category
 
     def to_dict(self) -> Dict[str, Union[int, str]]:
+        """Convert the object to a dictionary.
+
+        Returns
+        -------
+        dict [str, int or str]
+            A dictionary representing the object. The keys are 'url', 'count'
+            and 'category'.
+        """
         return {
             'url': self.url.geturl() if self.url else None,
             'count': int(self.count),
             'category': self.category
         }
-
-

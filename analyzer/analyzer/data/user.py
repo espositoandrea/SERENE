@@ -15,25 +15,59 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import logging
-from typing import Dict, Union
+"""Module containing the definition of the User class."""
 
-import pymongo.database as db
-import requests
+from typing import Dict, Union
 
 from analyzer.data.base import BaseObject
 
 
 class User(BaseObject):
+    """A user.
+
+    This class represents a user.
+
+    Attributes
+    ----------
+    id : str
+        The user's id.
+    age : int
+        The user's age.
+    internet : int
+        The average number of hours the user's use internet.
+    gender : str
+        The user's gender.
+    """
     __slots__ = ["id", "age", "internet", "gender"]
 
     def __init__(self, id: str, age: int, internet: int, gender: str):
+        """Create a new user.
+
+        Parameters
+        ----------
+        id : str
+            The user's id.
+        age : int
+            The user's age.
+        internet : int
+            The average number of hours the user's use internet.
+        gender : str
+            The user's gender.
+        """
         self.id: str = id
         self.age: int = age
         self.internet: int = internet
         self.gender: str = gender
 
     def to_dict(self) -> Dict[str, Union[int, str]]:
+        """Convert the object to a dictionary.
+
+        Returns
+        -------
+        dict [str, int or str]
+            A dictionary representing the object. The keys are 'id', 'age',
+            'internet' and 'gender'.
+        """
         return {
             'id': self.id,
             'age': self.age,
