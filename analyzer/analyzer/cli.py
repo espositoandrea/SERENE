@@ -111,6 +111,12 @@ def main():
 
     logger = logging.getLogger('analyzer')
     logger.setLevel(logging.INFO)
+
+    if args.drop and os.path.exists(args.out) and os.listdir(args.out):
+        logger.info("Emptying output directory ('%s')",
+                    os.path.abspath(args.out))
+        shutil.rmtree(args.out, ignore_errors=True)
+
     if not args.quiet:
         coloredlogs.install(
             level=logging.INFO,
@@ -120,14 +126,15 @@ def main():
     if not args.no_log:
         if not os.path.exists(args.out):
             os.makedirs(args.out, exist_ok=True)
-        file_handler = logging.FileHandler('{}/report.log'.format(args.out), mode='w')
-        file_handler.setFormatter(logging.Formatter("[%(levelname)s] %(asctime)s (%(name)s) %(message)s"))
+        file_handler = logging.FileHandler('{}/report.log'.format(args.out),
+                                           mode='w')
+        file_handler.setFormatter(logging.Formatter(
+            "[%(levelname)s] %(asctime)s (%(name)s) %(message)s"))
         file_handler.setLevel(logging.INFO)
         logger.addHandler(file_handler)
-
-    if args.drop and os.path.exists(args.out) and os.listdir(args.out):
-        logger.info("Emptying output directory ('%s')", os.path.abspath(args.out))
-        shutil.rmtree(args.out, ignore_errors=True)
+    if args.multiprocessing_enabled:
+        import multiprocessing_logging
+        multiprocessing_logging.install_mp_handler()
 
     if args.test:
         os.environ['TESTING_MODE'] = 'True'
@@ -139,7 +146,8 @@ def main():
     users, __ = load_users(mongodb=db)
 
     if args.test:
-        logger.warning("Users limited to the first two IDs for testing purposes.")
+        logger.warning(
+            "Users limited to the first two IDs for testing purposes.")
         users = dict(list(users.items())[0:2])
 
     logger.info("Saving users")
@@ -154,7 +162,15 @@ def main():
     if args.user:
         users = [args.user]
     for i, user in enumerate(users, 1):
-        __, t = process_user(user, websites, db=db, index=i, total_users=len(users), enable_gc=args.gc_enabled, enable_multiprocessing=args.multiprocessing_enabled)
+        __, t = process_user(
+            user, websites,
+            db=db,
+            index=i,
+            total_users=len(users),
+            enable_gc=args.gc_enabled,
+            out_dir=args.out,
+            enable_multiprocessing=args.multiprocessing_enabled
+        )
         user_times.append(t)
 
     end_time = time.time()

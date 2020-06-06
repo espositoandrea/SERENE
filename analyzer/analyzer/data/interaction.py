@@ -253,22 +253,25 @@ class InteractionsList(object):
                 current_range.following.append(i)
             yield current_range
 
-    @timed("Analyzed all intervals in %.3fs")
     def process_intervals(self, range_width: float, enable_gc: bool = True) -> \
             Tuple[Dict[int, IntervalData], float]:
-        logger.info("Getting intervals of %d milliseconds", range_width)
-        temp_intervals = self._get_intervals(range_width)
-        logger.info("Calculating aggregate data on intervals")
-        intervals = dict()
-        for interactions_range in temp_intervals:
-            intervals[
-                interactions_range.middle] = self._process_single_interval(
-                interactions_range, range_width)
-        if enable_gc:
-            logger.info("Running garbage collector")
-            collected = gc.collect()
-            logger.info("Garbage collector collected %d objects", collected)
-        return intervals, range_width
+        @timed(f"Analyzed all intervals of {range_width} ms in %.3fs")
+        def inner_function():
+            logger.info("Getting intervals of %d milliseconds", range_width)
+            temp_intervals = self._get_intervals(range_width)
+            logger.info("Calculating aggregate data on intervals of %dms", range_width)
+            intervals = dict()
+            for interactions_range in temp_intervals:
+                intervals[
+                    interactions_range.middle] = self._process_single_interval(
+                    interactions_range, range_width)
+            if enable_gc:
+                logger.info("Running garbage collector")
+                collected = gc.collect()
+                logger.info("Garbage collector collected %d objects", collected)
+            return intervals, range_width
+
+        return inner_function()
 
     def _get_direction_changes(self, interactions: Range[int],
                                range_width: float) -> RangeData[

@@ -33,6 +33,12 @@ def process_user(user: str, websites: Dict[str, Website], db: db.Database,
                  total_users: int = 1, out_dir: str = 'out',
                  enable_gc: bool = True,
                  enable_multiprocessing: bool = False) -> None:
+    """
+
+    Returns
+    -------
+    object
+    """
     logger = logging.getLogger(__name__)
     if enable_gc:
         logger.info("Running garbage collector")
@@ -64,12 +70,13 @@ def process_user(user: str, websites: Dict[str, Website], db: db.Database,
     ]
 
     if enable_multiprocessing:
+        n_cpu = max(os.cpu_count() - 2, 1)
+        logger.info("Spawning multiple processes on %d CPUs", n_cpu)
         import multiprocessing
-        import multiprocessing_logging
-        multiprocessing_logging.install_mp_handler()
-        with multiprocessing.Pool(processes=max(os.cpu_count() - 2, 1)) as pool:
-            for (data, width), __ in pool.map(interactions.process_intervals,
-                                              ranges_widths):
+        from functools import partial
+        process = partial(interactions.process_intervals, enable_gc=enable_gc)
+        with multiprocessing.Pool(processes=n_cpu) as pool:
+            for (data, width), __ in pool.map(process, ranges_widths):
                 intervals.update({width: data})
     else:
         for range_width in ranges_widths:
