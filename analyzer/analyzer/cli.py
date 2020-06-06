@@ -70,7 +70,7 @@ def set_up_args() -> argparse.Namespace:
     )
     parser.add_argument(
         '--multiprocess',
-        action='store_false',
+        action='store_true',
         dest="multiprocessing_enabled",
         help='Enables multiprocessing (it will use all the available CPU minus two).'
     )

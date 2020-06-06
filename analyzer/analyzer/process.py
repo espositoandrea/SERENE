@@ -21,7 +21,6 @@ import os
 from typing import Dict
 
 import pymongo.database as db
-# import multiprocessing
 
 from . import utilities
 from .data import *
@@ -29,17 +28,21 @@ from .decorators import timed
 
 
 @timed("User done in %.3fs")
-def process_user(user: str, websites: Dict[str, Website], db: db.Database, index: int = 1,
-                 total_users: int = 1, out_dir: str = 'out', enable_gc: bool = True,
+def process_user(user: str, websites: Dict[str, Website], db: db.Database,
+                 index: int = 1,
+                 total_users: int = 1, out_dir: str = 'out',
+                 enable_gc: bool = True,
                  enable_multiprocessing: bool = False) -> None:
     logger = logging.getLogger(__name__)
     if enable_gc:
         logger.info("Running garbage collector")
         collected = gc.collect()
         logger.info("Gargage collector collected %d objects", collected)
-    logger.info("Processing data by user '%s' (%d of %d)", str(user), index, total_users)
+    logger.info("Processing data by user '%s' (%d of %d)", str(user), index,
+                total_users)
 
-    interactions, __ = load_interactions(mongodb=db, user=user, enable_gc=enable_gc)
+    interactions, __ = load_interactions(mongodb=db, user=user,
+                                         enable_gc=enable_gc)
     if not interactions:
         logger.warning("No interactions from the user")
         return
@@ -62,12 +65,17 @@ def process_user(user: str, websites: Dict[str, Website], db: db.Database, index
 
     if enable_multiprocessing:
         import multiprocessing
-        with multiprocessing.Pool() as pool:
-            for (data, width), __ in pool.map(interactions.process_intervals, ranges_widths):
+        import multiprocessing_logging
+        multiprocessing_logging.install_mp_handler()
+        with multiprocessing.Pool(processes=max(os.cpu_count() - 2, 1)) as pool:
+            for (data, width), __ in pool.map(interactions.process_intervals,
+                                              ranges_widths):
                 intervals.update({width: data})
     else:
         for range_width in ranges_widths:
-            (intervals[range_width], __), __ = interactions.process_intervals(range_width, enable_gc=enable_gc)
+            (intervals[range_width], __), __ = interactions.process_intervals(
+                range_width, enable_gc=enable_gc)
 
     logger.info("Saving aggregate data")
-    utilities.to_csv(utilities.aggregate_data_to_list(intervals, interactions), out_dir, user, 'aggregate.csv')
+    utilities.to_csv(utilities.aggregate_data_to_list(intervals, interactions),
+                     out_dir, user, 'aggregate.csv')

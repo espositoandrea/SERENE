@@ -12,6 +12,7 @@ requests = "*"
 pymongo = "*"
 coloredlogs = "*"
 matplotlib = "*"
+multiprocessing-logging = "*"
 
 [requires]
 python_version = "3.8"
