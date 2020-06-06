@@ -163,9 +163,8 @@ class InteractionsList(object):
     def __len__(self):
         return len(self.interactions)
 
+    @timed("Set additional data inn %.3fs")
     def _set_additional_data(self):
-        logger.info("Setting speed")
-
         def set_speed():
             logger.info("Setting speed")
             self.interactions[0].mouse.speed = Speed2D(0, 0, 0)
