@@ -33,7 +33,8 @@ setup(
         'coloredlogs',
         'pymongo',
         'requests',
-        'multiprocessing-logging'
+        'multiprocessing-logging',
+        'python-dotenv'
     ],
     entry_points={
         'console_scripts': [

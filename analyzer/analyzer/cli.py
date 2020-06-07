@@ -26,11 +26,13 @@ import time
 import coloredlogs
 import pymongo
 import urllib3
+from dotenv import load_dotenv
 
 import analyzer
 from . import utilities
 from .data import *
 from .process import process_user
+from .notifier import notify
 
 
 def set_up_args() -> argparse.Namespace:
@@ -100,12 +102,20 @@ def set_up_args() -> argparse.Namespace:
         action='store_true',
         dest='no_log'
     )
+    parser.add_argument(
+        '--notify', '-n',
+        metavar='EMAIL',
+        default=None,
+        help="Once the execution ends, send a message to this email.",
+        dest='notify'
+    )
     return parser.parse_args()
 
 
 def main():
     urllib3.disable_warnings()
     gc.enable()
+    load_dotenv()
 
     args = set_up_args()
 
@@ -179,6 +189,10 @@ def main():
     avg = sum(user_times) / len(user_times)
     std = math.sqrt(sum([(x - avg) ** 2 for x in user_times]) / len(user_times))
     logger.info("AVERAGE TIME PER USER: %.3fs (SD: %.3fs)", avg, std)
+
+    if args.notify:
+        notify(args.out, args.notify)
+
     if args.zip:
         logger.info("Zipping output folder")
         zip_path = os.path.join(args.out, '..', os.path.basename(args.out))
