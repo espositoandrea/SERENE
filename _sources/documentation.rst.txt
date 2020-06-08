@@ -43,6 +43,19 @@
 
 .. raw:: latex
 
+   \part{The Data Analyzer}
+
+.. toctree::
+   :hidden:
+   :maxdepth: 2
+   :caption: The Data Analyzer
+
+   analyzer/index
+   analyzer/api
+
+
+.. raw:: latex
+
    \part{License}
 
 .. toctree::
