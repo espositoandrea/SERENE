@@ -28,6 +28,7 @@ module.exports = {
         contentscript: join(__dirname, 'src/contentscript.ts'),
         background: join(__dirname, 'src/background.ts'),
         firefox: join(__dirname, 'src/firefox.ts'),
+        popup: join(__dirname, 'src/popup.ts'),
     },
     output: {
         path: join(__dirname, 'dist/'),

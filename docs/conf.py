@@ -33,7 +33,8 @@ extensions = [
     'sphinx.ext.napoleon',
     'breathe',
     'sphinx_js',
-    'sphinx_rtd_theme'
+    'sphinx_rtd_theme',
+    'sphinxcontrib.httpdomain'
 ]
 
 # Setup the breathe extension

@@ -5,10 +5,10 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "cd dist && node index.js",
-    "start-watch": "cd dist && nodemon index.js",
+    "start:watch": "cd dist && nodemon index.js",
     "clean": "rimraf ./dist",
     "prebuild": "npm run clean",
-    "build:node": "webpack --config webpack.config.js",
+    "build:node": "cross-env NODE_ENV=production webpack --config webpack.config.js",
     "build:emotions": "cd ../emotions && cpy bin/emotions ../server/dist/ && cpy --parents lib/ ../server/dist/",
     "build": "cross-env NODE_ENV=production npm-run-all --parallel build:*",
     "postbuild": "cd dist && mkdir downloads",
@@ -24,7 +24,7 @@
     "email": "a.esposito39@studenti.uniba.it",
     "url": "https://espositoandrea.github.io/"
   },
-  "license": "GNU GPL V3",
+  "license": "GPL-3.0-or-later",
   "dependencies": {},
   "devDependencies": {
     "@types/express": "^4.17.6",

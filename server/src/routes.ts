@@ -20,6 +20,7 @@ import { Router } from "express";
 import DataProcessor from "./data-processor";
 import * as path from "path";
 import { Db } from "mongodb";
+import apiRouter from "./api-routes";
 
 export default function router(db: Db): Router {
     const router = Router();
@@ -47,7 +48,11 @@ export default function router(db: Db): Router {
     });
 
     router.post("/survey/store", (request, response) => {
-        const userData = request.body;
+        const userData = {
+            age: parseInt(request.body.age),
+            gender: request.body.gender,
+            internet: parseInt(request.body.internet)
+        };
 
         db.collection("users").insertOne(userData, (err, result) => {
             if (err) {
@@ -59,6 +64,8 @@ export default function router(db: Db): Router {
             response.json({ done: true, errors: [], userId: result.insertedId });
         });
     });
+
+    router.use("/api", apiRouter(db));
 
     return router;
 }

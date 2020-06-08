@@ -37,6 +37,7 @@
    :caption: The Server
 
    server/index
+   server/api
    server/data-processor
    server/survey
 

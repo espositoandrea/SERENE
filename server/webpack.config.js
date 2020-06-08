@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'production') {
 function ejsViewConfiguration(viewPath, data = {}, layout = 'src/views/layouts/layout.ejs') {
     return {
         minimize: isProduction,
-        base: 'https://giuseppe-desolda.ddns.net:8080/',
+        base: isProduction ? 'https://giuseppe-desolda.ddns.net:8080/' : '.',
         inject: false,
         template: layout,
         templateParameters: {

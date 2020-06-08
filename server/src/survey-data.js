@@ -19,24 +19,35 @@
 /**
  * @typedef {Object} BasicQuestion
  * A basic question of the survey. This class contains all the required field of a question.
+ * 
  * @property {string} question - The question that will be asked to the user.
  * @property {string} name - The name of the GET/POST parameter.
  * @property {boolean} required - Wether or not the input is required.
  */
 
 /**
+ * @typedef {Object} ChoiceDescription
+ * A description of a Question choice.
+ * 
+ * @property {string} label - The label of the choice. This will be seen by the user.
+ * @property {any} value - The value of the choice. This will be sent to the server.
+ */
+
+/**
  * @typedef {BasicQuestion} Question 
  * A question of the survey. @extends BasicQuestion.
+ * 
  * @property {string} [type] - The type of question.
  * @property {Object} [rules] - Various additional rules. Can be any HTML attribute accepted by the current input type.
  * @property {string} [placeholder] - The input placeholder.
- * @property {string[]} [choices] - A list of choices. Used only if type is 'choice'. 
+ * @property {ChoiceDescription[]|number} [choices] - A list of choices. Used only if type is 'choice' or 'radios'. If it's a number n, it's used to generate n ChoiceDescription objects having {label: i, value: i}, con 1 <= i <= n.
  * @property {string|BasicQuestion[]} question - If it's a string, the same as BasicQuestion.question. If an array of BasicQuestion, a list of questions used if type is 'likert'.
  */
 
 /**
  * @typedef {Object} Section
  * A section of the survey.
+ * 
  * @property {string} [title] - The section's title.
  * @property {Question[]} questions - The section's questions.
  */
@@ -44,6 +55,7 @@
 /**
  * @typedef {Object} Survey
  * The survey configuration object.
+ * 
  * @property {string} introduction - The introduction to the survey. Treated as raw HTML.
  * @property {Section[]} sections - The survey's sections.
  */
@@ -52,14 +64,34 @@
  * @type {Survey}
  */
 module.exports = {
-    introdution: `<p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Explicabo porro beatae dolorem magni a quaerat quia cum deleniti
-                    doloremque reiciendis ut in recusandae itaque repellat, quos harum
-                    incidunt qui! Facere.</p>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Excepturi neque voluptas, alias deleniti pariatur facilis reiciendis
-                    asperiores eum? Atque, ratione laboriosam. Repellat, saepe!
-                    Inventore ab, dolore vitae recusandae natus amet!</p>`,
+    introdution: `
+        <p>Ti ringraziamo per preso parte a questa raccolta dati.</p>
+        <p>
+            Ti ricordiamo che tutto il processo di raccolta dati è completamento
+            anonimo. Infatti, le immagini che saranno catturate dalla webcam saranno:
+            <ol>
+                <li>Inviate al nostro server utilizzando una connessione cifrata</li>
+                <li>Elaborate istantaneamente per ricavare le emozioni dalle espressioni
+                    facciali</li>
+                <li>Immediatamente cancellate in maniera permanente</li>
+            </ol>
+        </p>
+        <p>
+            Per una maggiore trasparenza mettiamo a disposizione il codice sorgente
+            dell'intero progetto dal quale si può avere conferma dei meccanismi
+            precedentemente citati a garanzia del completo anonimato. Il codice sorgente
+            è pubblicato su
+            <a href="https://github.com/espositoandrea/Bachelor-Thesis" target="_blank"
+               rel="noopener noreferrer">
+                <span class="fab fa-github" aria-hidden="true"></span> GitHub</a>.
+        </p>
+        <p>
+            Inoltre, per una maggiore garanzia, tutti i dati raccolti sono disponibili
+            alla consultazione al seguente indirizzo: <a
+            href="http://giuseppe-desolda.ddns.net:10001/" target="_blank" rel="noopener
+            noreferrer">giuseppe-desolda.ddns.net:10001</a>
+        </p>
+    `,
     sections: [
         {
             title: "Anagrafica",
@@ -67,43 +99,60 @@ module.exports = {
                 {
                     name: "age",
                     question: "Età",
-                    type: "number",
-                    rules: {
-                        min: 0,
-                        step: 1,
-                    },
-                    required: true,
-                },
-                {
-                    name: "email",
-                    question: "E-mail",
-                    type: "email",
-                    required: true,
-                    placeholder: "youremail@email.com"
-                },
-                {
-                    name: "sex",
-                    question: "Sesso",
                     type: "choice",
                     required: true,
                     choices: [
-                        "Maschio", "Femmina", "Altro"
-                    ]
-                }
-            ]
-        },
-        {
-            title: "Informazioni varie",
-            questions: [
-                {
-                    question: [
                         {
-                            name: "internet",
-                            question: "Navigo su internet molto spesso",
-                            required: true
+                            label: "Inferiore ai 18 anni",
+                            value: 0
+                        },
+                        {
+                            label: "Tra i 18 e i 29 (inclusi)",
+                            value: 1
+                        },
+                        {
+                            label: "Tra i 30 e i 39 (inclusi)",
+                            value: 2
+                        },
+                        {
+                            label: "Tra i 40 e i 49 (inclusi)",
+                            value: 3
+                        },
+                        {
+                            label: "Tra i 50 e i 59 (inclusi)",
+                            value: 4
+                        },
+                        {
+                            label: "Oltre i 60",
+                            value: 5
                         },
                     ],
-                    type: "likert",
+                },
+                {
+                    name: "gender",
+                    question: "Genere",
+                    type: "choice",
+                    required: true,
+                    choices: [
+                        {
+                            label: "Maschio",
+                            value: "m"
+                        },
+                        {
+                            label: "Femmina",
+                            value: "f"
+                        },
+                        {
+                            label: "Altro",
+                            value: "a"
+                        }
+                    ]
+                },
+                {
+                    name: "internet",
+                    question: "Quanto ore usi mediamente internet ogni giorno?",
+                    type: "radios",
+                    choices: 24,
                     required: true,
                 }
             ]
