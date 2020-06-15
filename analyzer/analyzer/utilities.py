@@ -19,6 +19,7 @@ import csv
 import os
 from itertools import tee
 from typing import List, Dict, Union, Any, Tuple, Iterator
+import logging
 
 from analyzer.data import User, Website
 from analyzer.data.base import BaseObject
@@ -28,6 +29,7 @@ from analyzer.data.interval import IntervalData
 BaseValues = Union[int, str, float, bool]
 AnalyzerValues = Union[Iterator[Dict[str, BaseValues]], Dict[str, Union[User, Website, BaseValues]], InteractionsList]
 
+logger = logging.getLogger(__name__)
 
 def to_csv(values: AnalyzerValues, *filename: str, mode: str = 'w') -> None:
     dest_path = os.path.join(*filename)
@@ -38,7 +40,11 @@ def to_csv(values: AnalyzerValues, *filename: str, mode: str = 'w') -> None:
         for_keys = next(iter(values.values()))
     else:
         values, backup = tee(values)
-        for_keys = next(iter(backup))
+        try:
+            for_keys = next(iter(backup))
+        except StopIteration:
+            logger.warning("No values to convert")
+            return
         del backup
     if isinstance(for_keys, BaseObject):
         keys = for_keys.to_dict().keys()
