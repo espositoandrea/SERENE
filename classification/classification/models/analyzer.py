@@ -20,21 +20,20 @@
 import logging
 import time
 
-import mlxtend as mlx
-import mlxtend.feature_selection
 import pandas as pd
 import sklearn as sk
+from mlxtend.feature_selection import SequentialFeatureSelector
 
 logger = logging.getLogger(__name__)
 
 
 def analyze_model(model: sk.base.BaseEstimator, x: pd.DataFrame,
                   y: pd.DataFrame, n_jobs: int = 1) \
-        -> mlx.feature_selection.SequentialFeatureSelector:
+        -> SequentialFeatureSelector:
     start_time = time.time()
     logger.info("Starting feature selection")
 
-    sfs = mlx.feature_selection.SequentialFeatureSelector(
+    sfs = SequentialFeatureSelector(
         estimator=model,
         k_features="parsimonious",
         cv=None,

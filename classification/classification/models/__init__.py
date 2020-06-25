@@ -17,12 +17,12 @@
 
 """The AI Models"""
 
-import sklearn as sk
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.svm import SVC
-from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 import collections
+
+from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.neural_network import MLPClassifier
+from sklearn.svm import SVC
+from sklearn.tree import DecisionTreeClassifier
 
 from .analyzer import analyze_model
 from .tester import test_model

@@ -24,11 +24,10 @@ from typing import Dict, Union, Optional
 
 import joblib
 import matplotlib.pyplot as plt
-import mlxtend as mlx
-import mlxtend.plotting
 import pandas as pd
 import sklearn as sk
-import sklearn.model_selection
+from mlxtend.plotting import plot_sequential_feature_selection
+from sklearn.model_selection import cross_validate
 
 from .analyzer import analyze_model
 
@@ -41,7 +40,6 @@ def test_model(model: sk.base.BaseEstimator, x_train: pd.DataFrame,
                location: str, out: str = 'models', n_jobs: int = 1,
                cv: Optional[int] = None) \
         -> Dict[str, Union[str, float, int]]:
-
     y_train_target = y_train[f"middle.emotions.{emotion}"] if emotion != 'all' \
         else y_train
     y_test_target = y_test[f"middle.emotions.{emotion}"] if emotion != 'all' \
@@ -77,7 +75,7 @@ def test_model(model: sk.base.BaseEstimator, x_train: pd.DataFrame,
             file.write(textwrap.fill(str(e), 80))
         return report
 
-    mlx.plotting.plot_sequential_feature_selection(
+    plot_sequential_feature_selection(
         features.get_metric_dict(),
         kind='std_dev'
     )
@@ -90,7 +88,7 @@ def test_model(model: sk.base.BaseEstimator, x_train: pd.DataFrame,
 
     if cv is not None:
         logger.info("Cross validating model")
-        scores = sk.model_selection.cross_validate(
+        scores = cross_validate(
             model,
             features.transform(x_train),
             y_train_target,
