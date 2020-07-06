@@ -110,6 +110,13 @@ def setup_args(*args) -> argparse.Namespace:
         metavar='K',
         help='enable stratified k-fold validation with k=K'
     )
+    parser.add_argument(
+        '--discretize',
+        dest='discretize',
+        type=int,
+        default=7,
+        help='the number of steps into which the emotions will be discretized'
+    )
     # parser.add_argument(
     #     '--no-all',
     #     help='Do not train the multilabel version',
@@ -164,7 +171,7 @@ def main(*args):
                         width=width,
                         location=location,
                         split=args.split,
-                        discrete_steps=(7 if discretize else None),
+                        discrete_steps=(args.discretize if discretize else None),
                         random_state=args.random
                     )
                     logger.info("Final dataset length: %d objects", x.shape[0])
