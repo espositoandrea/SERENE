@@ -17,7 +17,7 @@
 
 """A tool to test various classification models."""
 
-__version__: str = '1.0.0'
+__version__: str = '1.1.0'
 __author__: str = 'Andrea Esposito'
 __email__: str = 'a.esposito39@studenti.uniba.it'
 __prog__: str = 'classification-models'
