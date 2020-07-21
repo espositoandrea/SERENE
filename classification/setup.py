@@ -19,7 +19,8 @@ setup(
         'mlxtend',
         'progressbar2',
         'coloredlogs',
-        'joblib'
+        'joblib',
+        'pyyaml'
     ],
     entry_points={
         'console_scripts': [

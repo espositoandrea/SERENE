@@ -20,20 +20,40 @@
 import argparse
 import gc
 import logging
+import os
 import pathlib
+from typing import List, Dict, Hashable, Any
 
 import coloredlogs
 import pandas as pd
 import sklearn as sk
+import yaml
 
 import classification
+import multiprocessing
 from . import data_loader
 from . import models
 
 logger = logging.getLogger('classification')
 
 
-def setup_args(*args) -> argparse.Namespace:
+def get_config(filename: str = 'config.yml') -> Dict[str, Any]:
+    if not filename:
+        return dict()
+    if not os.path.exists(filename):
+        logger.error("ERROR: Config file '%s' does not exist", filename)
+        return dict()
+
+    with open(filename, 'r') as file:
+        try:
+            config = yaml.safe_load(file)
+        except yaml.YAMLError as e:
+            logger.error("ERROR: %s (%s)", str(e), type(e).__name__)
+            return dict()
+    return config
+
+
+def setup_args(args: List[str] = None) -> argparse.Namespace:
     """Set up the CLI arguments.
 
     Parameters
@@ -46,6 +66,7 @@ def setup_args(*args) -> argparse.Namespace:
     argparse.Namespace
         The parsed arguments
     """
+
     def range_type(x: str):
         x = float(x)
         if not 0 <= x <= 1:
@@ -59,6 +80,11 @@ def setup_args(*args) -> argparse.Namespace:
         description=classification.__doc__,
         epilog=f"Copyright (C) 2020 {classification.__author__}. "
                "Released under the GNU GPL v3 License."
+    )
+    parser.add_argument(
+        '--config',
+        metavar='CONFIG',
+        help='The path to a configuration file.'
     )
     parser.add_argument(
         '--data', '-d',
@@ -83,7 +109,48 @@ def setup_args(*args) -> argparse.Namespace:
         default=1,
         type=int
     )
-    parser.add_argument(
+    data_selection_group = parser.add_argument_group(
+        'data selection',
+        'Options to select the data on which the models will be trained'
+    )
+    data_selection_group.add_argument(
+        '--half',
+        help='The halves of the windows to train the model on.',
+        choices=['before', 'after', 'full'],
+        action='append',
+        required=True,
+        dest='halves'
+    )
+    data_selection_group.add_argument(
+        '--emotion', '-e',
+        help='An emotion to train the model on.',
+        choices=[s.split('.')[2] for s in data_loader.KEYS_TO_PREDICT],
+        action='append',
+        required=True,
+        dest='emotions'
+    )
+    data_selection_group.add_argument(
+        '--window', '-w',
+        help='A window width to train',
+        default=None,
+        type=int,
+        choices=[25, 50, 100, 200, 500, 1000, 2000],
+        action='append',
+        dest='windows'
+    )
+    data_selection_group.add_argument(
+        '--model', '-m',
+        help='the type of models to be trained',
+        choices=models.MODELS.keys(),
+        required=True,
+        action='append',
+        dest='models'
+    )
+    model_tuning_group = parser.add_argument_group(
+        'model tuning',
+        'A group of options that changes the way the training is performed'
+    )
+    model_tuning_group.add_argument(
         '--random', '-r',
         help='The random seed.',
         default=None,
@@ -95,14 +162,7 @@ def setup_args(*args) -> argparse.Namespace:
         action='version',
         version=classification.__disclaimer__
     )
-    parser.add_argument(
-        '--models', '-m',
-        nargs='+',
-        metavar='MODEL',
-        help='the models to be applied',
-        choices=models.MODELS.keys()
-    )
-    parser.add_argument(
+    model_tuning_group.add_argument(
         '--cross-validate', '-k',
         dest='cv',
         type=int,
@@ -110,7 +170,7 @@ def setup_args(*args) -> argparse.Namespace:
         metavar='K',
         help='enable stratified k-fold validation with k=K'
     )
-    parser.add_argument(
+    model_tuning_group.add_argument(
         '--discretize',
         dest='discretize',
         type=int,
@@ -124,10 +184,16 @@ def setup_args(*args) -> argparse.Namespace:
     #     dest='do_all'
     # )
 
-    return parser.parse_args(*args)
+    parsed = parser.parse_args(args)
+    config = get_config(parsed.config)
+    for key, val in config.items():
+        print(key, val)
+        setattr(parsed, key, val)
+    parsed = parser.parse_args(args, namespace=parsed)
+    return parsed
 
 
-def main(*args):
+def main(args: List[str] = None):
     """The main function for CLI usage.
 
     Parameters
@@ -135,7 +201,7 @@ def main(*args):
     args
         The given arguments (can be empty)
     """
-    args = setup_args(*args)
+    args = setup_args(args)
     logger.setLevel(logging.INFO)
     coloredlogs.install(
         level=logging.INFO,
@@ -144,7 +210,7 @@ def main(*args):
     )
 
     reports = []
-    ranges_widths = [
+    ranges_widths = args.windows or [
         # t = 100 ms is the time between two captured emotions
         25,  # 1/4 * t
         50,  # 1/2 * t
@@ -154,24 +220,33 @@ def main(*args):
         1000,  # 10 * t
         2000  # 20 * t
     ]
+    logger.info("Windows to train: %s", str(ranges_widths))
 
     target_models = (models.MODELS[k] for k in args.models)
+    target_emotions = [f"middle.emotions.{s}" for s in args.emotions] or data_loader.KEYS_TO_PREDICT
+    target_halves = args.halves or ['before', 'after', 'full']
+
     for title, model, discretize in target_models:
         for width in ranges_widths:
-            for location in ['before', 'after', 'full']:
-                for emotion in data_loader.KEYS_TO_PREDICT:
+            for location in target_halves:
+                for emotion in target_emotions:
                     logger.info(
                         "Loading %s data (width: %d, location: %s)",
                         emotion.split('.')[2], width, location
                     )
+                    if not args.complete:
+                        full_dataset = None
+                    else:
+                        full_dataset = pathlib.Path(
+                            args.complete) / f"{emotion.split('.')[2]}.csv"
                     x, y = data_loader.load_dataset(
                         base_path=pathlib.Path(args.data),
-                        full_dataset=pathlib.Path(
-                            args.complete) / f"{emotion.split('.')[2]}.csv",
+                        full_dataset=full_dataset,
                         width=width,
                         location=location,
                         split=args.split,
-                        discrete_steps=(args.discretize if discretize else None),
+                        discrete_steps=(
+                            args.discretize if discretize else None),
                         random_state=args.random
                     )
                     logger.info("Final dataset length: %d objects", x.shape[0])
@@ -199,34 +274,6 @@ def main(*args):
                     )
                     reports.append(report)
                     gc.collect()
-
-                # Multilabel
-                # for col in y:
-                #     y_train[col] = pd.Categorical(
-                #         y_train[col],
-                #         categories=range(7)
-                #     )
-                #     y_test[col] = pd.Categorical(
-                #         y_test[col],
-                #         categories=y_train[col].cat.categories
-                #     )
-                # if args.do_all:
-                #     y_train = pd.get_dummies(y_train)
-                #     y_test = pd.get_dummies(y_test)
-                #     report = models.test_model(
-                #         model=model,
-                #         x_train=x_train,
-                #         y_train=y_train,
-                #         x_test=x_test,
-                #         y_test=y_test,
-                #         title=title,
-                #         emotion='all',
-                #         width=width,
-                #         location=location,
-                #         out='models',
-                #         n_jobs=args.jobs
-                #     )
-                #     reports.append(report)
                 gc.collect()
 
     report_table = pd.DataFrame.from_records(reports)
