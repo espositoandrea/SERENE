@@ -1,0 +1,1094 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The API &mdash; Andrea Esposito&#39;s Bachelor&#39;s Degree Thesis  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="The Data Processor" href="data-processor.html" />
+    <link rel="prev" title="Introduction" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                dependabot/npm_and_yarn/server/elliptic-6.5.3
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">The Emotions Tool</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../emotions-tool/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../emotions-tool/code.html">Code Documentation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">The Browser Extension</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../extension/index.html">The Browser Extension</a></li>
+</ul>
+<p class="caption"><span class="caption-text">The Server</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#users">Users</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#index">Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#apis">APIs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interactions">Interactions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">APIs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#websites">Websites</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">APIs</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-processor.html">The Data Processor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="survey.html">The Survey</a></li>
+</ul>
+<p class="caption"><span class="caption-text">The Data Analyzer</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../analyzer/index.html">Quick Start</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../analyzer/api.html">Code Documentation</a></li>
+</ul>
+<p class="caption"><span class="caption-text">License</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../licenses.html">GNU Free Documentation License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../licenses.html#gnu-general-public-license">GNU General Public License</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Andrea Esposito's Bachelor's Degree Thesis</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>The API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/server/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-api">
+<h1>The API<a class="headerlink" href="#the-api" title="Permalink to this headline">¶</a></h1>
+<p>The server exposes a simple API to get data from the database. The methods can
+be classified in two groups, based on the object they return. All API access is
+over HTTPS and accessed from <code class="docutils literal notranslate"><span class="pre">https://giuseppe-desolda.ddns.net:8080</span></code>. All
+data is returned as JSON.</p>
+<div class="section" id="users">
+<h2>Users<a class="headerlink" href="#users" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="index">
+<h3>Index<a class="headerlink" href="#index" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="#get--api-users" title="GET /api/users"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/users</span></code></a></p></li>
+<li><p><a class="reference internal" href="#get--api-users-(int-skip)-(int-limit)" title="GET /api/users/(int:skip)-(int:limit)"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/users/(int:skip)-(int:limit)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#get--api-user-(str-id)" title="GET /api/user/(str:id)"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/user/(str:id)</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="apis">
+<h3>APIs<a class="headerlink" href="#apis" title="Permalink to this headline">¶</a></h3>
+<dl class="get">
+<dt id="get--api-users">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/users</code><a class="headerlink" href="#get--api-users" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the users.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea18ca785dffb5712068595&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;age&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;internet&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;age&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;internet&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span>
+   <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – No error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--api-users-(int-skip)-(int-limit)">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/users/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">skip</em><span class="sig-paren">)</span><code class="sig-name descname">-</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-users-(int-skip)-(int-limit)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the first <cite>limit</cite> users starting from <cite>skip</cite> (included).</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/users/3-2</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5eab3d3f348b1746eeb06a99&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;age&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;internet&quot;</span><span class="p">:</span> <span class="s2">&quot;18&quot;</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5eb014d0348b1746eeb76c18&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;age&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;internet&quot;</span><span class="p">:</span> <span class="s2">&quot;18&quot;</span>
+   <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>skip</strong> – The number of users to skip</p></li>
+<li><p><strong>limit</strong> – The number of users to return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – No error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--api-user-(str-id)">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/user/</code><span class="sig-paren">(</span><em class="property">str: </em><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-user-(str-id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the user with id <cite>id</cite>.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/user/5ebd67189976b12b146a2735</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">{</span>
+   <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ebd67189976b12b146a2735&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;age&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;gender&quot;</span><span class="p">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;internet&quot;</span><span class="p">:</span> <span class="s2">&quot;7&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – The id of the user</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – No error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="interactions">
+<h2>Interactions<a class="headerlink" href="#interactions" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id1">
+<h3>Index<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="#get--api-interactions" title="GET /api/interactions"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/interactions</span></code></a></p></li>
+<li><p><a class="reference internal" href="#get--api-interactions-(int-skip)-(int-limit)" title="GET /api/interactions/(int:skip)-(int:limit)"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/interactions/(int:skip)-(int:limit)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#get--api-interaction-(str-id)" title="GET /api/interaction/(str:id)"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/interaction/(str:id)</span></code></a></p></li>
+<li><p><a class="reference internal" href="#get--api-user-(str-id)-interactions" title="GET /api/user/(str:id)/interactions"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/user/(str:id)/interactions</span></code></a></p></li>
+<li><p><a class="reference internal" href="#get--api-user-(str-id)-interactions-(int-skip)-(int-limit)" title="GET /api/user/(str:id)/interactions/(int:skip)-(int:limit)"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/user/(str:id)/interactions/(int:skip)-(int:limit)</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h3>APIs<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<dl class="get">
+<dt id="get--api-interactions">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/interactions</code><a class="headerlink" href="#get--api-interactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the interactions. <strong>Warning:</strong> due to the huge quantity of data it’s
+likely that the connection will timeout.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/user/5ebd67189976b12b146a2735</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb571207298e&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878562</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb571207298f&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878685</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072990&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878810</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072991&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878857</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072992&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878966</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – No error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--api-interactions-(int-skip)-(int-limit)">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/interactions/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">skip</em><span class="sig-paren">)</span><code class="sig-name descname">-</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-interactions-(int-skip)-(int-limit)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the first <cite>limit</cite> interactions starting from the <cite>skip</cite>. <strong>Warning:</strong> due
+to the huge quantity of data it’s likely that the connection will timeout.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/interactions/4-2</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072992&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878966</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072993&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657879058</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>skip</strong> – The number of interactions to skip</p></li>
+<li><p><strong>limit</strong> – The number of interactions to return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – No error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--api-interaction-(str-id)">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/interaction/</code><span class="sig-paren">(</span><em class="property">str: </em><em class="sig-param">id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-interaction-(str-id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the interaction with id <cite>id</cite>.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/interaction/5ea1bc9a85dffb5712072992</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">{</span>
+   <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072992&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+   <span class="p">},</span>
+   <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">0</span><span class="p">,</span>
+         <span class="mi">0</span>
+      <span class="p">]</span>
+   <span class="p">},</span>
+   <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">0</span><span class="p">,</span>
+         <span class="mi">400</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">100</span><span class="p">,</span>
+         <span class="mi">400</span>
+      <span class="p">]</span>
+   <span class="p">},</span>
+   <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878966</span><span class="p">,</span>
+   <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+   <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+      <span class="mi">1537</span><span class="p">,</span>
+      <span class="mi">956</span>
+   <span class="p">],</span>
+   <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – The id of the interaction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – No error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--api-user-(str-id)-interactions">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/user/</code><span class="sig-paren">(</span><em class="property">str: </em><em class="sig-param">id</em><span class="sig-paren">)</span><code class="sig-name descname">/interactions</code><a class="headerlink" href="#get--api-user-(str-id)-interactions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the interaction of the user with id <cite>id</cite>.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/user/5ea1b63385dffb57120720c3/interactions</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb571207298e&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878562</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb571207298f&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878685</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072990&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657878810</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – The id of the user</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – No error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--api-user-(str-id)-interactions-(int-skip)-(int-limit)">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/user/</code><span class="sig-paren">(</span><em class="property">str: </em><em class="sig-param">id</em><span class="sig-paren">)</span><code class="sig-name descname">/interactions/</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">skip</em><span class="sig-paren">)</span><code class="sig-name descname">-</code><span class="sig-paren">(</span><em class="property">int: </em><em class="sig-param">limit</em><span class="sig-paren">)</span><a class="headerlink" href="#get--api-user-(str-id)-interactions-(int-skip)-(int-limit)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the first <cite>limit</cite> interactions starting from the <cite>skip</cite> of the user with
+id <cite>id</cite>.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/user/5ea1b63385dffb57120720c3/interactions/6-2</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072994&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657879177</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1bc9a85dffb5712072995&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;k&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;f&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;n&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+         <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="kc">false</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;l&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+            <span class="nt">&quot;m&quot;</span><span class="p">:</span> <span class="kc">false</span>
+         <span class="p">},</span>
+         <span class="nt">&quot;p&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">0</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;s&quot;</span><span class="p">:</span> <span class="p">{</span>
+         <span class="nt">&quot;a&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">0</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">],</span>
+         <span class="nt">&quot;r&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mi">100</span><span class="p">,</span>
+            <span class="mi">400</span>
+         <span class="p">]</span>
+      <span class="p">},</span>
+      <span class="nt">&quot;t&quot;</span><span class="p">:</span> <span class="mi">1587657879295</span><span class="p">,</span>
+      <span class="nt">&quot;u&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.repubblica.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;ui&quot;</span><span class="p">:</span> <span class="s2">&quot;5ea1b63385dffb57120720c3&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;w&quot;</span><span class="p">:</span> <span class="p">[</span>
+         <span class="mi">1537</span><span class="p">,</span>
+         <span class="mi">956</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;e&quot;</span><span class="p">:</span> <span class="p">{}</span>
+   <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>skip</strong> – The number of interactions to skip</p></li>
+<li><p><strong>limit</strong> – The number of interactions to return</p></li>
+<li><p><strong>id</strong> – The id of the user</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a> – No error</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="websites">
+<h2>Websites<a class="headerlink" href="#websites" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h3>Index<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><a class="reference internal" href="#get--api-websites" title="GET /api/websites"><code class="xref http http-get docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/websites</span></code></a></p></li>
+</ul>
+</div>
+<div class="section" id="id4">
+<h3>APIs<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h3>
+<dl class="get">
+<dt id="get--api-websites">
+<code class="sig-name descname">GET </code><code class="sig-name descname">/api/websites</code><a class="headerlink" href="#get--api-websites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all the visited websites and the number of visits received.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/websites</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">HOST</span><span class="o">:</span> <span class="l">giuseppe-desolda.ddns.net:8080</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json; charset=utf-8</span>
+
+<span class="p">[</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">876</span><span class="p">,</span>
+      <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://zoom.us/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;UNKNOWN&quot;</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">1502</span><span class="p">,</span>
+      <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://wwwapd.ict.uniba.it/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Università/Università di Bari&quot;</span>
+   <span class="p">},</span>
+   <span class="p">{</span>
+      <span class="nt">&quot;count&quot;</span><span class="p">:</span> <span class="mi">796</span><span class="p">,</span>
+      <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;https://www.zamzar.com/&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;category&quot;</span><span class="p">:</span> <span class="s2">&quot;Data Formats/Conversion&quot;</span>
+   <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data-processor.html" class="btn btn-neutral float-right" title="The Data Processor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Andrea Esposito
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
