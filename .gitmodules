@@ -7,3 +7,6 @@
 [submodule "emotions"]
 	path = emotions
 	url = https://github.com/uxsad/emotion-analysis
+[submodule "icon"]
+	path = icon
+	url = https://github.com/uxsad/graphics
