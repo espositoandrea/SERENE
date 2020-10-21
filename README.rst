@@ -35,9 +35,6 @@ The Structure of the Repository
 ``server/``
    This folder contains the server's source code (written in JavaScript).
 
-``thesis/``
-   This folder contains the thesis itself.
-
 
 The Browser Extension
 =====================
