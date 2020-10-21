@@ -205,94 +205,12 @@ TypeScript).</p>
 </dd>
 </dl>
 </div>
-<div class="section" id="the-browser-extension">
-<h1>The Browser Extension<a class="headerlink" href="#the-browser-extension" title="Permalink to this headline">¶</a></h1>
-<p>A simple browser extension was created to collect data for the Thesis’ research.
-The plugin is available for both Google Chrome and Mozilla Firefox.</p>
-<p>The extension has the single goal of collecting the data that will be analyzed
-in the Thesis. A detailed list of what is collected can be found in
-<a class="reference internal" href="#what-data-is-collected">What data is collected?</a>.</p>
-<div class="section" id="the-structure-of-the-extension">
-<h2>The Structure of the Extension<a class="headerlink" href="#the-structure-of-the-extension" title="Permalink to this headline">¶</a></h2>
-<p>This extension is structured in two main parts: the extension itself and a group
-of server-side scripts.</p>
-<p>The extension itself collects the data (see <a class="reference internal" href="#what-data-is-collected">What data is collected?</a>). In
-this phase, in order to reduce the amount of work of the client’s browser, the
-webcam snapshots are sent as raw images (as data URIs). The collected data
-(along with the pictures’ URIs) are then sent to a server-side script.</p>
-<p>The server receives the data sent by the extension and analyzes all available
-pictures. The pictures are then discarded and only the analysis results are
-saved.</p>
-</div>
-<div class="section" id="the-survey">
-<h2>The Survey<a class="headerlink" href="#the-survey" title="Permalink to this headline">¶</a></h2>
-<p>Right after the installation of the extension, the participant is asked to
-complete a short demographic survey. This survey (that is managed by a
-server-side script) is needed to search for correlations in groups of users
-with common age, experiences, knowledge, etc.</p>
-</div>
-<div class="section" id="what-data-is-collected">
-<h2>What data is collected?<a class="headerlink" href="#what-data-is-collected" title="Permalink to this headline">¶</a></h2>
-<ul class="simple">
-<li><dl class="simple">
-<dt>Date/time data</dt><dd><ul>
-<li><p>Date and time of the interaction</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Keyboard data</dt><dd><ul>
-<li><p>Pressed/released keys</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Mouse data</dt><dd><ul>
-<li><p>Mouse position in pixels (assumed to start from <cite>(0,0)</cite>)</p></li>
-<li><p>Pressed/released mouse buttons</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>Navigation data</dt><dd><ul>
-<li><p>Current URL (protocol and domain only)</p></li>
-<li><dl class="simple">
-<dt>Current scroll position</dt><dd><ul>
-<li><p>Absolute position in pixels</p></li>
-<li><p>Relative position (measured from the lowest point of the screen)</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>User’s emotions</dt><dd><ul>
-<li><p>Data got from <a class="reference external" href="https://affectiva.com/">Affectiva</a>, an Emotion Analysis
-engine, by analyzing a snapshot taken with the webcam</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-</ul>
-</div>
-<div class="section" id="how-to-build">
-<h2>How to Build<a class="headerlink" href="#how-to-build" title="Permalink to this headline">¶</a></h2>
-<p>Both the extension and the server-side scripts have been created as a node
-package. To build both, all the dependencies must be installed first. To install
-them, run <cite>npm install</cite> in both the folder <code class="docutils literal notranslate"><span class="pre">browser-extension/</span></code> and the folder
-<code class="docutils literal notranslate"><span class="pre">browser-extension/src/server/</span></code>.</p>
-<p>Once all the dependencies have been installed, the extension as a whole (both
-the client-side plugin and the server-side scripts) can be built by running
-<code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code> in the folder <code class="docutils literal notranslate"><span class="pre">browser-extension</span></code>.</p>
-<p>To start the server, run <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">start</span></code> from the same folder (note: starting the
-server will trigger another build of the server-side scripts to ensure they’re
-updated at the latest version).</p>
+<div class="section" id="code-documentation">
+<h1>Code Documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h1>
+<p>The code documentation has been moved and is now available in the various
+subdirectories and/or submodules’ repositories. Please, refer to the specific
+commit of the submodule to get the documentation of the original work or refer
+to the newest commit to get the latest documentation.</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
@@ -302,7 +220,6 @@ updated at the latest version).</p>
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
-</div>
 </div>
 </div>
 
