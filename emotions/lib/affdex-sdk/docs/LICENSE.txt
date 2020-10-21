@@ -1,3 +1,0 @@
-# AFFECTIVA SDK LICENSE AGREEMENT
-
-Please refer to https://developer.affectiva.com/affectiva-sdk-license-agreement/ for the license agreement.
