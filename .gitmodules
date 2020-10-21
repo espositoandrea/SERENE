@@ -1,3 +1,6 @@
 [submodule "extension"]
 	path = extension
 	url = https://github.com/uxsad/browser-extension.git
+[submodule "server"]
+	path = server
+	url = https://github.com/uxsad/server
