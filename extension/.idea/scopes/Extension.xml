@@ -1,3 +1,0 @@
-<component name="DependencyValidationManager">
-  <scope name="Extension" pattern="file[browser-extension]:src//*" />
-</component>
