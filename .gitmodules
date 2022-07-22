@@ -1,12 +1,15 @@
 [submodule "extension"]
 	path = extension
-	url = https://github.com/uxsad/browser-extension.git
+	url = git@github.com:uxsad/browser-extension.git
 [submodule "server"]
 	path = server
-	url = https://github.com/uxsad/server
+	url = git@github.com:uxsad/server.git
 [submodule "emotions"]
 	path = emotions
-	url = https://github.com/uxsad/emotion-analysis
+	url = git@github.com:uxsad/emotion-analysis.git
 [submodule "icon"]
 	path = icon
-	url = https://github.com/uxsad/graphics
+	url = git@github.com:uxsad/graphics.git
+[submodule "frontend"]
+	path = frontend
+	url = git@github.com:uxsad/frontend.git
