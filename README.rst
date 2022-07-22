@@ -20,6 +20,13 @@
    </p>
 
 ********
+
+The project tracked in this repository has been expanded, and it is now tracked
+in multiple repository in the organization account
+`SERENE <https://github.com/uxsad>`_.
+Note that the frontend was not available in the original version, and a
+reference to it has been added only to help people find the relevant
+information in the organization account.
         
 The Structure of the Repository
 ===============================
