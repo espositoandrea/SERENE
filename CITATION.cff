@@ -1,0 +1,77 @@
+# --------------------------------------------
+# CITATION file created with {cffr} R package
+# See also: https://docs.ropensci.org/cffr/
+# --------------------------------------------
+ 
+cff-version: 1.2.0
+message: If you use this software, please cite it using the metadata from this file.
+type: software
+license: GPL-3.0
+title: SERENE (AKA UX-SAD)
+version: '2020-07-16'
+authors:
+- given-names: Andrea
+  family-names: Esposito
+  email: andrea.esposito@uniba.it
+  affiliation: University of Bari Aldo Moro
+  orcid: https://orcid.org/0000-0002-9536-3087
+preferred-citation:
+  type: generic
+  title: Detecting Emotions Through Machine Learning for Automatic UX Evaluation
+  authors:
+  - family-names: Desolda
+    given-names: Giuseppe
+    orcid: https://orcid.org/0000-0001-9894-2116
+  - family-names: Andrea
+    given-names: Esposito
+    orcid: https://orcid.org/0000-0002-9536-3087
+  - family-names: Lanzilotti
+    given-names: Rosa
+    orcid: https://orcid.org/0000-0002-2039-8162
+  - family-names: Costabile
+    given-names: Maria Francesca
+    orcid: https://orcid.org/0000-0001-8554-0273
+  collection-title: Human-Computer Interaction -- INTERACT 2021
+  collection-type: collection
+  editors:
+  - family-names: Ardito
+    given-names: Carmelo
+  - family-names: Lanzilotti
+    given-names: Rosa
+  - family-names: Malizia
+    given-names: Alessio
+  - family-names: Petrie
+    given-names: Helen
+  - family-names: Piccinno
+    given-names: Antonio
+  - family-names: Desolda
+    given-names: Giuseppe
+  - family-names: Inkpen
+    given-names: Kori
+  year: '2021'
+  volume: '12934'
+  publisher:
+    name: Springer International Publishing
+    address: Cham
+  doi: 10.1007/978-3-030-85613-7_19
+  abstract: Although User eXperience (UX) is widely acknowledged as an important aspect
+    of software products, its evaluation is often neglected during the development
+    of most software products, primarily because developers think that it is resource-demanding
+    and complain about the fact that is scarcely automated. Various attempts have
+    been made to develop tools that support and automate the execution of tests with
+    users. This paper is about an ongoing research work that exploits Machine Learning
+    (ML) for automatic UX evaluation, specifically for understanding users' emotions
+    by analyzing the log data of the users' interactions with websites. The approach
+    described aims at overcoming some limitations of existing proposals based on ML.
+  copyright: All rights reserved
+  isbn: 978-3-030-85612-0
+  keywords:
+  - funding/empathy
+  - notion
+  - project/SERENE
+  start: '270'
+  end: '279'
+repository-code: https://github.com/espositoandrea/SERENE
+date-released: '2020-07-16'
+commit: d432fdfc73d4350c32cb42ebe5937493b5a8faf0
+
